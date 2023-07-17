@@ -67,7 +67,7 @@ class ProductManager {
       this.saveProducts();
       console.log("El producto ha sido actualizado!");
     } else {
-      console.log("Not found!");
+      console.log("Error not found!, producto no encontrado!");
     }
   }
 
@@ -82,7 +82,7 @@ class ProductManager {
       this.saveProducts();
       console.log("El producto N°:" + id + "ha sido eliminado!");
     } else {
-      console.log("Not found!");
+      console.log("Error not found!, producto no encontrado!");
     }
   }
 
@@ -107,7 +107,7 @@ class ProductManager {
     this.products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
     const productoEncontrado = this.products.find((prod) => prod.id === id);
     if (!productoEncontrado) {
-      console.log("Error not found, producto no encontrado");
+      console.log("Error not found!, producto no encontrado!");
     } else {
       console.log(productoEncontrado);
     }
@@ -188,8 +188,28 @@ product.addProduct({
   price: 27200,
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/larvitar-grande1-9ac98e0dafbc4b342716752786618904-640-0.webp",
-  code: "Larvitar547",
+  code: "larvitar547",
   stock: 5,
+});
+product.addProduct({
+  title: "Piplop",
+  description:
+    "Este producto es original e importado de Japón, de la marca Banpresto año 2021, viene con todas sus etiquetas y mide 26cm de alto",
+  price: 27500,
+  thumbnail:
+    "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/kivd698-peluche-piplup-pokemon-for-you-ichiban-kuji11-0570dce73ef2d8842316822259808053-640-0.webp",
+  code: "piplop895",
+  stock: 15,
+});
+product.addProduct({
+  title: "Vulpix",
+  description:
+    "Este producto es original e importado de Japón, de la marca Banpresto año 2020, viene con todas sus etiquetas y mide 27cm de alto",
+  price: 15400,
+  thumbnail:
+    "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/vulpix1-622b35555160d87e0316754628607808-640-0.webp",
+  code: "vulpix653",
+  stock: 18,
 });
 
 console.log(product.getProducts()); // ARRAY CON LOS PRODUCTOS
@@ -199,7 +219,7 @@ product.getProductById(25);
 product.getProductById(2);
 
 // ELIMINAR PRODUCTO POR ID
-console.log(product.deleteProduct(2));
+console.log(product.deleteProduct(4));
 console.log(product.getProducts());
 
 //ACTUALIZAR PRODUCTO
@@ -207,7 +227,7 @@ product.updateProduct(1, {
   title: "Peluche Totodile",
   description:
     "Este producto es original e importado de Japón, de la marca Banpresto año 2023, viene con todas sus etiquetas y mide 25cm de alto",
-  price: 19990,
+  price: 22750,
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/totodile-hokkori-healing-21cm-20221-07ff3dcf51d18116a816859928660950-640-0.webp",
   code: "totodile129",
