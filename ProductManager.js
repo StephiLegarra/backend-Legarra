@@ -1,8 +1,19 @@
-// DESAFIO 1 Stephanie Legarra - Curso Backend - Comisión: 55305
+// DESAFIO 2 Stephanie Legarra - Curso Backend - Comisión: 55305
+
+// FILE SYSTEM
+const fs = require("fs");
 
 class ProductManager {
   constructor() {
     this.products = [];
+    this.path = "Products.json";
+    this.createFile();
+  }
+
+  createFile() {
+    if (!fs.existsSync(this.path)) {
+      fs.writeFileSync(this.path, JSON.stringify(this.products));
+    }
   }
 
   addProduct(product) {
@@ -16,7 +27,8 @@ class ProductManager {
       !product.description ||
       !product.price ||
       !product.thumbnail ||
-      !product.code
+      !product.code ||
+      !product.stock
     ) {
       console.log("Todos los campos son obligatorios");
       return;
@@ -32,17 +44,55 @@ class ProductManager {
         price: product.price,
         thumbnail: product.thumbnail,
         code: product.code,
-        stock: 25,
+        stock: product.stock,
       };
+      this.products = this.getProducts();
       this.products.push(producto);
-      console.log("Producto agregado!");
+      this.saveProducts();
+      console.log("El producto ha sido agregado!");
     }
   }
 
-  getProducts() {
-    return this.products;
+  // ACTUALIZAR PRODUCTO
+  updateProduct(id, product) {
+    this.products = this.getProducts();
+    let pos = this.products.findIndex((item) => item.id === id);
+    if (pos > -1) {
+      this.products[pos].title = product.title;
+      this.products[pos].description = product.description;
+      this.products[pos].price = product.price;
+      this.products[pos].thumbnail = product.thumbnail;
+      this.products[pos].code = product.code;
+      this.products[pos].stock = product.stock;
+      this.saveProducts();
+      console.log("El producto ha sido actualizado!");
+    } else {
+      console.log("Not found!");
+    }
   }
 
+  // ELIMINAR PRODUCTO
+  deleteProduct(id) {
+    this.products = this.getProducts();
+    let pos = this.products.findIndex((item) => item.id === id);
+
+    if (pos > -1) {
+      this.products.splice(pos, 1);
+      0, 1;
+      this.saveProducts();
+      console.log("El producto N°:" + id + "ha sido eliminado!");
+    } else {
+      console.log("Not found!");
+    }
+  }
+
+  // OBETENER PRODUCTO
+  getProducts() {
+    let products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
+    return products;
+  }
+
+  // OBTENER ID
   getId() {
     let max = 0;
     this.products.forEach((prod) => {
@@ -52,7 +102,9 @@ class ProductManager {
     return max + 1;
   }
 
+  // BUSCAR PRODUCTO POR ID
   getProductById(id) {
+    this.products = JSON.parse(fs.readFileSync(this.path, "utf-8"));
     const productoEncontrado = this.products.find((prod) => prod.id === id);
     if (!productoEncontrado) {
       console.log("Error not found, producto no encontrado");
@@ -61,16 +113,24 @@ class ProductManager {
     }
   }
 
+  // VALIDACION DE CODIGO DE PRODUCTO
   validateCode(code) {
     return this.products.some((prod) => prod.code === code);
+  }
+
+  // GUARDAR PRODUCTO
+  saveProducts() {
+    fs.writeFileSync(this.path, JSON.stringify(this.products));
   }
 }
 
 const product = new ProductManager();
 
-let vacio = product.getProducts(); // ARRAY VACIO
+// ARRAY VACIO
+let vacio = product.getProducts();
 console.log(vacio);
 
+// PRODUCTOS PARA EL ARRAY
 product.addProduct({
   title: "Peluche Totodile",
   description:
@@ -79,6 +139,7 @@ product.addProduct({
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/totodile-hokkori-healing-21cm-20221-07ff3dcf51d18116a816859928660950-640-0.webp",
   code: "totodile129",
+  stock: 25,
 });
 product.addProduct({
   title: "Peluche Gengar",
@@ -88,6 +149,7 @@ product.addProduct({
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/gengar-hokkori-healing2-09f8b606c41eec33db16859861147835-640-0.webp",
   code: "gengar051",
+  stock: 14,
 });
 product.addProduct({
   title: "Peluche Mew",
@@ -97,6 +159,7 @@ product.addProduct({
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/mew-evolution1-c70a35cf05f0b50a1f16842664635151-640-0.webp",
   code: "gengar051",
+  stock: 9,
 });
 product.addProduct({
   title: "Peluche Mew",
@@ -106,6 +169,7 @@ product.addProduct({
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/mew-evolution1-c70a35cf05f0b50a1f16842664635151-640-0.webp",
   code: "mew151",
+  stock: 10,
 });
 product.addProduct({
   title: "",
@@ -115,6 +179,17 @@ product.addProduct({
   thumbnail:
     "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/mew-evolution1-c70a35cf05f0b50a1f16842664635151-640-0.webp",
   code: "sobble311",
+  stock: 24,
+});
+product.addProduct({
+  title: "Larvitar",
+  description:
+    "Este producto es original e importado de Japón, de la marca Banpresto año 2016, viene con todas sus etiquetas y mide 45cm de alto",
+  price: 27200,
+  thumbnail:
+    "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/larvitar-grande1-9ac98e0dafbc4b342716752786618904-640-0.webp",
+  code: "Larvitar547",
+  stock: 5,
 });
 
 console.log(product.getProducts()); // ARRAY CON LOS PRODUCTOS
@@ -122,3 +197,19 @@ console.log(product.getProducts()); // ARRAY CON LOS PRODUCTOS
 // BUSCAR PRODUCTO POR ID
 product.getProductById(25);
 product.getProductById(2);
+
+// ELIMINAR PRODUCTO POR ID
+console.log(product.deleteProduct(2));
+console.log(product.getProducts());
+
+//ACTUALIZAR PRODUCTO
+product.updateProduct(1, {
+  title: "Peluche Totodile",
+  description:
+    "Este producto es original e importado de Japón, de la marca Banpresto año 2023, viene con todas sus etiquetas y mide 25cm de alto",
+  price: 19990,
+  thumbnail:
+    "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/totodile-hokkori-healing-21cm-20221-07ff3dcf51d18116a816859928660950-640-0.webp",
+  code: "totodile129",
+  stock: 50,
+});
