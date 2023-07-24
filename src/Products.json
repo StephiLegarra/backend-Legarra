@@ -1,47 +1,56 @@
 [
   {
-    "id": 1,
     "title": "Peluche Totodile",
-    "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2023, viene con todas sus etiquetas y mide 25cm de alto",
-    "price": 22750,
+    "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2022, viene con todas sus etiquetas y mide 25cm de alto",
+    "price": 17600,
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/totodile-hokkori-healing-21cm-20221-07ff3dcf51d18116a816859928660950-640-0.webp",
     "code": "totodile129",
-    "stock": 50
+    "stock": 25,
+    "id": 0
   },
   {
-    "id": 2,
     "title": "Peluche Gengar",
     "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2012, viene con todas sus etiquetas y mide 28cm de alto",
     "price": 18000,
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/gengar-hokkori-healing2-09f8b606c41eec33db16859861147835-640-0.webp",
     "code": "gengar051",
-    "stock": 14
+    "stock": 14,
+    "id": 1
   },
   {
-    "id": 3,
     "title": "Peluche Mew",
     "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2019, viene con todas sus etiquetas y mide 38cm de alto",
     "price": 25000,
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/mew-evolution1-c70a35cf05f0b50a1f16842664635151-640-0.webp",
     "code": "mew151",
-    "stock": 10
+    "stock": 10,
+    "id": 2
   },
   {
-    "id": 5,
+    "title": "Larvitar",
+    "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2016, viene con todas sus etiquetas y mide 45cm de alto",
+    "price": 27200,
+    "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/larvitar-grande1-9ac98e0dafbc4b342716752786618904-640-0.webp",
+    "code": "larvitar547",
+    "stock": 5,
+    "id": 3
+  },
+  {
     "title": "Piplop",
     "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2021, viene con todas sus etiquetas y mide 26cm de alto",
     "price": 27500,
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/kivd698-peluche-piplup-pokemon-for-you-ichiban-kuji11-0570dce73ef2d8842316822259808053-640-0.webp",
     "code": "piplop895",
-    "stock": 15
+    "stock": 15,
+    "id": 4
   },
   {
-    "id": 6,
     "title": "Vulpix",
     "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2020, viene con todas sus etiquetas y mide 27cm de alto",
     "price": 15400,
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/vulpix1-622b35555160d87e0316754628607808-640-0.webp",
     "code": "vulpix653",
-    "stock": 18
+    "stock": 18,
+    "id": 5
   }
 ]

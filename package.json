@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/StephiLegarra/desafio1-backend#readme",
   "dependencies": {
-    "bootstrap": "^5.3.0"
+    "bootstrap": "^5.3.0",
+    "express": "^4.18.2"
   }
 }
