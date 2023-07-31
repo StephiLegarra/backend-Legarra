@@ -3,10 +3,10 @@
 // FILE SYSTEM
 import fs from "fs/promises";
 
-class ProductManager {
+class CartManager {
   constructor() {
-    this.products = [];
-    this.path = "./Products.json";
+    this.carts = [];
+    this.path = "./Carts.json";
   }
 
   static id = 0;
@@ -15,14 +15,13 @@ class ProductManager {
   async initialize() {
     try {
       await fs.access(this.path); // acces verifica si existe.
-      const products = await fs.readFile(this.path, "utf-8");
-      const productParse = JSON.parse(products);
+      const carts = await fs.readFile(this.path, "utf-8");
+      const cartParse = JSON.parse(carts);
 
-      if (productParse.length !== 0) {
-        const productsParse = await this.getProductsGeneral();
-        this.products = productsParse;
-        ProductManager.id =
-          Math.max(...this.products.map((item) => item.id)) + 1;
+      if (cartParse.length !== 0) {
+        const cartsParse = await this.getProductsGeneral();
+        this.carts = cartsParse;
+        CartManager.id = Math.max(...this.carts.map((item) => item.id)) + 1;
       } else {
         await this.createFile();
       }
@@ -32,7 +31,30 @@ class ProductManager {
     }
   }
 
-  async addProduct(product) {
+  async newCart() {
+    try {
+      this.carts.push({ id: this.getProductsById(), carts: [] });
+
+      await this.createFile();
+      return console.log("El carrito ah sido creado");
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async getCart(id) {
+    try {
+      const cart = await this.carts.find((item) => item.id === id);
+      if (!cart) {
+        return console.log("no se encontró el producto en el carrito");
+      }
+      return cart;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async addCart(product) {
     try {
       const { title, description, price, thumbnail, code, stock, category } =
         product;
@@ -53,7 +75,7 @@ class ProductManager {
         return console.log("faltan datos");
       }
 
-      product.id = ProductManager.id++;
+      product.id = CartManager.id++;
       this.products.push(product);
 
       await this.createFile();
@@ -62,15 +84,30 @@ class ProductManager {
     }
   }
 
-  async createFile() {
+  async addProductToCart(cid, pid) {
     try {
-      await fs.writeFile(this.path, JSON.stringify(this.products, null, 2));
+      this.carts = this.getCarts;
+      const cart = this.carts.find((item) => item.id === cid);
+      const product = cart.products.find((item) => item.product === pid);
+      if (product) {
+        product.quantity += 1;
+      } else {
+        cart.products.push({ product: pid, quantity: 1 });
+      }
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  async getProductsGeneral() {
+  async createFile() {
+    try {
+      await fs.writeFile(this.path, JSON.stringify(this.carts, null, 2));
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async getCartGeneral() {
     try {
       const getProducts = await fs.readFile(this.path, "utf-8");
       const getProductsParse = JSON.parse(getProducts);
@@ -80,7 +117,7 @@ class ProductManager {
     }
   }
 
-  async getProducts() {
+  async getCart() {
     try {
       const products = await this.getProductsGeneral();
       console.log(products);
@@ -89,27 +126,11 @@ class ProductManager {
     }
   }
 
-  async deleteProduct(id) {
+  async deleteCart(id) {
     try {
       const readParse = await this.getProductsGeneral();
       const deleteProduct = readParse.filter((item) => item.id !== id);
       await fs.writeFile(this.path, JSON.stringify(deleteProduct, null, 2));
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  async updateProduct(id, product) {
-    try {
-      const index = this.products.findIndex((item) => item.id === id);
-      if (index === -1) {
-        return console.log("no se encontró el producto");
-      }
-      this.products[index] = product;
-      product.id = id;
-      await this.createFile();
-
-      return this.products[index];
     } catch (err) {
       console.log(err.message);
     }
@@ -128,4 +149,4 @@ class ProductManager {
   }
 }
 
-export default ProductManager;
+export default CartManager;
