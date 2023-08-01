@@ -6,7 +6,8 @@
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/totodile-hokkori-healing-21cm-20221-07ff3dcf51d18116a816859928660950-640-0.webp",
     "code": "totodile129",
     "stock": 25,
-    "id": 0
+    "id": 0,
+    "category": "Peluches"
   },
   {
     "title": "Peluche Gengar",
@@ -15,7 +16,8 @@
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/gengar-hokkori-healing2-09f8b606c41eec33db16859861147835-640-0.webp",
     "code": "gengar051",
     "stock": 14,
-    "id": 1
+    "id": 1,
+    "category": "Peluches"
   },
   {
     "title": "Peluche Mew",
@@ -24,7 +26,8 @@
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/mew-evolution1-c70a35cf05f0b50a1f16842664635151-640-0.webp",
     "code": "mew151",
     "stock": 10,
-    "id": 2
+    "id": 2,
+    "category": "Peluches"
   },
   {
     "title": "Larvitar",
@@ -33,7 +36,8 @@
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/larvitar-grande1-9ac98e0dafbc4b342716752786618904-640-0.webp",
     "code": "larvitar547",
     "stock": 5,
-    "id": 3
+    "id": 3,
+    "category": "Peluches"
   },
   {
     "title": "Piplop",
@@ -42,7 +46,8 @@
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/kivd698-peluche-piplup-pokemon-for-you-ichiban-kuji11-0570dce73ef2d8842316822259808053-640-0.webp",
     "code": "piplop895",
     "stock": 15,
-    "id": 4
+    "id": 4,
+    "category": "Peluches"
   },
   {
     "title": "Vulpix",
@@ -51,6 +56,20 @@
     "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/vulpix1-622b35555160d87e0316754628607808-640-0.webp",
     "code": "vulpix653",
     "stock": 18,
-    "id": 5
+    "id": 5,
+    "category": "Peluches"
+  },
+  {
+    "title": "Peluche Charmander",
+    "description": "Este producto es original e importado de Japón, de la marca Banpresto año 2018, viene con todas sus etiquetas y mide 38cm de alto",
+    "price": 3000,
+    "thumbnail": [
+      "https://d3ugyf2ht6aenh.cloudfront.net/stores/110/201/products/peluche-charmander11-74dfb9f611611af8db16821857202855-640-0.webp"
+    ],
+    "code": "charmander006",
+    "stock": 19,
+    "category": "Peluches",
+    "status": true,
+    "id": 6
   }
 ]

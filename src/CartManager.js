@@ -9,7 +9,7 @@ class CartManager {
     this.path = "./Carts.json";
   }
 
-  static id = 0;
+  static id = 1;
 
   //recorre los productos que existen en el json para evitar subidas duplicadas
   async initialize() {
@@ -19,7 +19,7 @@ class CartManager {
       const cartParse = JSON.parse(carts);
 
       if (cartParse.length !== 0) {
-        const cartsParse = await this.getProductsGeneral();
+        const cartsParse = await this.getCartGeneral();
         this.carts = cartsParse;
         CartManager.id = Math.max(...this.carts.map((item) => item.id)) + 1;
       } else {
@@ -33,10 +33,11 @@ class CartManager {
 
   async newCart() {
     try {
-      this.carts.push({ id: this.getProductsById(), carts: [] });
+      const newCart = { id: CartManager.id++, carts: [] };
 
+      this.carts.push(newCart);
       await this.createFile();
-      return console.log("El carrito ah sido creado");
+      return console.log("El carrito ha sido creado");
     } catch (err) {
       console.log(err.message);
     }
@@ -54,46 +55,21 @@ class CartManager {
     }
   }
 
-  async addCart(product) {
-    try {
-      const { title, description, price, thumbnail, code, stock, category } =
-        product;
-      const codeExists = this.products.some((item) => item.code === code);
-      if (codeExists) {
-        return console.log("el código ya existe");
-      }
-
-      if (
-        !title ||
-        !description ||
-        !price ||
-        !thumbnail ||
-        !code ||
-        !stock ||
-        !category
-      ) {
-        return console.log("faltan datos");
-      }
-
-      product.id = CartManager.id++;
-      this.products.push(product);
-
-      await this.createFile();
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
   async addProductToCart(cid, pid) {
     try {
-      this.carts = this.getCarts;
       const cart = this.carts.find((item) => item.id === cid);
-      const product = cart.products.find((item) => item.product === pid);
-      if (product) {
-        product.quantity += 1;
+
+      console.log(cart);
+
+      const product = cart.carts.find((item) => item.product === pid);
+
+      if (!product) {
+        cart.carts.push({ product: pid, quantity: 1 });
       } else {
-        cart.products.push({ product: pid, quantity: 1 });
+        product.quantity += 1;
       }
+
+      await this.createFile();
     } catch (err) {
       console.log(err.message);
     }
@@ -109,9 +85,9 @@ class CartManager {
 
   async getCartGeneral() {
     try {
-      const getProducts = await fs.readFile(this.path, "utf-8");
-      const getProductsParse = JSON.parse(getProducts);
-      return getProductsParse;
+      const getCart = await fs.readFile(this.path, "utf-8");
+      const getCartParse = JSON.parse(getCart);
+      return getCartParse;
     } catch (err) {
       console.log(err.message);
     }
@@ -119,30 +95,20 @@ class CartManager {
 
   async getCart() {
     try {
-      const products = await this.getProductsGeneral();
-      console.log(products);
+      const products = await this.getCartGeneral();
+      return products;
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  async deleteCart(id) {
+  async getCartById(id) {
     try {
-      const readParse = await this.getProductsGeneral();
-      const deleteProduct = readParse.filter((item) => item.id !== id);
-      await fs.writeFile(this.path, JSON.stringify(deleteProduct, null, 2));
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  async getProductsById(id) {
-    try {
-      const product = await this.products.find((item) => item.id === id);
-      if (!product) {
+      const cart = await this.carts.find((item) => item.id === id);
+      if (!cart) {
         return console.log("no se encontró el producto");
       }
-      return product;
+      return cart;
     } catch (err) {
       console.log(err.message);
     }
