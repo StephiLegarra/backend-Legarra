@@ -2,5 +2,35 @@ body {
   color: pink;
   background-color: rgb(67, 46, 87);
   letter-spacing: 2px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  padding: 60px;
+  text-align: center;
+}
+
+img {
+  border-radius: 50%;
+  align-items: center;
+  padding: 20px 5px;
+}
+
+h2 {
+  color: white;
+  letter-spacing: 20px;
+}
+
+h3 {
+  background-color: rgb(139, 117, 160);
+  display: inline-block;
+  padding: 10px 120px;
+}
+
+h5 {
+  padding: 1% 20%;
+  color: white;
+}
+
+label {
+  letter-spacing: 3px;
+  font-weight: bold;
 }
