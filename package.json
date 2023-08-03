@@ -20,6 +20,8 @@
   "homepage": "https://github.com/StephiLegarra/desafio1-backend#readme",
   "dependencies": {
     "bootstrap": "^5.3.0",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.1",
+    "socket.io": "^4.7.2"
   }
 }
