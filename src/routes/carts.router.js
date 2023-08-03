@@ -31,7 +31,7 @@ cartsRouter.get("/:cid", async (request, response) => {
     if (!getCart) {
       return response
         .status(404)
-        .send({ error: "El id del carrito no ha sido encontrado" });
+        .send({ error: "El id del carrito no ha sido encontrado"});
     }
     response.status(200).send(getCart);
   } catch (error) {
@@ -56,13 +56,13 @@ cartsRouter.post("/:cid/products/:pid", async (request, response) => {
     if (!getCart) {
       return response
         .status(404)
-        .send({ error: "El id del carrito no ha sido encontrado" });
+        .send({error: "El id del carrito no ha sido encontrado"});
     }
 
     if (!getProduct) {
       return response
         .status(404)
-        .send({ error: "El id del producto no ha sido encontrado" });
+        .send({error: "El id del producto no ha sido encontrado"});
     }
 
     await carts.addProductToCart(parseInt(cid), parseInt(pid));
