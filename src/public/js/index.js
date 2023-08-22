@@ -8,7 +8,7 @@ document.getElementById("miFormulario").addEventListener("submit", (event) => {
     Title: document.getElementById("title").value,
     Description: document.getElementById("description").value,
     Price: document.getElementById("price").value,
-    img: "Sin imagen",
+    Thumbnail: document.getElementById("thumbnail").value,
   };
   socket.emit("mensajeKey", formData);
 });

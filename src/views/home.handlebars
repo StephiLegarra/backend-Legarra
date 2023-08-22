@@ -1,18 +1,27 @@
-<div>
-  <h2>TODOS LOS PRODUCTOS</h2>
-  <br /><br />
-  {{#each products}}
+<div class="container">
+  <h2>TODOS NUESTROS PRODUCTOS</h2>
+  <br />
+  <div class="row">
 
-    <h3>{{this.title}} </h3>
-    <p> ----------------------------------------------------</p>
-    <img src="{{this.thumbnail}}" alt="imagen del producto" />
-    <h4>Precio: ${{this.price}}</h4>
-    <h5>{{this.description}}</h5>
-    <p>ID: {{this.id}}</p>
-    <p> ----------------------------------------------------</p>
-
-  {{/each}}
+    {{#each products}}
+      <div class="col-md-6">
+        <div class="card border-0 mb-5">
+          <h3>{{this.title}} </h3>
+          <img
+            src="{{this.thumbnail}}"
+            class="img-fluid"
+            alt="imagen del producto"
+          />
+          <div class="card-body text-center">
+            <h4>Precio: ${{this.price}}</h4>
+            <h6>{{this.description}}</h6>
+            <p>ID: {{this.id}}</p>
+          </div>
+          <p> ----------------------------------------------------</p>
+        </div>
+      </div>
+    {{/each}}
+  </div>
 </div>
-
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/index.js"></script>
