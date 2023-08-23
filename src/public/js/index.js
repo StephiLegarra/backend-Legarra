@@ -17,7 +17,7 @@ document
   .getElementById("miFormularioDos")
   .addEventListener("submit", (event) => {
     event.preventDefault();
-
+    
     const id = document.getElementById("id").value;
 
     console.log(id);

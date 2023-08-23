@@ -1,17 +1,15 @@
 import { Router } from "express";
-import ProductManager from "../ProductManager.js";
+import ProductManager from "../dao/ProductManager.js";
 
 const productsRouter = Router();
+const products = new ProductManager();
 
 // OBTENER PRODUCTOS
 productsRouter.get("/", async (request, response) => {
   const { limit } = request.query;
-
+  
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
-    const getProducts = await products.getProductsGeneral();
+    const getProducts = await products.getProducts();
 
     if (limit > 0 && limit < getProducts.length) {
       const limitProducts = getProducts.slice(0, limit);
@@ -29,9 +27,6 @@ productsRouter.get("/:pid", async (request, response) => {
   const { pid } = request.params;
 
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
     const getProducts = await products.getProductsById(parseInt(pid));
 
     if (!getProducts) {
@@ -48,9 +43,6 @@ productsRouter.post("/", async (request, response) => {
   const { title, description, price, thumbnail, code, stock, category } =
     request.body;
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
     if (
       !title ||
       !description ||
@@ -102,9 +94,6 @@ productsRouter.put("/:pid", async (request, response) => {
     request.body;
 
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
     const getProducts = await products.getProductsById(parseInt(pid));
     if (!getProducts) {
       return response.status(404).send({
@@ -161,9 +150,6 @@ productsRouter.delete("/:pid", async (request, response) => {
   const { pid } = request.params;
 
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
     const getProducts = await products.getProductsById(parseInt(pid));
     if (!getProducts) {
       return response.status(404).send({

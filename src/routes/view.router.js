@@ -1,17 +1,13 @@
 import express from "express";
-import ProductManager from "../ProductManager.js";
+import ProductManager from "../dao/ProductManager.js";
+
 const router = express.Router();
+const products = new ProductManager();
 
 router.get("/", async (request, response) => {
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
-    const getProducts = await products.getProductsGeneral();
-    response.render("home", {
-      title: "Listado de productos - handlebars",
-      products: getProducts,
-    });
+    const getProducts = await products.getProducts();
+    response.render("home", { getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
@@ -19,14 +15,8 @@ router.get("/", async (request, response) => {
 
 router.get("/realtimeproducts", async (request, response) => {
   try {
-    const products = new ProductManager();
-    await products.initialize();
-
-    const getProducts = await products.getProductsGeneral();
-    response.render("realtimeproducts", {
-      title: "Listado de productos - handlebars",
-      products: getProducts,
-    });
+    const getProducts = await products.getProducts();
+    response.render("realtimeproducts", { getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }

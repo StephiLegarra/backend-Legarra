@@ -5,7 +5,8 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/view.router.js";
 import { Server } from "socket.io";
-import ProductManager from "./ProductManager.js";
+import ProductManager from "./dao/ProductManager.js";
+import mongoose from "mongoose";
 
 const app = express();
 const puerto = 8080;
@@ -28,6 +29,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/", viewsRouter);
+
+// CONECT DB
+mongoose.connect(
+  "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority"
+);
 
 // APERTURA
 socketServer.on("connection", (socket) => {
