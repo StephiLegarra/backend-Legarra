@@ -9,14 +9,14 @@ productsRouter.get("/", async (request, response) => {
   const { limit } = request.query;
   
   try {
-    const getProducts = await products.getProducts();
+    const getProducts = await products.getProducts(limit);
 
     if (limit > 0 && limit < getProducts.length) {
       const limitProducts = getProducts.slice(0, limit);
       return response.status(200).send(limitProducts);
     }
 
-    response.status(200).send(getProducts);
+    response.status(200).send({getProducts});
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
@@ -32,7 +32,7 @@ productsRouter.get("/:pid", async (request, response) => {
     if (!getProducts) {
       return response.status(404).send({ error: "producto no encontrado" });
     }
-    response.status(200).send(getProducts);
+    response.status(200).send({getProducts});
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
@@ -80,7 +80,7 @@ productsRouter.post("/", async (request, response) => {
     await products.addProduct(newProduct);
     response
       .status(200)
-      .send({ newProduct, message: "el producto ha sido agregado" });
+      .send({ newProduct, message: "el producto ha sido agregado correctamente" });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }

@@ -1,28 +1,8 @@
 <div class="container">
   <h2>TODOS NUESTROS PRODUCTOS</h2>
   <br/>
-  <div class="row">
-
-    {{#each products}}
-      <div class="col-md-6">
-        <div class="card border-black mb-5">
-          <h3 class="text-light bg-black">{{this.title}} </h3>
-          <img
-            src="{{this.thumbnail}}"
-            class="img-fluid"
-            alt="imagen del producto"
-          />
-          <div class="card-body text-center">
-            <h4 class="text-danger">Precio: ${{this.price}}</h4>
-            <p>ID: {{this.id}}</p>
-          </div>
-          <p> ----------------------------------------------------</p>
-        </div>
-      </div>
-    {{/each}}
-  </div>
+ <div id="content" class="row"></div>
 </div>
-
 
 <div class="container">
   <div class="row mb-3">
@@ -30,25 +10,33 @@
        <p style="color: white;"> ----------------------------------------------------</p>
       <h2>NUEVO PRODUCTO</h2>
        <p style="color: white;"> ----------------------------------------------------</p>
-      <form  id="miFormulario" onsubmit>
+      <form  id="miFormularioPost" onsubmit>
          <div class="mb-3">
-        <label for="title" class="form-label">Title:</label>
-        <input type="text" class="form-control" id="title" name="title" required />
-        <br /></div>
+            <label for="title" class="form-label">Title:</label>
+            <input type="text" class="form-control" id="title" name="title" required />
+         <br /></div>
          <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Imagen</label>
-                <input type="text" class="form-control" id="thumbnail">
-          <br>  </div>
+            <label for="exampleInputEmail1" class="form-label">Imagen:</label>
+            <input type="text" class="form-control" id="thumbnail" name="thumbnail">
+          <br/> </div>
         <div class="mb-3">
-        <label for="Description" class="form-label">Description:</label>
-        <input type="text" class="form-control" id="description" name="description" required />
+              <label for="Description" class="form-label">Description:</label>
+              <input type="text" class="form-control" id="description" name="description" required />
         <br /></div>
-         <div class="mb-3">
-        <label for="price" class="form-label">price:</label>
-        <input type="text" class="form-control" id="price" name="price" required />
+        <div class="mb-3">
+              <label for="price" class="form-label">price:</label>
+              <input type="text" class="form-control" id="price" name="price" required />
         <br /></div>
-        <button type="submit" class="btn btn-light">Enviar</button>
-      </form>
+        <div class="mb-3">
+              <label for="category" class="form-label">category:</label>
+              <input type="text" class="form-control" id="category" name="category" required />
+        <br /></div>
+        <div class="mb-3">
+              <label for="stock" class="form-label">stock:</label>
+              <input type="text" class="form-control" id="stock" name="stock" required />
+        <br /></div>
+        <button  class="btn btn-light" id="btnAgregarProducto">Enviar</button>
+      </form> 
     </div>
   <p style="color: white;"> ----------------------------------------------------</p>
 
@@ -56,11 +44,11 @@
     <div>
       <h2>ELIMINAR PRODUCTO</h2>
        <p style="color: white;"> ----------------------------------------------------</p>
-      <form id="miFormularioDos" onsubmit>
+      <form id="miFormularioDelete" onsubmit>
         <label for="id">id:</label>
         <input type="text" id="id" name="id" required />
         <br /> <br>
-        <button type="submit" class="btn btn-light" onclick="deleteProduct()">Enviar</button>
+        <button type="submit" class="btn btn-light" onclick="deleteProduct()" id="btnEliminarProducto">Enviar</button>
       </form>
     </div>
 
@@ -69,7 +57,7 @@
 </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
+<script src="/js/realTimeProducts.js"></script>
 
 
 

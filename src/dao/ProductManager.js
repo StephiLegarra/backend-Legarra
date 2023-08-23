@@ -27,7 +27,7 @@ class ProductManager {
         !stock ||
         !category
       ) {
-        return console.log("faltan datos");
+        return console.log("Debes completar todos los datos!");
       }
 
       product.id = ProductManager.id++;

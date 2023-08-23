@@ -22,10 +22,8 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 app.use(express.static(__dirname + "/public"));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/", viewsRouter);
@@ -36,8 +34,30 @@ mongoose.connect(
 );
 
 // APERTURA
-socketServer.on("connection", (socket) => {
+socketServer.on("connection", async (socket) => {
   console.log("Conexión establecida");
+
+  // PRODUCTOS REAL TIME
+  const productManager = new ProductManager();
+  const products = await productManager.getProducts();
+
+  socket.emit("realTimeProducts", products);
+
+  socket.on("nuevoProducto", async (data) => {
+    const newProd = {
+      title: data.title,
+      description: data.description,
+      code: data.code,
+      price: data.price,
+      status: true,
+      stock: data.stock,
+      category: data.category,
+      thumbnail: data.thumbnail,
+    };
+    const productManager = new ProductManager();
+    await productManager.addProduct(newProd);
+    socket.emit("realTimeProducts", newProd);
+  });
 
   // CREAR PRODUCTO
   socket.on("mensajeKey", (data) => {
@@ -50,6 +70,14 @@ socketServer.on("connection", (socket) => {
     socket.emit("msgServer", "Nuevo producto agregado");
     socket.emit("msgServer", data);
   });
+
+  /*   socket.on("eliminarProducto", (data) => {
+    products.deleteProduct(parseInt(data));
+    const products = products.getProducts();
+    socket.emit("realTimeProducts", products);
+  }); */
+
+  /*
 
   //ELIMINAR PRODUCTO POR ID
   socket.on("mensajeID", (data) => {
@@ -66,4 +94,5 @@ socketServer.on("connection", (socket) => {
     "mensajeKey",
     "Hay un nuevo producto en la base de datos"
   );
+  */
 });
