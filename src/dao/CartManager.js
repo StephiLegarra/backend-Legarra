@@ -1,6 +1,7 @@
 //Stephanie Legarra - Curso Backend - Comisión: 55305
 
 import { cartModel } from "./models/cart.model.js";
+import { productModel } from "./models/product.model.js";
 
 class CartManager {
   constructor() {
@@ -11,8 +12,8 @@ class CartManager {
 
   async newCart() {
     try {
-      const newCart = { id: CartManager.id++, carts: [] };
-      this.carts.push(newCart);
+      // const newCart = { id: CartManager.id++, carts: [] };
+      // this.carts.push(newCart);
       await cartModel.create({ id: CartManager.id++ }, { products: [] });
       return console.log("El carrito ha sido creado");
     } catch (err) {
@@ -22,11 +23,16 @@ class CartManager {
 
   async getCart(id) {
     try {
-      const cart = await cartModel.findOne({ id: id }).lean();
+      /*
+     const cart = await cartModel.findOne({ id: id }).lean();
       if (!cart) {
-        return console.log("no se encontró el producto en el carrito");
+        return console.log("no se encontró el producto en el carrito");*/
+      if (this.getCartById(id)) {
+        return (await cartModel.findOne({ id: id }).lean()) || null;
+      } else {
+        console.log("no se encontró este carrito");
+        return null;
       }
-      return cart;
     } catch (err) {
       console.log(err.message);
     }
@@ -40,33 +46,51 @@ class CartManager {
     }
   }
 
-  async addProductToCart(cid, pid) {
+  async getCartById(id) {
     try {
-      const cart = this.carts.find((item) => item.id === cid);
-
-      console.log(cart);
-
-      const product = cart.carts.find((item) => item.product === pid);
-
-      if (!product) {
-        cart.carts.push({ product: pid, quantity: 1 });
-      } else {
-        product.quantity += 1;
+      const cart = await cartModel.findOne({ id: id }).lean();
+      if (!cart) {
+        return console.log("no se encontró el carrito");
       }
-
-      await cartModel.updateOne({ id: cid }, { products: cart.products });
+      return cart;
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  async getCartById(id) {
+  async addProductToCart(cid, pid) {
     try {
-      const cart = await this.carts.find((item) => item.id === id);
-      if (!cart) {
-        return console.log("no se encontró el producto");
+      if (this.getCartById(id)) {
+        const cart = await this.getCart(cid);
+        const product = cart.products.find((item) => item.product === pid);
+
+        if (product) {
+          product.quantity += 1;
+        } else {
+          cart.products.push({ product: pid, quantity: 1 });
+        }
       }
-      return cart;
+      /*   const cart = this.carts.find((item) => item.id === cid); 
+     
+      console.log(cart);
+
+     const product = cart.carts.find((item) => item.product === pid); 
+    
+      if (!product) {
+        cart.carts.push({ product: pid, quantity: 1 }); 
+
+      } else {
+        product.quantity += 1;
+      }
+*/
+      /*
+ 
+  const product = await productModel.findOne({id:id}).lean();
+*/
+
+      await cartModel.updateOne({ id: cid }, { products: cart.products });
+      console.log("El producto fue agregado al carrito!");
+      return true;
     } catch (err) {
       console.log(err.message);
     }

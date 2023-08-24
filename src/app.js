@@ -6,6 +6,7 @@ import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/view.router.js";
 import { Server } from "socket.io";
 import ProductManager from "./dao/ProductManager.js";
+import ChatManager from "./dao/ChatManager.js";
 import mongoose from "mongoose";
 
 const app = express();
@@ -73,4 +74,11 @@ socketServer.on("connection", async (socket) => {
     "mensajeKey",
     "Hay un nuevo producto en la base de datos"
   );
+
+  //CHAT
+  socket.on("mensajeChat", async (data) => {
+    ChatManager.createMessage(data);
+    const messages = await ChatManager.getMessages();
+    socket.emit("messages", messages);
+  });
 });
