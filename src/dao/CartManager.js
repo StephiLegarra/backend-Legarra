@@ -12,8 +12,6 @@ class CartManager {
 
   async newCart() {
     try {
-      // const newCart = { id: CartManager.id++, carts: [] };
-      // this.carts.push(newCart);
       await cartModel.create({ id: CartManager.id++ }, { products: [] });
       return console.log("El carrito ha sido creado");
     } catch (err) {
@@ -23,10 +21,6 @@ class CartManager {
 
   async getCart(id) {
     try {
-      /*
-     const cart = await cartModel.findOne({ id: id }).lean();
-      if (!cart) {
-        return console.log("no se encontró el producto en el carrito");*/
       if (this.getCartById(id)) {
         return (await cartModel.findOne({ id: id }).lean()) || null;
       } else {
@@ -60,34 +54,17 @@ class CartManager {
 
   async addProductToCart(cid, pid) {
     try {
-      if (this.getCartById(id)) {
+      if (this.getCartById(parseInt(cid))) {
         const cart = await this.getCart(cid);
+        console.log(cart);
         const product = cart.products.find((item) => item.product === pid);
-
-        if (product) {
-          product.quantity += 1;
-        } else {
+        // const product = await productModel.findOne({id:pid}).lean()
+        if (!product) {
           cart.products.push({ product: pid, quantity: 1 });
+        } else {
+          product.quantity += 1;
         }
       }
-      /*   const cart = this.carts.find((item) => item.id === cid); 
-     
-      console.log(cart);
-
-     const product = cart.carts.find((item) => item.product === pid); 
-    
-      if (!product) {
-        cart.carts.push({ product: pid, quantity: 1 }); 
-
-      } else {
-        product.quantity += 1;
-      }
-*/
-      /*
- 
-  const product = await productModel.findOne({id:id}).lean();
-*/
-
       await cartModel.updateOne({ id: cid }, { products: cart.products });
       console.log("El producto fue agregado al carrito!");
       return true;

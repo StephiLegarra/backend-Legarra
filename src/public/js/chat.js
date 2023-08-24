@@ -1,6 +1,6 @@
 const socket = io();
-const messages = document.getElementById("messages");
 
+const messages = document.getElementById("messages");
 socket.on("messages", (data) => {
   messages.innerHTML = ``;
   let salida = ``;
