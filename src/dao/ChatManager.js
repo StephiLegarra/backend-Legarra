@@ -2,11 +2,19 @@ import { messageModel } from "./models/message.model.js";
 
 class ChatManager {
   async getMessages() {
-    return await messageModel.find().lean();
+    try {
+      return await messageModel.find().lean();
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   async createMessage(message) {
-    return await messageModel.create(message);
+    try {
+      return await messageModel.create(message);
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 }
 

@@ -76,9 +76,14 @@ socketServer.on("connection", async (socket) => {
   );
 
   //CHAT
+  const chat = new ChatManager();
+
   socket.on("mensajeChat", async (data) => {
-    ChatManager.createMessage(data);
-    const messages = await ChatManager.getMessages();
-    socket.emit("messages", messages);
+    chat.createMessage(data);
+    const messages = await chat.getMessages();
+    const updateInterval = 2000;
+    setInterval(() => {
+      socket.emit("messages", messages);
+    }, updateInterval);
   });
 });
