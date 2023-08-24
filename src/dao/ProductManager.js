@@ -13,10 +13,6 @@ class ProductManager {
     try {
       const { title, description, price, thumbnail, code, stock, category } =
         product;
-      const codeExists = this.products.some((item) => item.code === code);
-      if (codeExists) {
-        return console.log("el código ya existe");
-      }
 
       if (
         !title ||
@@ -30,12 +26,22 @@ class ProductManager {
         return console.log("Debes completar todos los datos!");
       }
 
-      product.id = ProductManager.id++;
-      await productModel.create(product);
-      console.log("El producto fue agregado correctamente");
+      if (await this.validateCode(product.code)) {
+        console.log("El código ingresado ya existe");
+        return false;
+      } else {
+        product.id = ProductManager.id++;
+        await productModel.create(product);
+        console.log("El producto fue agregado correctamente");
+        return true;
+      }
     } catch (err) {
       console.log(err.message);
     }
+  }
+
+  async validateCode(code) {
+    return (await productModel.findOne({ code: code })) || false;
   }
 
   async getProducts(limit) {
@@ -48,11 +54,13 @@ class ProductManager {
     }
   }
 
-  async deleteProduct(id) {
+  async getProductsById(id) {
     try {
-      const readParse = await this.getProducts();
-      const deleteProduct = readParse.filter((item) => item.id !== id);
-      await productModel.deleteOne({ id: id }, deleteProduct);
+      const product = await productModel.findOne({ id: id }).lean();
+      if (!product) {
+        return console.log("no se encontró el producto");
+      }
+      return product;
     } catch (err) {
       console.log(err.message);
     }
@@ -60,28 +68,29 @@ class ProductManager {
 
   async updateProduct(id, product) {
     try {
-      const index = this.products.findIndex((item) => item.id === id);
-      if (index === -1) {
-        return console.log("no se encontró el producto");
+      if (await this.getProductsById(id)) {
+        await productModel.updateOne({ id: id }, product);
+        console.log("El producto fue actualizado correctamente");
+        return true;
+      } else {
+        console.log("no se encontró el producto");
+        return false;
       }
-      this.products[index] = product;
-      product.id = id;
-      await productModel.updateOne({ id: id }, product);
-      console.log("El producto fue actualizado correctamente");
-
-      return product;
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  async getProductsById(id) {
+  async deleteProduct(id) {
     try {
-      const product = await this.products.find((item) => item.id === id);
-      if (!product) {
-        return console.log("no se encontró el producto");
+      if (await this.getProductsById(id)) {
+        await productModel.deleteOne({ id: id });
+        console.log("El producto fue eliminado correctamente");
+        return true;
+      } else {
+        console.log("no se encontró el producto");
+        return false;
       }
-      return product;
     } catch (err) {
       console.log(err.message);
     }

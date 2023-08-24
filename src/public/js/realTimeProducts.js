@@ -47,31 +47,29 @@ btnAgregarProducto.addEventListener("click", async (event) => {
       category: category,
       stock: stock,
     };
-    socket.emit("mensajeKey", formProduct);
+    formProduct.status = true;
+    socket.emit("addProduct", formProduct);
   } catch (error) {
     console.log("error.message");
-  } finally {
-    btnAgregarProducto.reset();
   }
 });
+
 socket.on("mensajeKey", (data) => {
-  console.log("Se agrego un nuevo producto");
+  console.log("Se agrego un nuevo producto:" + data);
 });
 
 // DELETE PRODUCT
 const btnEliminarProducto = document.getElementById("btnEliminarProducto");
 btnEliminarProducto.addEventListener("click", async (event) => {
+  event.preventDefault();
   try {
     const id = parseInt(document.getElementById("id").value);
     socket.emit("mensajeID", id);
   } catch (error) {
     console.log(error.message);
-  } finally {
-    document.getElementById("id").value == "";
   }
 });
 
-socket;
 socket.on("msgServer", (data) => {
   console.log(data);
 });

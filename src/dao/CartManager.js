@@ -1,7 +1,5 @@
-// 1 PRE ENTREGA Stephanie Legarra - Curso Backend - Comisión: 55305
+//Stephanie Legarra - Curso Backend - Comisión: 55305
 
-// FILE SYSTEM
-import fs from "fs/promises";
 import { cartModel } from "./models/cart.model.js";
 
 class CartManager {
@@ -14,9 +12,8 @@ class CartManager {
   async newCart() {
     try {
       const newCart = { id: CartManager.id++, carts: [] };
-
       this.carts.push(newCart);
-      await cartModel.create({ products: [] });
+      await cartModel.create({ id: CartManager.id++ }, { products: [] });
       return console.log("El carrito ha sido creado");
     } catch (err) {
       console.log(err.message);

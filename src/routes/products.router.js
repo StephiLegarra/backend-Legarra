@@ -7,7 +7,7 @@ const products = new ProductManager();
 // OBTENER PRODUCTOS
 productsRouter.get("/", async (request, response) => {
   const { limit } = request.query;
-  
+
   try {
     const getProducts = await products.getProducts(limit);
 
@@ -16,7 +16,7 @@ productsRouter.get("/", async (request, response) => {
       return response.status(200).send(limitProducts);
     }
 
-    response.status(200).send({getProducts});
+    response.status(200).send({ getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
@@ -32,7 +32,7 @@ productsRouter.get("/:pid", async (request, response) => {
     if (!getProducts) {
       return response.status(404).send({ error: "producto no encontrado" });
     }
-    response.status(200).send({getProducts});
+    response.status(200).send({ getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
@@ -67,6 +67,15 @@ productsRouter.post("/", async (request, response) => {
       return false;
     }
 
+    const codeProd = await products.validateCode(code);
+    if (codeProd) {
+      response.status(400).send({
+        status: "error",
+        message: "Error! el código ingresado ya existe!",
+      });
+      return false;
+    }
+
     const newProduct = {
       title,
       description,
@@ -78,9 +87,10 @@ productsRouter.post("/", async (request, response) => {
     };
     newProduct.status = true;
     await products.addProduct(newProduct);
-    response
-      .status(200)
-      .send({ newProduct, message: "el producto ha sido agregado correctamente" });
+    response.status(200).send({
+      newProduct,
+      message: "el producto ha sido agregado correctamente",
+    });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }

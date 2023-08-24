@@ -43,46 +43,25 @@ socketServer.on("connection", async (socket) => {
 
   socket.emit("realTimeProducts", products);
 
-  socket.on("nuevoProducto", async (data) => {
-    const newProd = {
-      title: data.title,
-      description: data.description,
-      code: data.code,
-      price: data.price,
-      status: true,
-      stock: data.stock,
-      category: data.category,
-      thumbnail: data.thumbnail,
-    };
-    const productManager = new ProductManager();
-    await productManager.addProduct(newProd);
-    socket.emit("realTimeProducts", newProd);
-  });
-
   // CREAR PRODUCTO
-  socket.on("mensajeKey", (data) => {
-    const productos = new ProductManager();
+  socket.on("addProduct", async (data) => {
+    try {
+      const productos = new ProductManager();
+      console.log("Se agrego el producto");
+      console.log(data);
 
-    console.log("Se agrego el producto");
-    console.log(data);
-
-    productos.addProduct(data);
-    socket.emit("msgServer", "Nuevo producto agregado");
-    socket.emit("msgServer", data);
+      await productos.addProduct(data);
+      socket.emit("msgServer", "Nuevo producto agregado");
+      socket.emit("msgServer", data);
+    } catch (err) {
+      socket.emit("error", { error: err.message });
+    }
   });
-
-  /*   socket.on("eliminarProducto", (data) => {
-    products.deleteProduct(parseInt(data));
-    const products = products.getProducts();
-    socket.emit("realTimeProducts", products);
-  }); */
-
-  /*
 
   //ELIMINAR PRODUCTO POR ID
   socket.on("mensajeID", (data) => {
     const productos = new ProductManager();
-    console.log("Se envio ID");
+    console.log("Se envio el ID a eliminar");
     console.log(data);
     let ID = parseInt(data);
 
@@ -94,5 +73,4 @@ socketServer.on("connection", async (socket) => {
     "mensajeKey",
     "Hay un nuevo producto en la base de datos"
   );
-  */
 });
