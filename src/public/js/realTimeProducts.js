@@ -28,6 +28,37 @@ socket.on("realTimeProducts", (data) => {
 });
 
 // ADD PRODUCT
+
+const btnAgregarProducto = document.getElementById("btnAgregarProducto");
+//btnAgregarProducto.onclick = agregarProducto;
+btnAgregarProducto.addEventListener("click", async (event) => {
+  event.preventDefault();
+  try {
+    const agregarProducto = () => {
+      const title = document.getElementById("title").value;
+      const thumbnail = document.getElementById("thumbnail").value;
+      const description = document.getElementById("description").value;
+      const price = parseInt(document.getElementById("price").value);
+      const code = document.getElementById("code").value;
+      const stock = parseInt(document.getElementById("stock").value);
+      const product = {
+        title: title,
+        thumbnail: thumbnail,
+        price: price,
+        description: description,
+        code: code,
+        category: category,
+        stock: stock,
+      };
+    };
+    formProduct.status = true;
+    socket.emit("nuevoProducto", product);
+  } catch (error) {
+    console.log("error.message");
+  }
+});
+
+/*
 const btnAgregarProducto = document.getElementById("btnAgregarProducto");
 btnAgregarProducto.addEventListener("click", async (event) => {
   event.preventDefault();
@@ -61,7 +92,7 @@ socket.on("msgServer", (data) => {
 socket.on("mensajeKey", (data) => {
   console.log("Se agrego un nuevo producto:" + data);
 });
-
+*/
 // DELETE PRODUCT
 const btnEliminarProducto = document.getElementById("btnEliminarProducto");
 btnEliminarProducto.addEventListener("click", async (event) => {

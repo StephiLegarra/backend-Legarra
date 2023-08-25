@@ -45,7 +45,22 @@ socketServer.on("connection", async (socket) => {
   socket.emit("realTimeProducts", products);
 
   // CREAR PRODUCTO
-  socket.on("mensajeAdd", async (data) => {
+  socket.on("nuevoProducto", async (data) => {
+    const product = {
+      title: data.title,
+      thumbnail: data.thumbnail,
+      price: data.price,
+      description: data.description,
+      code: data.code,
+      category: data.category,
+      stock: data.stock,
+      status: "",
+    };
+    productManager.addProduct(product);
+    const products = productManager.getProducts();
+    socket.emit("realTimeProducts", products);
+  });
+  /* socket.on("nuevoProducto", async (data) => {
     try {
       const productos = new ProductManager();
       console.log("Se agrego el producto");
@@ -57,7 +72,7 @@ socketServer.on("connection", async (socket) => {
     } catch (err) {
       socket.emit("error", { error: err.message });
     }
-  });
+  });*/
 
   //ELIMINAR PRODUCTO POR ID
   socket.on("mensajeID", async (data) => {

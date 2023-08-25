@@ -54,7 +54,23 @@ class CartManager {
 
   async addProductToCart(cid, pid) {
     try {
-      if (this.getCartById(parseInt(cid))) {
+      const cart = await cartModel.findOne({ id: cid });
+      const exist = await cart.products.find((item) => item.product === pid);
+
+      if (!exist) {
+        const productAdd = { id: pid, quantity: 1 };
+        await cartModel.updateOne(
+          { id: cid },
+          { $push: { products: productAdd } }
+        );
+      } else {
+        await cartModel.updateOne(
+          { id: cid, "products.id": pid },
+          { $inc: { "products.$.quantity": 1 } }
+        );
+      }
+      return "added";
+      /*if (this.getCartById(parseInt(cid))) {
         const cart = await this.getCart(cid);
         console.log(cart);
         const product = cart.products.find((item) => item.product === pid);
@@ -68,6 +84,7 @@ class CartManager {
       await cartModel.updateOne({ id: cid }, { products: cart.products });
       console.log("El producto fue agregado al carrito!");
       return true;
+      */
     } catch (err) {
       console.log(err.message);
     }
