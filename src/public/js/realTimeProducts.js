@@ -28,12 +28,12 @@ socket.on("realTimeProducts", (data) => {
 });
 
 // ADD PRODUCT
-const btnAgregarProducto = document.getElementById("miFormularioPost");
+const btnAgregarProducto = document.getElementById("btnAgregarProducto");
 btnAgregarProducto.addEventListener("click", async (event) => {
   event.preventDefault();
   try {
     const title = document.getElementById("title").value;
-    const thumbnail = document.getElementById("thumbnail").value.split(" ");
+    const thumbnail = document.getElementById("thumbnail").value;
     const description = document.getElementById("description").value;
     const price = parseInt(document.getElementById("price").value);
     const code = document.getElementById("code").value;
@@ -48,10 +48,14 @@ btnAgregarProducto.addEventListener("click", async (event) => {
       stock: stock,
     };
     formProduct.status = true;
-    socket.emit("addProduct", formProduct);
+    socket.emit("mensajeAdd", formProduct);
   } catch (error) {
     console.log("error.message");
   }
+});
+
+socket.on("msgServer", (data) => {
+  console.log(data);
 });
 
 socket.on("mensajeKey", (data) => {

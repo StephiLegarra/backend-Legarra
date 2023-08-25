@@ -45,7 +45,7 @@ socketServer.on("connection", async (socket) => {
   socket.emit("realTimeProducts", products);
 
   // CREAR PRODUCTO
-  socket.on("addProduct", async (data) => {
+  socket.on("mensajeAdd", async (data) => {
     try {
       const productos = new ProductManager();
       console.log("Se agrego el producto");
@@ -60,14 +60,18 @@ socketServer.on("connection", async (socket) => {
   });
 
   //ELIMINAR PRODUCTO POR ID
-  socket.on("mensajeID", (data) => {
-    const productos = new ProductManager();
-    console.log("Se envio el ID a eliminar");
-    console.log(data);
-    let ID = parseInt(data);
+  socket.on("mensajeID", async (data) => {
+    try {
+      const productos = new ProductManager();
+      console.log("Se envio el ID a eliminar");
+      console.log(data);
+      let ID = parseInt(data);
 
-    productos.deleteProduct(ID);
-    socket.emit("msgServer", "Producto eliminado");
+      await productos.deleteProduct(ID);
+      socket.emit("msgServer", "Producto eliminado");
+    } catch (err) {
+      socket.emit("error", { error: err.message });
+    }
   });
 
   socket.broadcast.emit(
