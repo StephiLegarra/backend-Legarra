@@ -6,15 +6,15 @@ const products = new ProductManager();
 
 // OBTENER PRODUCTOS
 productsRouter.get("/", async (request, response) => {
-  const { limit } = request.query;
+  // const { limit } = request.query;
 
   try {
-    const getProducts = await products.getProducts(limit);
+    const getProducts = await products.getProducts(request.query);
 
-    if (limit > 0 && limit < getProducts.length) {
+    /*   if (limit > 0 && limit < getProducts.length) {
       const limitProducts = getProducts.slice(0, limit);
       return response.status(200).send(limitProducts);
-    }
+    } */
 
     response.status(200).send({ getProducts });
   } catch (error) {

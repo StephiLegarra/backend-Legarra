@@ -10,8 +10,26 @@ class CartManager {
 
   static id = 1;
 
+  // CREAR CARRITO
   async newCart() {
     try {
+      /*    const carts = await cartModel.find();
+      this.carts = carts;
+
+      if (this.carts.length !== 0) {
+        const max = Math.max(...this.carts.map((item) => item.id)) + 1;
+
+        CartManager.id = max;
+      }
+
+      const newCart = {
+        id: CartManager.id++,
+        products: [],
+      };
+
+      await cartModel.create(newCart);
+      return newCart; */
+
       await cartModel.create({ id: CartManager.id++ }, { products: [] });
       return console.log("El carrito ha sido creado");
     } catch (err) {
@@ -40,6 +58,7 @@ class CartManager {
     }
   }
 
+  // BUSCAR CARRITO POR ID
   async getCartById(id) {
     try {
       const cart = await cartModel.findOne({ id: id }).lean();
@@ -52,10 +71,11 @@ class CartManager {
     }
   }
 
+  // AGREGAR UN PRODUCTO AL CARRITO
   async addProductToCart(cid, pid) {
     try {
       const cart = await cartModel.findOne({ id: cid });
-      const exist = await cart.products.find((item) => item.product === pid);
+      const exist = await cart.products.find((item) => item.id === pid);
 
       if (!exist) {
         const productAdd = { id: pid, quantity: 1 };
@@ -63,28 +83,71 @@ class CartManager {
           { id: cid },
           { $push: { products: productAdd } }
         );
+        console.log("El producto ha sido agregado al carrito");
       } else {
         await cartModel.updateOne(
           { id: cid, "products.id": pid },
           { $inc: { "products.$.quantity": 1 } }
         );
+        console.log("Se agrego una unidad más del producto al carrito");
       }
-      return "added";
-      /*if (this.getCartById(parseInt(cid))) {
-        const cart = await this.getCart(cid);
-        console.log(cart);
-        const product = cart.products.find((item) => item.product === pid);
-        // const product = await productModel.findOne({id:pid}).lean()
-        if (!product) {
-          cart.products.push({ product: pid, quantity: 1 });
-        } else {
-          product.quantity += 1;
-        }
-      }
-      await cartModel.updateOne({ id: cid }, { products: cart.products });
-      console.log("El producto fue agregado al carrito!");
       return true;
-      */
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  // ELIMINAR UN PRODUCTO DEL CARRITO
+  async deleteProductFromCart(cid, pid) {
+    try {
+      const cart = await cartModel.findOne({ id: cid });
+      const exist = cart.products.filter((item) => item.id !== pid);
+
+      if (exist) {
+        await cartModel.updateOne({ id: cid }, { products: exist });
+        console.log("El producto ha sido eliminado!");
+        return true;
+      } else {
+        console.log("El producto en el carrito no ha sido encontrado");
+        return false;
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  // MODIFICAR CANTIDAD DE EJEMPLARES
+  async updateQuantityProductFromCart(cid, pid, quantity) {
+    try {
+      const cart = await cartModel.findOne({ id: cid });
+      const exist = cart.products.find((item) => item.id === pid);
+      exist.quantity = quantity;
+
+      if (exist) {
+        await cartModel.updateOne({ id: cid }, { products: cart.products });
+        console.log("Se actualizo la cantidad de ejemplares del producto");
+      } else {
+        console.log("No ha sigo encontrado el producto en el carrito");
+      }
+      return true;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  // VACIAR CARRITO
+  async emptyCart(cid) {
+    try {
+      const cart = await cartModel.findOne({ id: cid });
+
+      if (cart) {
+        await cartModel.updateOne({ id: cid }, { products: [] });
+        console.log("El carrito ha sido eliminado!");
+        return true;
+      } else {
+        console.log("El carrito no ha sido encontrado");
+        return false;
+      }
     } catch (err) {
       console.log(err.message);
     }

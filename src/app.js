@@ -1,5 +1,8 @@
 import express from "express";
 import handlebars from "express-handlebars";
+import expressHandlebars from "express-handlebars";
+import Handlebars from "handlebars";
+import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import __dirname from "./utils.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -19,7 +22,12 @@ const httpServer = app.listen(puerto, () => {
 // SOCKET SERVER
 const socketServer = new Server(httpServer);
 
-app.engine("handlebars", handlebars.engine());
+app.engine(
+  "handlebars",
+  expressHandlebars.engine({
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
+  })
+);
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 app.use(express.static(__dirname + "/public"));
