@@ -4,20 +4,15 @@ const userCollection = "carts";
 
 const cartSchema = new mongoose.Schema({
   id: Number,
-  products: {
-    type: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId, // ver con id en vez de ObjectId si no funciona je
-          ref: "products",
-        },
-        quantity: {
-          type: Number,
-          default: 0,
-        },
+  products: [
+    {
+      product: {
+        type: String,
+        ref: "products",
       },
-    ],
-  },
+      quantity: Number,
+    },
+  ],
 });
 
 cartSchema.pre("findOne", function () {

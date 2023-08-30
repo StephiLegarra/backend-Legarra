@@ -42,7 +42,7 @@ class CartManager {
       if (this.getCartById(id)) {
         return (await cartModel.findOne({ id: id }).lean()) || null;
       } else {
-        console.log("no se encontró este carrito");
+        console.log("No se encontró el carrito");
         return null;
       }
     } catch (err) {

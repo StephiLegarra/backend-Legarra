@@ -15,7 +15,7 @@ router.get("/", async (request, response) => {
 
 router.get("/realtimeproducts", async (request, response) => {
   try {
-    const getProducts = await products.getProducts();
+    const getProducts = await products.getProducts(request.query);
     response.render("realtimeproducts", { getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
