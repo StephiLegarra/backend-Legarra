@@ -21,6 +21,19 @@ cartsRouter.post("/", async (request, response) => {
   }
 });
 
+//GET CARTS
+cartsRouter.get("/", async (request, response) => {
+  try {
+    const getCarts = await carts.getCarts();
+    response.status(200).send(getCarts);
+  } catch (error) {
+    response.status(500).send({
+      status: "error",
+      message: "Error! No se ha encontrado ningun producto en ningun carrito!",
+    });
+  }
+});
+
 // VER PRODUCTOS DEL CARRITO
 cartsRouter.get("/:cid", async (request, response) => {
   const { cid } = request.params;

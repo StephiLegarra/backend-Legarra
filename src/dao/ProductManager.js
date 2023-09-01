@@ -7,7 +7,7 @@ class ProductManager {
     this.products = [];
   }
 
-  static id = 0;
+  static id = 1;
 
   async addProduct(product) {
     try {
@@ -30,6 +30,13 @@ class ProductManager {
         console.log("El código ingresado ya existe");
         return false;
       } else {
+        const products = await productModel.find();
+        this.products = products;
+
+        if (this.products.length !== 0) {
+          const max = Math.max(...this.products.map((item) => item.id)) + 1;
+          ProductManager.id = max;
+        }
         product.id = ProductManager.id++;
         await productModel.create(product);
         console.log("El producto fue agregado correctamente");

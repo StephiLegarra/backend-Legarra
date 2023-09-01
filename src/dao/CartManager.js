@@ -13,7 +13,7 @@ class CartManager {
   // CREAR CARRITO
   async newCart() {
     try {
-      /*    const carts = await cartModel.find();
+      const carts = await cartModel.find();
       this.carts = carts;
 
       if (this.carts.length !== 0) {
@@ -28,15 +28,14 @@ class CartManager {
       };
 
       await cartModel.create(newCart);
-      return newCart; */
-
-      await cartModel.create({ id: CartManager.id++ }, { products: [] });
-      return console.log("El carrito ha sido creado");
+      console.log("El carrito ha sido creado");
+      return newCart;
     } catch (err) {
       console.log(err.message);
     }
   }
 
+  /*
   async getCart(id) {
     try {
       if (this.getCartById(id)) {
@@ -49,6 +48,7 @@ class CartManager {
       console.log(err.message);
     }
   }
+  */
 
   async getCarts() {
     try {
@@ -75,7 +75,7 @@ class CartManager {
   async addProductToCart(cid, pid) {
     try {
       const cart = await cartModel.findOne({ id: cid });
-      const exist = await cart.products.find((item) => item.id === pid);
+      const exist = cart.products.find((item) => item.id === pid);
 
       if (!exist) {
         const productAdd = { id: pid, quantity: 1 };
