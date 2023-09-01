@@ -7,11 +7,15 @@
       <div class="col-md-6">
         <div class="card border-0 mb-5">
           <h3>{{this.title}} </h3>
-          <img
-            src="{{this.thumbnail}}"
-            class="img-fluid"
-            alt="imagen del producto"
-          />
+          <div class="slides">
+            <a href="/products/{{this.id}}">
+              <img
+                src="{{this.thumbnail}}"
+                alt="imagen del producto"
+                class="img-fluid"
+              />
+            </a>
+          </div>
           <div class="card-body text-center">
             <h4>Precio: ${{this.price}}</h4>
             <h6>{{this.description}}</h6>
