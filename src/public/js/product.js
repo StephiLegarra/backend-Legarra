@@ -2,7 +2,7 @@ const addToCartButton = document.querySelector(".card button#addToCart");
 
 addToCartButton.addEventListener("click", () => {
   const card = document.querySelector(".card");
-  const idx = card.querySelector(".card_id").textContent;
+  const id = card.querySelector(".card_id").textContent;
   console.log(id);
 
   // Deja el carrito 1 predeterminado
