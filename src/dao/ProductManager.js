@@ -44,7 +44,7 @@ class ProductManager {
     return (await productModel.findOne({ code: code })) || false;
   }
 
-  async getProducts(limit) {
+  /* async getProducts(limit) {
     try {
       return (await limit)
         ? productModel.find().limit(limit).lean()
@@ -52,35 +52,49 @@ class ProductManager {
     } catch (err) {
       console.log(err.message);
     }
-  }
+  }* */
 
-  async getProductsQuery(params) {
+  async getProducts(params) {
     try {
       let { limit, page, query, sort } = params;
 
-      !limit && (limit = 10);
-      !page && (page = 1);
-      sort === "asc" && (sort = 1);
-      sort === "des" && (sort = -1);
+      limit = limit ? limit : 10;
+      page = page ? page : 1;
+      query = query || {};
+      sort = sort ? (sort == "asc" ? 1 : -1) : 0;
 
-      const filter = query ? JSON.parse(query) : {}; // {"category": "Peluches"}
-      const queryOptions = { limit: limit, page: page, lean: true };
+      let products = await productModel.paginate(query, {
+        limit: limit,
+        page: page,
+        sort: { price: sort },
+      });
+      let status = products ? "success" : "error";
 
-      if (sort === 1 || sort === -1) {
-        queryOptions.sort = { price: sort };
-      }
+      let prevLink = products.hasPrevPage
+        ? "http://localhost:8080/products?limit=" +
+          limit +
+          "&page=" +
+          products.prevPage
+        : null;
+      let nextLink = products.hasNextPage
+        ? "http://localhost:8080/products?limit=" +
+          limit +
+          "&page=" +
+          products.nextPage
+        : null;
 
-      const products = await productModel.paginate(filter, queryOptions);
-
-      products.isValid = !(page <= 0 || page > products.totalPages);
-      products.prevLink =
-        products.hasPrevPage &&
-        `http://localhost:8080/products?page=${products.prevPage}&limit=${limit}`;
-      products.nextLink =
-        products.hasNextPage &&
-        `http://localhost:8080/products?page=${products.nextPage}&limit=${limit}`;
-
-      products.status = products ? "success" : "error";
+      products = {
+        status: status,
+        payload: products.docs,
+        totalPages: products.totalPages,
+        prevPage: products.prevPage,
+        nextPage: products.nextPage,
+        page: products.page,
+        hasPrevPage: products.hasPrevPage,
+        hasNextPage: products.hasNextPage,
+        prevLink: prevLink,
+        nextLink: nextLink,
+      };
 
       return products;
     } catch (err) {

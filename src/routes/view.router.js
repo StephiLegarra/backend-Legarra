@@ -9,7 +9,7 @@ const carts = new CartManager();
 // HOME
 router.get("/", async (request, response) => {
   try {
-    const getProducts = await products.getProducts();
+    const getProducts = await products.getProducts(request.query);
     response.render("home", { getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
@@ -27,9 +27,9 @@ router.get("/realtimeproducts", async (request, response) => {
 
 //PRODUCTS
 router.get("/products", async (request, response) => {
-  const { limit, page, sort, query } = request.query;
+  // const { limit, page, sort, query } = request.query;
   try {
-    const getProducts = await products.getProducts(limit, page, sort, query);
+    const getProducts = await products.getProducts(request.query);
     response.render("products", { getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
