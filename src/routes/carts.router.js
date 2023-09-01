@@ -4,6 +4,7 @@ import ProductManager from "../dao/ProductManager.js";
 
 const cartsRouter = Router();
 const carts = new CartManager();
+const products = new ProductManager();
 
 // CREAR CARRITO
 cartsRouter.post("/", async (request, response) => {
@@ -77,11 +78,11 @@ cartsRouter.post("/:cid/products/:pid", async (request, response) => {
 
 // ACTUALIZAR EL CARRITO CON UN ARRAY DE PRODUCTOS
 cartsRouter.put("/:cid", async (request, response) => {
-  const { cid } = request.params;
   const { body } = request;
+  const { cid } = request.params;
 
   try {
-    const getCart = await carts.getCartById(parseInt(cid));
+    const getCart = carts.getCartById(parseInt(cid));
 
     if (!getCart) {
       return response
