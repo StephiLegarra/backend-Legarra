@@ -6,15 +6,15 @@ const products = new ProductManager();
 
 // OBTENER PRODUCTOS
 productsRouter.get("/", async (request, response) => {
-  // const { limit } = request.query;
+  const { limit, page, sort, query } = request.query;
 
   try {
-    const getProducts = await products.getProducts(request.query);
-
-    /*   if (limit > 0 && limit < getProducts.length) {
-      const limitProducts = getProducts.slice(0, limit);
-      return response.status(200).send(limitProducts);
-    } */
+    const getProducts = await products.getProductsQuery(
+      limit,
+      page,
+      sort,
+      query
+    );
 
     response.status(200).send({ getProducts });
   } catch (error) {
@@ -23,11 +23,11 @@ productsRouter.get("/", async (request, response) => {
 });
 
 // OBTENER PRODUCTO POR ID
-productsRouter.get("/:pid", async (request, response) => {
-  const { pid } = request.params;
+productsRouter.get("/:id", async (request, response) => {
+  const { id } = request.params;
 
   try {
-    const getProducts = await products.getProductsById(parseInt(pid));
+    const getProducts = await products.getProductsById(parseInt(id));
 
     if (!getProducts) {
       return response.status(404).send({ error: "producto no encontrado" });
@@ -97,14 +97,14 @@ productsRouter.post("/", async (request, response) => {
 });
 
 // ACTUALIZAR PRODUCTOS
-productsRouter.put("/:pid", async (request, response) => {
-  const { pid } = request.params;
+productsRouter.put("/:id", async (request, response) => {
+  const { id } = request.params;
 
   const { title, description, price, thumbnail, code, stock, category } =
     request.body;
 
   try {
-    const getProducts = await products.getProductsById(parseInt(pid));
+    const getProducts = await products.getProductsById(parseInt(id));
     if (!getProducts) {
       return response.status(404).send({
         status: "error",
@@ -146,7 +146,7 @@ productsRouter.put("/:pid", async (request, response) => {
       category,
     };
     actProduct.status = true;
-    await products.updateProduct(parseInt(pid), actProduct);
+    await products.updateProduct(parseInt(id), actProduct);
     response
       .status(200)
       .send({ actProduct, message: "el producto ha sido actualizado" });
@@ -156,11 +156,11 @@ productsRouter.put("/:pid", async (request, response) => {
 });
 
 // ELIMINAR PRODUCTO
-productsRouter.delete("/:pid", async (request, response) => {
-  const { pid } = request.params;
+productsRouter.delete("/:id", async (request, response) => {
+  const { id } = request.params;
 
   try {
-    const getProducts = await products.getProductsById(parseInt(pid));
+    const getProducts = await products.getProductsById(parseInt(id));
     if (!getProducts) {
       return response.status(404).send({
         status: "error",
@@ -168,7 +168,7 @@ productsRouter.delete("/:pid", async (request, response) => {
       });
     }
 
-    products.deleteProduct(parseInt(pid));
+    products.deleteProduct(parseInt(id));
     response
       .status(200)
       .send({ status: "ok", message: "el producto ha sido eliminado" });

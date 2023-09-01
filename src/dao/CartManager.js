@@ -97,20 +97,26 @@ class CartManager {
     }
   }
 
-  // ELIMINAR UN PRODUCTO DEL CARRITO
-  async deleteProductFromCart(cid, pid) {
+  // ACTUALIZAR EL CARRITO CON UN ARRAY DE PRODUCTOS
+  async addArrayProducts(cid, body) {
     try {
-      const cart = await cartModel.findOne({ id: cid });
-      const exist = cart.products.filter((item) => item.id !== pid);
-
-      if (exist) {
-        await cartModel.updateOne({ id: cid }, { products: exist });
-        console.log("El producto ha sido eliminado!");
-        return true;
-      } else {
-        console.log("El producto en el carrito no ha sido encontrado");
-        return false;
+      const array = [];
+      for (const item of body) {
+        const object = await products.getCartById(item.id);
+        array.push({
+          id: item.id,
+          quantity: item.quantity,
+          product: object._id,
+        });
       }
+      console.log(array);
+      const filter = { id: cid };
+      const update = { $set: { products: array } };
+
+      const updateCart = await cartModel.findOneAndUpdate(filter, update, {
+        new: true,
+      });
+      return updateCart;
     } catch (err) {
       console.log(err.message);
     }
@@ -130,6 +136,25 @@ class CartManager {
         console.log("No ha sigo encontrado el producto en el carrito");
       }
       return true;
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  // ELIMINAR UN PRODUCTO DEL CARRITO
+  async deleteProductFromCart(cid, pid) {
+    try {
+      const cart = await cartModel.findOne({ id: cid });
+      const exist = cart.products.filter((item) => item.id !== pid);
+
+      if (exist) {
+        await cartModel.updateOne({ id: cid }, { products: exist });
+        console.log("El producto ha sido eliminado!");
+        return true;
+      } else {
+        console.log("El producto en el carrito no ha sido encontrado");
+        return false;
+      }
     } catch (err) {
       console.log(err.message);
     }

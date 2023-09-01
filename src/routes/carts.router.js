@@ -40,23 +40,6 @@ cartsRouter.get("/:cid", async (request, response) => {
   }
 });
 
-// actualizar el carrito con un arreglo de productos con el formato especificado arriba. ¡?
-cartsRouter.put("/:cid", async (request, response) => {
-  const { cid } = request.params;
-
-  try {
-    const getCart = await carts.getCartById(parseInt(cid));
-    if (!getCart) {
-      return response
-        .status(404)
-        .send({ error: "El id del carrito no ha sido encontrado" });
-    }
-    response.status(200).send(getCart);
-  } catch (error) {
-    response.status(500).send({ error: error.message });
-  }
-});
-
 // AGREGAR PRODUCTOS AL CARRITO
 cartsRouter.post("/:cid/products/:pid", async (request, response) => {
   const { cid, pid } = request.params;
@@ -89,6 +72,36 @@ cartsRouter.post("/:cid/products/:pid", async (request, response) => {
       status: "error",
       message: "Error! No se pudo agregar el producto al carrito!",
     });
+  }
+});
+
+// ACTUALIZAR EL CARRITO CON UN ARRAY DE PRODUCTOS
+cartsRouter.put("/:cid", async (request, response) => {
+  const { cid } = request.params;
+  const { body } = request;
+
+  try {
+    const getCart = await carts.getCartById(parseInt(cid));
+
+    if (!getCart) {
+      return response
+        .status(404)
+        .send({ error: "El id del carrito no ha sido encontrado" });
+    }
+
+    body.forEach(async (item) => {
+      const getProduct = await products.getProductsById(parseInt(item.id));
+      if (!getProduct) {
+        return response
+          .status(404)
+          .send({ error: "El id del producto no ha sido encontrado" });
+      }
+    });
+
+    const newCart = await carts.addArrayProducts(parseInt(cid), body);
+    response.status(200).send(newCart);
+  } catch (error) {
+    response.status(500).send({ error: error.message });
   }
 });
 
