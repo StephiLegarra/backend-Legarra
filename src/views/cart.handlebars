@@ -1,25 +1,25 @@
-<main
-  class="min-w-full bg-[#fdf6f6] flex justify-center items-center mt-[70px] flex-col"
->
-  <div class="w-full flex, justify-start">
-    <h1 class="font-bold">Cart ID: {{id}}</h1>
-  </div>
-  <div>
-    {{#each getProducts}}
-      <div class="flex justify-center gap-4">
-        <p> ID:{{this.id}}</p>
-        <p>Cantidad: {{this.quantity}}</p>
-      </div>
-
-      <div class="flex gap-5 items-center">
-        <div class="w-11">
-          <img src="{{this.product.thumbnail}}" alt="" />
+<main class="min-w-full bg-[#fdf6f6] mt-[70px]">
+  <h1 class="font-bold">Cart ID: {{cart.id}}</h1>
+  <div class="container">
+    {{#each cart.products}}
+      <div class="row mb-4">
+        <div class="col-3">
+          <img
+            src="{{thumbnail}}"
+            alt="imagen del producto"
+            class="img-fluid"
+          />
         </div>
-        <p>Categoría: {{this.product.category}}</p>
-        <p>Nombre: {{this.product.title}}</p>
-        <p>Precio: {{this.product.price}}</p>
+        <div class="col-3">
+          <p>Nombre: {{this.getProducts.title}}</p>
+        </div>
+        <div class="col-3">
+          <p>Precio: {{this.price}}</p>
+        </div>
+        <div class="col-3">
+          <p>Cantidad: {{quantity}}</p>
+        </div>
       </div>
-
     {{/each}}
   </div>
 </main>

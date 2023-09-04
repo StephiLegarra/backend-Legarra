@@ -35,7 +35,6 @@ class CartManager {
     }
   }
 
-  /*
   async getCart(id) {
     try {
       if (this.getCartById(id)) {
@@ -48,7 +47,6 @@ class CartManager {
       console.log(err.message);
     }
   }
-  */
 
   async getCarts() {
     try {

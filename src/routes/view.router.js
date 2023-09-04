@@ -53,11 +53,11 @@ router.get("/carts/:cid", async (request, response) => {
   const { cid } = request.params;
   try {
     const cart = await carts.getCartById(parseInt(cid));
-    console.log(cart);
     if (!cart) {
       return response.status(404).send({ error: "El carrito no existe" });
     }
-    response.render("carts", { cart });
+
+    response.render("cart", { cart });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
