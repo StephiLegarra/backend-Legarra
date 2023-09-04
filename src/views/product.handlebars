@@ -1,27 +1,32 @@
+<link rel="stylesheet" href="../public/css/style.css" />
+
 <div class="container">
   <div class="row">
-      <div class="col-md-6">
-        <div class="card border-0 mb-5">
-          <h3>{{this.title}} </h3>
+    <div class="col-md-12">
+      <div class="d-flex justify-content-center align-items-center">
+        <div
+          class="card border-0 mb-5"
+          style="max-width: 500px; border-radius: 15px;"
+        >
+          <h3>{{getProducts.title}}</h3>
           <div class="slides">
-              <img
-                src="{{this.thumbnail}}"
-                alt="imagen del producto"
-                class="img-fluid"
-              />
-            </a>
+            <img
+              src="{{getProducts.thumbnail}}"
+              alt="imagen del producto"
+              class="img-fluid"
+            />
           </div>
           <div class="card-body text-center">
-            <h4>Precio: ${{this.price}}</h4>
-            <h6>{{this.description}}</h6>
-            <p class="card_id">{{this.id}}</p>
-            <button class="btn btn-secondary btn-block" id="addToCart">Agregar
-              al carrito</button>
-          </div>       
+            <h4>Precio: ${{getProducts.price}}</h4>
+            <h6>{{getProducts.description}}</h6>
+            <p class="card_id"> {{getProducts.id}}</p>
+            <button class="btn btn-secondary btn-block" id="addToCart">
+              Agregar al carrito
+            </button>
+          </div>
         </div>
       </div>
-      </div>
-  </div> 
-
-
+    </div>
+  </div>
+</div>
 <script src="/js/product.js"></script>

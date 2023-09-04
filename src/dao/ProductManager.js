@@ -53,17 +53,16 @@ class ProductManager {
 
   /* async getProducts(limit) {
     try {
-      return (await limit)
-        ? productModel.find().limit(limit).lean()
-        : productModel.find().lean();
+      const getProducts = await productModel.find().lean();
+      return getProducts;
     } catch (err) {
       console.log(err.message);
     }
-  }* */
+  }*/
 
-  async getProducts(params) {
+  async getProducts(obj) {
     try {
-      let { limit, page, query, sort } = params;
+      let { limit, page, query, sort } = obj;
 
       limit = limit ? limit : 10;
       page = page ? page : 1;

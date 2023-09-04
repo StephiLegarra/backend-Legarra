@@ -1,6 +1,7 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
+import { get } from "mongoose";
 
 const router = express.Router();
 const products = new ProductManager();
@@ -27,7 +28,7 @@ router.get("/realtimeproducts", async (request, response) => {
 
 //PRODUCTS
 router.get("/products", async (request, response) => {
-  // const { limit, page, sort, query } = request.query;
+  //const { limit, page, sort, query } = request.query;
   try {
     const getProducts = await products.getProducts(request.query);
     response.render("products", { getProducts });
@@ -41,7 +42,7 @@ router.get("/products/:id", async (request, response) => {
   const { id } = request.params;
   try {
     const getProducts = await products.getProductsById(parseInt(id));
-    response.render("products", { getProducts });
+    response.render("product", { getProducts });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
@@ -51,11 +52,12 @@ router.get("/products/:id", async (request, response) => {
 router.get("/carts/:cid", async (request, response) => {
   const { cid } = request.params;
   try {
-    const getCarts = await carts.getCartById(parseInt(cid));
-    if (!getCarts) {
+    const cart = await carts.getCartById(parseInt(cid));
+    console.log(cart);
+    if (!cart) {
       return response.status(404).send({ error: "El carrito no existe" });
     }
-    response.render("carts", { getCarts });
+    response.render("carts", { cart });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }

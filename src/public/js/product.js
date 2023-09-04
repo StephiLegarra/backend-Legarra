@@ -6,7 +6,7 @@ addToCartButton.addEventListener("click", () => {
   console.log(id);
 
   // Deja el carrito 1 predeterminado
-  fetch(`/api/cart/1/products/${id}`, {
+  fetch(`/api/carts/1/products/${id}`, {
     method: "POST",
   })
     .then((response) => response.json())
