@@ -6,7 +6,7 @@
     {{#each cart.products}}
       <div class="row mb-4">
         <div class="col-2">
-          <p>ID: {{id}}</p>
+          <p>ID: {{this.id}}</p>
         </div>
         <div class="col-3">
           <img
@@ -16,10 +16,10 @@
           />
         </div>
         <div class="col-3">
-          <p>Producto: {{this.products.title}}</p>
+          <p>Producto: {{this.product.title}}</p>
         </div>
         <div class="col-2">
-          <p>Precio: {{this.products.price}}</p>
+          <p>Precio: {{this.product.price}}</p>
         </div>
         <div class="col-2">
           <p>Cantidad: {{this.quantity}}</p>

@@ -1,7 +1,9 @@
 //Stephanie Legarra - Curso Backend - Comisión: 55305
 
 import { cartModel } from "./models/cart.model.js";
-import { productModel } from "./models/product.model.js";
+import ProductManager from "./ProductManager.js";
+
+const PM = new ProductManager();
 
 class CartManager {
   constructor() {
@@ -74,9 +76,13 @@ class CartManager {
     try {
       const cart = await cartModel.findOne({ id: cid });
       const exist = cart.products.find((item) => item.id === pid);
+      const product = await PM.getProductsById(parseInt(pid));
+      console.log("Este es el console log");
+      console.log("HOla" + product);
+      console.log(product);
 
       if (!exist) {
-        const productAdd = { id: pid, quantity: 1 };
+        const productAdd = { product: product._id, quantity: 1, id: pid };
         await cartModel.updateOne(
           { id: cid },
           { $push: { products: productAdd } }
@@ -89,7 +95,7 @@ class CartManager {
         );
         console.log("Se agrego una unidad más del producto al carrito");
       }
-      return true;
+      return product;
     } catch (err) {
       console.log(err.message);
     }

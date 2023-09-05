@@ -1,7 +1,6 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
-import { get } from "mongoose";
 
 const router = express.Router();
 const products = new ProductManager();
