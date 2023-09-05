@@ -1,28 +1,27 @@
 <main class="min-w-full bg-[#fdf6f6] mt-[70px]">
-  <h1 class="font-bold">Cart ID: {{cart.id}}</h1>
+  <h2 class="font-bold">Cart ID: {{cart.id}}</h2>
   <br />
   <br />
   <div class="container">
     {{#each cart.products}}
-      <div class="row mb-4">
-        <div class="col-2">
-          <p>ID: {{this.id}}</p>
-        </div>
+      <div class="row mb-4 border border-light rounded p-3 shadow">
         <div class="col-3">
           <img
             src="{{this.product.thumbnail}}"
             alt="imagen del producto"
             class="img-fluid"
+            style="max-width: 100px; height: auto;"
           />
         </div>
-        <div class="col-3">
-          <p>Producto: {{this.product.title}}</p>
+
+        <div class="col-3 d-flex align-items-center">
+          <h4 class="text-center">Producto: {{this.product.title}}</h4>
         </div>
-        <div class="col-2">
-          <p>Precio: {{this.product.price}}</p>
+        <div class="col-3 d-flex align-items-center">
+          <h4 class="text-center">Precio:${{this.product.price}}</h4>
         </div>
-        <div class="col-2">
-          <p>Cantidad: {{this.quantity}}</p>
+        <div class="col-3 d-flex align-items-center">
+          <h4 class="text-center">Cantidad: {{this.quantity}}</h4>
         </div>
       </div>
     {{/each}}
