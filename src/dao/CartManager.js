@@ -103,7 +103,7 @@ class CartManager {
     try {
       const array = [];
       for (const item of body) {
-        const object = await products.getCartById(item.id);
+        const object = await PM.getProductsById(item.id);
         array.push({
           id: item.id,
           quantity: item.quantity,

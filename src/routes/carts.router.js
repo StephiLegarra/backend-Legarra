@@ -102,7 +102,7 @@ cartsRouter.put("/:cid", async (request, response) => {
         .status(404)
         .send({ error: "El id del carrito no ha sido encontrado" });
     }
-
+    console.log(body);
     body.forEach(async (item) => {
       const getProduct = await products.getProductsById(parseInt(item.id));
       if (!getProduct) {
