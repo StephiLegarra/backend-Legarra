@@ -77,9 +77,6 @@ class CartManager {
       const cart = await cartModel.findOne({ id: cid });
       const exist = cart.products.find((item) => item.id === pid);
       const product = await PM.getProductsById(parseInt(pid));
-      console.log("Este es el console log");
-      console.log("HOla" + product);
-      console.log(product);
 
       if (!exist) {
         const productAdd = { product: product._id, quantity: 1, id: pid };
