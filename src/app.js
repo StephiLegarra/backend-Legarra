@@ -1,5 +1,4 @@
 import express from "express";
-import handlebars from "express-handlebars";
 import expressHandlebars from "express-handlebars";
 import Handlebars from "handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
@@ -7,6 +6,7 @@ import __dirname from "./utils.js";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/view.router.js";
+import sessionsRouter from "./routes/sessions.router.js";
 import { Server } from "socket.io";
 import ProductManager from "./dao/ProductManager.js";
 import ChatManager from "./dao/ChatManager.js";
@@ -35,6 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
+app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 
 // CONECT DB

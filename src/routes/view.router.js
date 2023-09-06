@@ -71,4 +71,19 @@ router.get("/chat", async (request, response) => {
   }
 });
 
+//LOGIN
+router.get("/login", (req, res) => {
+  res.render("login");
+});
+
+//REGISTRARSE
+router.get("/register", (req, res) => {
+  res.render("register");
+});
+
+//PERFIL DEL USUARIO
+router.get("/profile", (req, res) => {
+  res.render("profile");
+});
+
 export default router;
