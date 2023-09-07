@@ -4,7 +4,7 @@ import UserManager from "../dao/UserManager.js";
 const sessionsRouter = express.Router();
 const UM = new UserManager();
 
-// OBTENER USUARIOS
+// VER USUARIOS
 sessionsRouter.get("/", async (request, response) => {
   try {
     const getUsers = await UM.getUsers(request.query);
@@ -74,7 +74,7 @@ sessionsRouter.post("/register", async (request, response) => {
 sessionsRouter.get("/login", async (request, response) => {
   const { user, pass } = request.query;
   try {
-    const userLogged = await UM.login(user, pass);
+    const userLogged = await UM.login(user, pass, request);
     if (!userLogged) {
       return response
         .status(404)

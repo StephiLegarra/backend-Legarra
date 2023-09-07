@@ -44,15 +44,48 @@ class UserManager {
     return (await userModel.findOne({ email: email })) || false;
   }
 
-  async login(user) {
+  async login(user, pass, request) {
     try {
-      const userLogged = (await userModel.findOne({ email: user })) || null;
-      //fijate aca seguro hay algo mal! valida solo mailcon user y la clave??
-      if (userLogged) {
+      const userLogged =
+        (await userModel.findOne({ email: user, password: pass })) || null;
+
+      /* if (userLogged) {
         console.log("Has iniciado sesión correctamente!");
         return userLogged;
       }
 
+      return false; */
+
+      if (userLogged) {
+        if (userLogged) {
+          const role =
+            userLogged.email === "stephanielegarra@gmail.com"
+              ? "admin"
+              : "usuario";
+
+          req.session.user = {
+            id: userLogged.id,
+            email: userLogged.email,
+            first_name: userLogged.first_name,
+            last_name: userLogged.last_name,
+            role: role,
+          };
+
+          console.log(
+            "Valor de req.session.user después de la autenticación:",
+            req.session.user
+          );
+
+          const userToReturn = userLogged;
+          console.log("Valor de userToReturn:", JSON.stringify(userToReturn));
+          return userToReturn;
+        }
+        console.log(
+          "Valor de userLogged antes de devolver falso:",
+          JSON.stringify(userLogged)
+        );
+        return false;
+      }
       return false;
     } catch (err) {
       console.log(err.message);
