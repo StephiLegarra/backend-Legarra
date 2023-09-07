@@ -7,8 +7,6 @@ class UserManager {
     this.user = [];
   }
 
-  static id = 1;
-
   async addUser(user) {
     try {
       const { first_name, last_name, email, age, password } = user;
@@ -26,11 +24,6 @@ class UserManager {
         const users = await userModel.find();
         this.users = users;
 
-        if (this.users.length !== 0) {
-          const max = Math.max(...this.users.map((item) => item.id)) + 1;
-          UserManager.id = max;
-        }
-        user.id = UserManager.id++;
         await userModel.create(user);
         console.log("El usuario fue creado correctamente");
         return true;
@@ -46,38 +39,19 @@ class UserManager {
 
   async login(user, pass, request) {
     try {
-      const userLogged =
-        (await userModel.findOne({ email: user, password: pass })) || null;
+      const userLogged = await userModel.findOne({
+        $and: [{ email: user }, { password: pass }],
+      });
+
+      /*        if (userLogged) {
+          const role =
+            userLogged.email === "stephanielegarra@gmail.com" ? "admin" : "usuario";
+        }
+        */
 
       if (userLogged) {
-        if (userLogged) {
-          const role =
-            userLogged.email === "stephanielegarra@gmail.com"
-              ? "admin"
-              : "usuario";
-
-          req.session.user = {
-            id: userLogged.id,
-            email: userLogged.email,
-            first_name: userLogged.first_name,
-            last_name: userLogged.last_name,
-            role: role,
-          };
-
-          console.log(
-            "Valor de req.session.user después de la autenticación:",
-            req.session.user
-          );
-
-          const userToReturn = userLogged;
-          console.log("Valor de userToReturn:", JSON.stringify(userToReturn));
-          return userToReturn;
-        }
-        console.log(
-          "Valor de userLogged antes de devolver falso:",
-          JSON.stringify(userLogged)
-        );
-        return false;
+        console.log("Has iniciado sesión!");
+        return userLogged;
       }
       return false;
     } catch (err) {

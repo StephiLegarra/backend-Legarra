@@ -6,6 +6,7 @@ const registerUser = async () => {
   let password = document.getElementById("password").value;
 
   const user = { first_name, last_name, email, age, password };
+  console.log(user);
 
   const response = await fetch("/api/sessions/register", {
     method: "POST",
@@ -13,10 +14,10 @@ const registerUser = async () => {
     body: JSON.stringify(user),
   });
   const data = await response.json();
-  //console.log(data);
 
   if (data) {
     console.log("El usuario ha sido registrado con exito");
+    location.href = "/login";
   } else {
     console.log("Error, no se ha podido registrar el usuario");
   }

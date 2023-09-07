@@ -71,47 +71,21 @@ router.get("/chat", async (request, response) => {
   }
 });
 
-//CONTROL DE ACCESO
-const checkSession = (req, res, next) => {
-  console.log(
-    "Verificando req.session.user en checkSession:",
-    req.session.user
-  );
-  if (req.session && req.session.user) {
-    next();
-  } else {
-    res.redirect("/login");
-  }
-};
-
-const checkAlreadyLoggedIn = (req, res, next) => {
-  console.log("Verificando req.session en checkAlreadyLoggedIn:", req.session);
-  console.log(
-    "Verificando req.session.user en checkAlreadyLoggedIn:",
-    req.session.user
-  );
-  if (req.session && req.session.user) {
-    console.log("Usuario ya autenticado, redirigiendo a /profile");
-    res.redirect("/profile");
-  } else {
-    console.log("Usuario no autenticado, procediendo...");
-    next();
-  }
-};
-
 //LOGIN
-router.get("/login", checkAlreadyLoggedIn, (request, response) => {
+router.get("/login", (request, response) => {
   response.render("login");
 });
 
 //REGISTRARSE
-router.get("/register", checkAlreadyLoggedIn, (request, response) => {
+router.get("/register", (request, response) => {
   response.render("register");
 });
 
 //PERFIL DEL USUARIO
-router.get("/profile", checkSession, (request, response) => {
-  response.render("profile");
+router.get("/profile", (request, response) => {
+  res.render("profile", {
+    user: req.session.user,
+  });
 });
 
 export default router;

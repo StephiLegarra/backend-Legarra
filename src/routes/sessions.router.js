@@ -1,7 +1,7 @@
-import express from "express";
+import { Router } from "express";
 import UserManager from "../dao/UserManager.js";
 
-const sessionsRouter = express.Router();
+const sessionsRouter = Router();
 const UM = new UserManager();
 
 // VER USUARIOS
@@ -74,7 +74,7 @@ sessionsRouter.post("/register", async (request, response) => {
 sessionsRouter.get("/login", async (request, response) => {
   const { user, pass } = request.query;
   try {
-    const userLogged = await UM.login(user, pass, request);
+    const userLogged = await UM.login(user, pass);
     if (!userLogged) {
       return response
         .status(404)
@@ -90,7 +90,7 @@ sessionsRouter.get("/login", async (request, response) => {
 });
 
 //LOGOUT DE USUARIO
-router.post("/logout", async (req, res) => {
+sessionsRouter.post("/logout", async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.redirect("/profile");
