@@ -37,7 +37,7 @@ class UserManager {
     return (await userModel.findOne({ email: email })) || false;
   }
 
-  async login(user, pass, request) {
+  async login(user, pass) {
     try {
       const userLogged = await userModel.findOne({
         $and: [{ email: user }, { password: pass }],

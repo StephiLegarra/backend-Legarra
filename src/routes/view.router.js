@@ -73,19 +73,32 @@ router.get("/chat", async (request, response) => {
 
 //LOGIN
 router.get("/login", (request, response) => {
-  response.render("login");
+  const { message } = request.query;
+  try {
+    response.render("login", { message, tittle: "Log in" });
+  } catch (err) {
+    response.status(500).send({ error: err.message });
+  }
 });
 
 //REGISTRARSE
 router.get("/register", (request, response) => {
-  response.render("register");
+  try {
+    response.render("register", { tittle: "Register" });
+  } catch (err) {
+    response.status(500).send({ error: err.message });
+  }
 });
 
 //PERFIL DEL USUARIO
 router.get("/profile", (request, response) => {
-  res.render("profile", {
-    user: req.session.user,
-  });
+  try {
+    const user = request.session.user;
+
+    response.render("pages/profile", { user, tittle: "Profile" });
+  } catch (err) {
+    response.status(500).send({ error: err.message });
+  }
 });
 
 export default router;
