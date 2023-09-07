@@ -5,10 +5,10 @@ const userCollection = "users";
 const userSchema = new mongoose.Schema({
   first_name: String,
   last_name: String,
-  email: { type: String, required: true },
+  email: String,
   age: Number,
-  password: { type: String, required: true },
-  role: String,
+  password: String,
+  rol: String,
 });
 
 export const userModel = mongoose.model(userCollection, userSchema);

@@ -1,32 +1,50 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
+import { checkSession } from "../Middleware/checkSessionMiddleware.js";
+import { permission } from "../Middleware/permission.js";
+import { sessionExist } from "../Middleware/sessionExist.js";
 
 const router = express.Router();
 const products = new ProductManager();
 const carts = new CartManager();
 
 // HOME
-router.get("/", async (request, response) => {
+router.get("/", checkSession, async (request, response) => {
+  const user = req.session.user;
+  const { message } = req.query;
+  const exist = parseInt(req.cookies[user.first_name]) > 1 ? true : false;
+
   try {
     const getProducts = await products.getProducts(request.query);
-    response.render("home", { getProducts });
+    response.render("home", {
+      getProducts,
+      isHome: true,
+      user,
+      message,
+      exist,
+    });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
 });
 
 //REAL TIME PRODUCTS
-router.get("/realtimeproducts", async (request, response) => {
-  try {
-    response.render("realtimeproducts");
-  } catch (error) {
-    response.status(500).send({ error: error.message });
+router.get(
+  "/realtimeproducts",
+  checkSession,
+  permission,
+  async (request, response) => {
+    try {
+      response.render("realtimeproducts");
+    } catch (error) {
+      response.status(500).send({ error: error.message });
+    }
   }
-});
+);
 
 //PRODUCTS
-router.get("/products", async (request, response) => {
+router.get("/products", checkSession, async (request, response) => {
   //const { limit, page, sort, query } = request.query;
   try {
     const getProducts = await products.getProducts(request.query);
@@ -37,7 +55,7 @@ router.get("/products", async (request, response) => {
 });
 
 //PRODUCT
-router.get("/products/:id", async (request, response) => {
+router.get("/products/:id", checkSession, async (request, response) => {
   const { id } = request.params;
   try {
     const getProducts = await products.getProductsById(parseInt(id));
@@ -48,22 +66,27 @@ router.get("/products/:id", async (request, response) => {
 });
 
 // CARTS
-router.get("/carts/:cid", async (request, response) => {
-  const { cid } = request.params;
-  try {
-    const cart = await carts.getCartById(parseInt(cid));
-    if (!cart) {
-      return response.status(404).send({ error: "El carrito no existe" });
-    }
+router.get(
+  "/carts/:cid",
+  checkSession,
+  permission,
+  async (request, response) => {
+    const { cid } = request.params;
+    try {
+      const cart = await carts.getCartById(parseInt(cid));
+      if (!cart) {
+        return response.status(404).send({ error: "El carrito no existe" });
+      }
 
-    response.render("cart", { cart });
-  } catch (error) {
-    response.status(500).send({ error: error.message });
+      response.render("cart", { cart });
+    } catch (error) {
+      response.status(500).send({ error: error.message });
+    }
   }
-});
+);
 
 //CHAT
-router.get("/chat", async (request, response) => {
+router.get("/chat", checkSession, async (request, response) => {
   try {
     response.render("chat");
   } catch (error) {
@@ -71,8 +94,17 @@ router.get("/chat", async (request, response) => {
   }
 });
 
+//REDIRECT
+router.get("/", async (request, response) => {
+  try {
+    response.status(200).redirect("/login");
+  } catch (err) {
+    response.status(400).send({ error: err.message });
+  }
+});
+
 //LOGIN
-router.get("/login", (request, response) => {
+router.get("/login", sessionExist, (request, response) => {
   const { message } = request.query;
   try {
     response.render("login", { message, tittle: "Log in" });
@@ -82,7 +114,7 @@ router.get("/login", (request, response) => {
 });
 
 //REGISTRARSE
-router.get("/register", (request, response) => {
+router.get("/register", sessionExist, (request, response) => {
   try {
     response.render("register", { tittle: "Register" });
   } catch (err) {
@@ -91,11 +123,20 @@ router.get("/register", (request, response) => {
 });
 
 //PERFIL DEL USUARIO
-router.get("/profile", (request, response) => {
+router.get("/profile", checkSession, (request, response) => {
   try {
     const user = request.session.user;
 
-    response.render("pages/profile", { user, tittle: "Profile" });
+    response.render("profile", { user, tittle: "Profile" });
+  } catch (err) {
+    response.status(500).send({ error: err.message });
+  }
+});
+
+//CONFIRMA CREACION DE LA CUENTA Y REDIRIGIR AL PERFIL
+router.get("/success", async (request, response) => {
+  try {
+    response.render("success", { tittle: "Success" });
   } catch (err) {
     response.status(500).send({ error: err.message });
   }
