@@ -17,6 +17,11 @@ class UserManager {
         return console.log(
           "Debes completar todos los datos para poder registrarte!"
         );
+      }
+
+      if (await this.validateEmail(user.email)) {
+        console.log("El usuario ya se encuentra registrado!");
+        return false;
       } else {
         const users = await userModel.find();
         this.users = users;
@@ -35,10 +40,14 @@ class UserManager {
     }
   }
 
+  async validateEmail(email) {
+    return (await userModel.findOne({ email: email })) || false;
+  }
+
   async login(user) {
     try {
       const userLogged = (await userModel.findOne({ email: user })) || null;
-
+      //fijate aca seguro hay algo mal! valida solo mailcon user y la clave??
       if (userLogged) {
         console.log("Has iniciado sesión correctamente!");
         return userLogged;

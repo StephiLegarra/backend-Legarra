@@ -11,9 +11,27 @@ import { Server } from "socket.io";
 import ProductManager from "./dao/ProductManager.js";
 import ChatManager from "./dao/ChatManager.js";
 import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const puerto = 8080;
+
+app.use(cookieParser());
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 20,
+    }),
+    secret: "3sUnS3cr3t0",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // SERVER HTTP
 const httpServer = app.listen(puerto, () => {
