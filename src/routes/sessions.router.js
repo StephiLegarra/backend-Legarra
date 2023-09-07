@@ -89,6 +89,16 @@ sessionsRouter.get("/login", async (request, response) => {
   }
 });
 
+//LOGOUT DE USUARIO
+router.post("/logout", async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.redirect("/profile");
+    }
+    res.redirect("/login");
+  });
+});
+
 //ACTUALIZAR USUARIO
 sessionsRouter.put("/:email", async (request, response) => {
   const { email } = request.params;
