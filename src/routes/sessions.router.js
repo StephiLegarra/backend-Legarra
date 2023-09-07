@@ -14,12 +14,12 @@ sessionsRouter.get("/", async (request, response) => {
   }
 });
 
-// OBTENER USUARIO POR ID
-sessionsRouter.get("/:id", async (request, response) => {
-  const { id } = request.params;
+// OBTENER USUARIO POR EMAIL
+sessionsRouter.get("/:email", async (request, response) => {
+  const { email } = request.params;
 
   try {
-    const getUsers = await UM.getUsersById(parseInt(id));
+    const getUsers = await UM.getUsersByEmail(email);
 
     if (!getUsers) {
       return response
@@ -90,12 +90,12 @@ sessionsRouter.get("/login", async (request, response) => {
 });
 
 //ACTUALIZAR USUARIO
-sessionsRouter.put("/:id", async (request, response) => {
-  const { id } = request.params;
-  const { first_name, last_name, email, age, password } = request.body;
+sessionsRouter.put("/:email", async (request, response) => {
+  const { email } = request.params;
+  const { first_name, last_name, age, password } = request.body;
 
   try {
-    const getUsers = await UM.getUsersById(parseInt(id));
+    const getUsers = await UM.getUsersByEmail(email);
     if (!getUsers) {
       return response
         .status(404)
@@ -116,7 +116,7 @@ sessionsRouter.put("/:id", async (request, response) => {
       age,
       password,
     };
-    await UM.updateUser(parseInt(id), updateUser);
+    await UM.updateUser(email, updateUser);
     response.status(200).send({
       updateUser,
       message: "Los datos del usuario han sido actualizados!",
@@ -127,11 +127,11 @@ sessionsRouter.put("/:id", async (request, response) => {
 });
 
 //ELIMINAR USUARIO
-sessionsRouter.delete("/:id", async (request, response) => {
-  const { id } = request.params;
+sessionsRouter.delete("/:email", async (request, response) => {
+  const { email } = request.params;
 
   try {
-    const getUsers = await UM.getUsersById(parseInt(id));
+    const getUsers = await UM.getUsersByEmail(email);
 
     if (!getUsers) {
       return response.status(404).send({
@@ -139,7 +139,7 @@ sessionsRouter.delete("/:id", async (request, response) => {
         message: "Error! no se encontró el usuario",
       });
     }
-    UM.deleteUser(parseInt(id));
+    UM.deleteUser(email);
     response
       .status(200)
       .send({ status: "ok", message: "El usuario ha sido eliminado" });

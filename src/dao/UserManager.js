@@ -49,13 +49,6 @@ class UserManager {
       const userLogged =
         (await userModel.findOne({ email: user, password: pass })) || null;
 
-      /* if (userLogged) {
-        console.log("Has iniciado sesión correctamente!");
-        return userLogged;
-      }
-
-      return false; */
-
       if (userLogged) {
         if (userLogged) {
           const role =
@@ -103,9 +96,9 @@ class UserManager {
     return users;
   }
 
-  async getUsersById(id) {
+  async getUsersByEmail(email) {
     try {
-      const user = await userModel.findOne({ id: id }).lean();
+      const user = await userModel.findOne({ email: email }).lean();
       if (!user) {
         return console.log("No se encontró el usuario");
       }
@@ -115,10 +108,10 @@ class UserManager {
     }
   }
 
-  async updateUser(id, user) {
+  async updateUser(email, user) {
     try {
-      if (await this.getUsersById(id)) {
-        await userModel.updateOne({ id: id }, user);
+      if (await this.getUsersByEmail(email)) {
+        await userModel.updateOne({ email: email }, user);
         console.log("El usuario fue actualizado correctamente");
         return true;
       } else {
@@ -130,10 +123,10 @@ class UserManager {
     }
   }
 
-  async deleteUser(id) {
+  async deleteUser(email) {
     try {
-      if (await this.getUsersById(id)) {
-        await userModel.deleteOne({ id: id });
+      if (await this.getUsersByEmail(email)) {
+        await userModel.deleteOne({ email: email });
         console.log("El usuario fue eliminado correctamente");
         return true;
       } else {
