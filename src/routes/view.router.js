@@ -10,7 +10,7 @@ const carts = new CartManager();
 //Control de acceso
 const checkSession = (request, response, next) => {
   console.log(
-    "Verificando req.session.user en checkSession:",
+    "Verificando request.session.user en checkSession:",
     request.session.user
   );
   if (request.session && request.session.user) {

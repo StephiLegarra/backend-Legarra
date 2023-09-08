@@ -7,7 +7,7 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import session from "express-session";
-//import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -37,7 +37,7 @@ app.set("view engine", "handlebars");
 app.use(express.static(__dirname));
 
 //SESSION
-//app.use(cookieParser());
+app.use(cookieParser());
 app.use(
   session({
     store: new MongoStore({
@@ -74,18 +74,6 @@ const CM = new CartManager();
 
 import UserManager from "./dao/UserManager.js";
 const UM = new UserManager();
-
-app.get("/session", async (request, response) => {
-  if (request.session.contador) {
-    request.session.contador++;
-    response.send(
-      "Visitaste el Sitio Web: " + request.session.contador + " veces!"
-    );
-  } else {
-    request.session.contador = 1;
-    response.send("Welcome");
-  }
-});
 
 // CONECT MONGO DB
 mongoose.connect(
@@ -159,7 +147,6 @@ socketServer.on("connection", async (socket) => {
   );
 
   //CHAT
-
   socket.on("mensajeChat", async (data) => {
     chat.createMessage(data);
     const messages = await chat.getMessages();

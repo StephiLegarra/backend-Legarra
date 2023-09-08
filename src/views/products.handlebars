@@ -1,7 +1,16 @@
 <div class="container">
-  <h2>TODOS NUESTROS PRODUCTOS</h2>
-  <br />
+  <h2 class="pb-5">TODOS NUESTROS PRODUCTOS</h2>
   <div class="row">
+    <div class="row d-flex align-items-center pb-4">
+      <h4 class="col-md-8 text-center">Bienvenidx,
+        {{user.role}}:
+        {{user.first_name}}
+        {{user.last_name}}!</h4>
+      <a href="/profile" class="col-md-4 text-md-end custom-link">
+        <i class="bi bi-person-circle"> </i>
+        Mi perfil
+      </a>
+    </div>
 
     {{#each getProducts.payload}}
       <div class="col-md-6">

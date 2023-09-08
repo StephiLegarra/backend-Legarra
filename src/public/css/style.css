@@ -44,3 +44,9 @@ label {
   letter-spacing: 3px;
   font-weight: bold;
 }
+
+.custom-link {
+  text-decoration: none;
+  color: antiquewhite;
+  font-weight: bold;
+}
