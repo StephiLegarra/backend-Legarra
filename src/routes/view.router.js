@@ -142,7 +142,7 @@ router.get("/profile", checkSession, (request, response) => {
 });
 
 //CONFIRMA CREACION DE LA CUENTA Y REDIRIGIR AL PERFIL
-router.get("/success", async (request, response) => {
+router.get("/success", checkAlreadyLoggedIn, async (request, response) => {
   try {
     response.render("success");
   } catch (err) {
