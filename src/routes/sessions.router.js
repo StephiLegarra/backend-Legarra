@@ -3,7 +3,7 @@ import UserManager from "../dao/UserManager.js";
 
 const sessionsRouter = Router();
 const UM = new UserManager();
-
+/*
 // VER USUARIOS
 sessionsRouter.get("/", async (request, response) => {
   try {
@@ -31,45 +31,7 @@ sessionsRouter.get("/:email", async (request, response) => {
     response.status(500).send({ error: error.message });
   }
 });
-
-//REGISTRO DE USUARIO
-sessionsRouter.post("/register", async (request, response) => {
-  const { first_name, last_name, email, age, password } = request.body;
-
-  try {
-    if (!first_name || !last_name || !email || !age || !password) {
-      response.status(400).send({
-        status: "error",
-        message: "Error! Se deben completar todos los campos obligatorios",
-      });
-      return false;
-    }
-
-    const emailUser = await UM.validateEmail(email);
-    if (emailUser) {
-      response.status(400).send({
-        status: "Error",
-        message: "El usuario ya se encuentra registrado!",
-      });
-      return false;
-    }
-
-    const newUser = {
-      first_name,
-      last_name,
-      email,
-      age,
-      password,
-    };
-    await UM.addUser(newUser);
-    response
-      .status(200)
-      .send({ newUser, message: "El usuario ha sido creado correctamente" });
-  } catch (error) {
-    response.status(500).send({ error: error.message });
-  }
-});
-
+*/
 //LOGIN DE USUARIO
 sessionsRouter.get("/login", async (request, response) => {
   console.log(`request.query: ${JSON.stringify(request.query)}`);
@@ -77,29 +39,57 @@ sessionsRouter.get("/login", async (request, response) => {
   try {
     const userLogged = await UM.login(user, pass, request);
     if (userLogged) {
-      res.send({ status: "OK", message: userLogged });
+      response.send({ status: "OK", message: userLogged });
     } else {
       console.log("Fallo al loguear en el servidor");
-      res
+      response
         .status(401)
         .send({ status: "Error", message: "No se pudo loguear el Usuario!" });
     }
-    console.log(`res.status: ${res.statusCode}`);
+    console.log(`response.status: ${response.statusCode}`);
+  } catch (error) {
+    response.status(500).send({ error: error.message });
+  }
+});
+
+//REGISTRO DE USUARIO
+sessionsRouter.post("/register", async (request, response) => {
+  try {
+    const userOnBD = await UM.getUserByEmail(request.params.email);
+
+    if (userOnBD) {
+      console.log("Mail ya esta registrado, usar otro");
+      response.status(400).send({
+        status: "error",
+        message: "Email ya existente en base de datos",
+      });
+    } else {
+      const userRegistered = await UM.addUser(request.body);
+      if (userRegistered) {
+        response.send({ status: "OK", message: userRegistered });
+      } else {
+        response.status(400).send({
+          status: "error",
+          message: "No se pudo registrar al usuario",
+        });
+      }
+    }
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
 });
 
 //LOGOUT DE USUARIO
-sessionsRouter.post("/logout", async (req, res) => {
-  req.session.destroy((err) => {
+sessionsRouter.post("/logout", async (request, response) => {
+  request.session.destroy((err) => {
     if (err) {
-      return res.redirect("/profile");
+      return response.redirect("/profile");
     }
-    res.redirect("/login");
+    response.redirect("/login");
   });
 });
 
+/*
 //ACTUALIZAR USUARIO
 sessionsRouter.put("/:email", async (request, response) => {
   const { email } = request.params;
@@ -158,5 +148,6 @@ sessionsRouter.delete("/:email", async (request, response) => {
     response.status(500).send({ error: error.message });
   }
 });
+*/
 
 export default sessionsRouter;

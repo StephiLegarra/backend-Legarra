@@ -1,61 +1,79 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
-import { checkSession } from "../Middleware/checkSession.js";
-import { permission } from "../Middleware/permission.js";
-import { sessionExist } from "../Middleware/sessionExist.js";
+//import { checkSession } from "../Middleware/checkSession.js";
+//import { permission } from "../Middleware/permission.js";
+//import { sessionExist } from "../Middleware/sessionExist.js";
 
 const router = express.Router();
 const products = new ProductManager();
 const carts = new CartManager();
 
-// HOME
-router.get("/", checkSession, async (request, response) => {
-  const user = req.session.user;
-  const { message } = req.query;
-  const exist = parseInt(req.cookies[user.first_name]) > 1 ? true : false;
+//CHECKSESSION
+//Control de acceso
+const checkSession = (request, response, next) => {
+  console.log(
+    "Verificando req.session.user en checkSession:",
+    request.session.user
+  );
+  if (request.session && request.session.user) {
+    next();
+  } else {
+    response.redirect("/login");
+  }
+};
 
+const checkAlreadyLoggedIn = (request, response, next) => {
+  console.log(
+    "Verificando request.session en checkAlreadyLoggedIn:",
+    request.session
+  );
+  console.log(
+    "Verificando request.session.user en checkAlreadyLoggedIn:",
+    request.session.user
+  );
+  if (request.session && request.session.user) {
+    console.log("Usuario ya autenticado, redirigiendo a /profile");
+    request.redirect("/profile");
+  } else {
+    console.log("Usuario no autenticado, procediendo...");
+    next();
+  }
+};
+
+// HOME
+router.get("/", async (request, response) => {
   try {
     const getProducts = await products.getProducts(request.query);
-    response.render("home", {
-      getProducts,
-      isHome: true,
-      user,
-      message,
-      exist,
-    });
+    console.log(getProducts);
+    response.render("login");
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
 });
 
 //REAL TIME PRODUCTS
-router.get(
-  "/realtimeproducts",
-  checkSession,
-  permission,
-  async (request, response) => {
-    try {
-      response.render("realtimeproducts");
-    } catch (error) {
-      response.status(500).send({ error: error.message });
-    }
+router.get("/realtimeproducts", async (request, response) => {
+  try {
+    response.render("realtimeproducts");
+  } catch (error) {
+    response.status(500).send({ error: error.message });
   }
-);
+});
 
 //PRODUCTS
 router.get("/products", checkSession, async (request, response) => {
-  //const { limit, page, sort, query } = request.query;
   try {
     const getProducts = await products.getProducts(request.query);
-    response.render("products", { getProducts });
+    const user = request.session.user;
+    response.render("products", { getProducts, user });
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
 });
 
 //PRODUCT
-router.get("/products/:id", checkSession, async (request, response) => {
+router.get("/products/:id", async (request, response) => {
   const { id } = request.params;
   try {
     const getProducts = await products.getProductsById(parseInt(id));
@@ -66,24 +84,19 @@ router.get("/products/:id", checkSession, async (request, response) => {
 });
 
 // CARTS
-router.get(
-  "/carts/:cid",
-  checkSession,
-  permission,
-  async (request, response) => {
-    const { cid } = request.params;
-    try {
-      const cart = await carts.getCartById(parseInt(cid));
-      if (!cart) {
-        return response.status(404).send({ error: "El carrito no existe" });
-      }
-
-      response.render("cart", { cart });
-    } catch (error) {
-      response.status(500).send({ error: error.message });
+router.get("/carts/:cid", checkSession, async (request, response) => {
+  const { cid } = request.params;
+  try {
+    const cart = await carts.getCartById(parseInt(cid));
+    if (!cart) {
+      return response.status(404).send({ error: "El carrito no existe" });
     }
+
+    response.render("cart", { cart });
+  } catch (error) {
+    response.status(500).send({ error: error.message });
   }
-);
+});
 
 //CHAT
 router.get("/chat", checkSession, async (request, response) => {
@@ -104,7 +117,7 @@ router.get("/", async (request, response) => {
 });
 
 //LOGIN
-router.get("/login", sessionExist, (request, response) => {
+router.get("/login", checkAlreadyLoggedIn, (request, response) => {
   try {
     response.render("login");
   } catch (err) {
@@ -113,9 +126,9 @@ router.get("/login", sessionExist, (request, response) => {
 });
 
 //REGISTRARSE
-router.get("/register", sessionExist, (request, response) => {
+router.get("/register", checkAlreadyLoggedIn, (request, response) => {
   try {
-    response.render("register", { tittle: "Register" });
+    response.render("register");
   } catch (err) {
     response.status(500).send({ error: err.message });
   }
@@ -124,9 +137,8 @@ router.get("/register", sessionExist, (request, response) => {
 //PERFIL DEL USUARIO
 router.get("/profile", checkSession, (request, response) => {
   try {
-    const user = request.session.user;
-
-    response.render("profile", { user, tittle: "Profile" });
+    const userData = request.session.user;
+    response.render("profile", { user: userData });
   } catch (err) {
     response.status(500).send({ error: err.message });
   }
@@ -135,7 +147,7 @@ router.get("/profile", checkSession, (request, response) => {
 //CONFIRMA CREACION DE LA CUENTA Y REDIRIGIR AL PERFIL
 router.get("/success", async (request, response) => {
   try {
-    response.render("success", { tittle: "Success" });
+    response.render("success");
   } catch (err) {
     response.status(500).send({ error: err.message });
   }
