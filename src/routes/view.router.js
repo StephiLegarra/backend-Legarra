@@ -1,9 +1,6 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
-//import { checkSession } from "../Middleware/checkSession.js";
-//import { permission } from "../Middleware/permission.js";
-//import { sessionExist } from "../Middleware/sessionExist.js";
 
 const router = express.Router();
 const products = new ProductManager();
@@ -34,7 +31,7 @@ const checkAlreadyLoggedIn = (request, response, next) => {
   );
   if (request.session && request.session.user) {
     console.log("Usuario ya autenticado, redirigiendo a /profile");
-    request.redirect("/profile");
+    response.redirect("/profile");
   } else {
     console.log("Usuario no autenticado, procediendo...");
     next();
