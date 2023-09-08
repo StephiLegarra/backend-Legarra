@@ -4,6 +4,18 @@ import UserManager from "../dao/UserManager.js";
 const sessionsRouter = Router();
 const UM = new UserManager();
 
+//VER USUARIOS
+/*
+sessionsRouter.get("/sessions", async (request, response) => {
+  try {
+    const users = await UM.getUsers();
+    response.send({ status: "ok", message: users });
+  } catch (error) {
+    response.status(500).send({ error: error.message });
+  }
+});
+*/
+
 //LOGIN DE USUARIO
 sessionsRouter.get("/login", async (request, response) => {
   console.log(`request.query: ${JSON.stringify(request.query)}`);

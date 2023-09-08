@@ -57,6 +57,22 @@ class UserManager {
     }
   }
 
+  //GET USERS
+  /*
+  async getUsers() {
+    try {
+      const users = await userModel.find({}).lean();
+
+      if (!users) {
+        console.log("No hay usuarios registrados");
+      }
+      return users;
+    } catch (error) {
+      return false;
+    }
+  }
+  */
+
   //TRAER USUARIO POR MAIL
   async getUserByEmail(user) {
     try {
