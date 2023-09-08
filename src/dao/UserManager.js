@@ -1,114 +1,75 @@
 // Stephanie Legarra - Curso Backend - Comisión: 55305
-
 import { userModel } from "./models/user.model.js";
 
 class UserManager {
-  constructor() {
-    this.user = [];
-  }
-
+  //NUEVO USUARIO
   async addUser(user) {
     try {
-      const { first_name, last_name, email, age, password } = user;
+      await userModel.create(user);
+      console.log("User added!");
 
-      if (!first_name || !last_name || !email || !age || !password) {
-        return console.log(
-          "Debes completar todos los datos para poder registrarte!"
-        );
-      }
-
-      if (await this.validateEmail(user.email)) {
-        console.log("El usuario ya se encuentra registrado!");
-        return false;
-      } else {
-        const users = await userModel.find();
-        this.users = users;
-
-        await userModel.create(user);
-        console.log("El usuario fue creado correctamente");
-        return true;
-      }
-    } catch (err) {
-      console.log(err.message);
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 
-  async validateEmail(email) {
-    return (await userModel.findOne({ email: email })) || false;
-  }
-
-  async login(user, pass) {
+  //LOGIN
+  async login(user, pass, request) {
     try {
-      const userLogged = await userModel.findOne({
-        $and: [{ email: user }, { password: pass }],
-      });
-
-      /*        if (userLogged) {
-          const role =
-            userLogged.email === "stephanielegarra@gmail.com" ? "admin" : "usuario";
-        }
-        */
+      const userLogged =
+        (await userModel.findOne({ email: user, password: pass })) || null;
 
       if (userLogged) {
-        console.log("Has iniciado sesión!");
-        return userLogged;
+        if (userLogged) {
+          const role =
+            userLogged.email === "stephanielegarra@gmail.com"
+              ? "admin"
+              : "usuario";
+
+          request.session.user = {
+            id: userLogged._id,
+            email: userLogged.email,
+            first_name: userLogged.first_name,
+            last_name: userLogged.last_name,
+            role: role,
+          };
+
+          console.log(
+            "Valor de request.session.user después de la autenticación:",
+            request.session.user
+          );
+
+          const userToReturn = userLogged;
+          console.log("Valor de userToReturn:", JSON.stringify(userToReturn));
+          return userToReturn;
+        }
+        console.log(
+          "Valor de userLogged antes de devolver falso:",
+          JSON.stringify(userLogged)
+        );
+        return false;
       }
+
       return false;
-    } catch (err) {
-      console.log(err.message);
+    } catch (error) {
+      return false;
     }
   }
 
-  async getUsers(params) {
-    let { limit, page, query, sort } = params;
-    limit = limit ? limit : 10;
-    page = page ? page : 1;
-    query = query || {};
-    sort = sort ? (sort == "asc" ? 1 : -1) : 0;
-    let users = await userModel.find({}).lean();
-
-    return users;
-  }
-
-  async getUsersByEmail(email) {
+  //TRAER USUARIO POR MAIL
+  async getUserByEmail(user) {
     try {
-      const user = await userModel.findOne({ email: email }).lean();
-      if (!user) {
-        return console.log("No se encontró el usuario");
+      const userRegisteredBefore =
+        (await userModel.findOne([{ email: user }])) || null;
+      if (userRegisteredBefore) {
+        console.log("Mail registrado anteriormente");
+        return user;
       }
-      return user;
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
 
-  async updateUser(email, user) {
-    try {
-      if (await this.getUsersByEmail(email)) {
-        await userModel.updateOne({ email: email }, user);
-        console.log("El usuario fue actualizado correctamente");
-        return true;
-      } else {
-        console.log("No se encontró el usuario");
-        return false;
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  async deleteUser(email) {
-    try {
-      if (await this.getUsersByEmail(email)) {
-        await userModel.deleteOne({ email: email });
-        console.log("El usuario fue eliminado correctamente");
-        return true;
-      } else {
-        console.log("no se encontró el usuario");
-        return false;
-      }
-    } catch (err) {
-      console.log(err.message);
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 }

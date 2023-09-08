@@ -1,37 +1,21 @@
 import express from "express";
-import expressHandlebars from "express-handlebars";
 import Handlebars from "handlebars";
+import expressHandlebars from "express-handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import __dirname from "./utils.js";
-import productsRouter from "./routes/products.router.js";
-import cartsRouter from "./routes/carts.router.js";
-import viewsRouter from "./routes/view.router.js";
-import sessionsRouter from "./routes/sessions.router.js";
 import { Server } from "socket.io";
-import ProductManager from "./dao/ProductManager.js";
-import ChatManager from "./dao/ChatManager.js";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import session from "express-session";
-import cookieParser from "cookie-parser";
+//import cookieParser from "cookie-parser";
+
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
+import sessionsRouter from "./routes/sessions.router.js";
+import viewsRouter from "./routes/view.router.js";
 
 const app = express();
 const puerto = 8080;
-
-app.use(cookieParser());
-app.use(
-  session({
-    store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      ttl: 20,
-    }),
-    secret: "3sUnS3cr3t0",
-    resave: false,
-    saveUninitialized: false,
-  })
-);
 
 // SERVER HTTP
 const httpServer = app.listen(puerto, () => {
@@ -39,6 +23,7 @@ const httpServer = app.listen(puerto, () => {
 });
 // SOCKET SERVER
 const socketServer = new Server(httpServer);
+app.set("socketServer", socketServer);
 
 app.engine(
   "handlebars",
@@ -46,29 +31,81 @@ app.engine(
     handlebars: allowInsecurePrototypeAccess(Handlebars),
   })
 );
+
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
+app.use(express.static(__dirname));
+
+//SESSION
+//app.use(cookieParser());
+app.use(
+  session({
+    store: new MongoStore({
+      mongoUrl:
+        "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      ttl: 3600,
+    }),
+    secret: "3sUnS3cr3t0",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
 app.use(express.static(__dirname + "/public"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 
-// CONECT DB
+//IMPORT
+import ProductManager from "./dao/ProductManager.js";
+const productManager = new ProductManager();
+
+import ChatManager from "./dao/ChatManager.js";
+const chat = new ChatManager();
+
+import CartManager from "./dao/CartManager.js";
+const CM = new CartManager();
+
+import UserManager from "./dao/UserManager.js";
+const UM = new UserManager();
+
+app.get("/session", async (request, response) => {
+  if (request.session.contador) {
+    request.session.contador++;
+    response.send(
+      "Visitaste el Sitio Web: " + request.session.contador + " veces!"
+    );
+  } else {
+    request.session.contador = 1;
+    response.send("Welcome");
+  }
+});
+
+// CONECT MONGO DB
 mongoose.connect(
   "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority"
 );
 
-// APERTURA
+mongoose.connection.on("connected", () => {
+  console.log("Conectado a MongoDB");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("Error conectando a MongoDB:", err);
+});
+
+// APERTURA SOCKET ON
 socketServer.on("connection", async (socket) => {
   console.log("Conexión establecida");
 
   // PRODUCTOS REAL TIME
-  const productManager = new ProductManager();
   const products = await productManager.getProducts();
-
   socket.emit("realTimeProducts", products);
 
   // CREAR PRODUCTO
@@ -122,7 +159,6 @@ socketServer.on("connection", async (socket) => {
   );
 
   //CHAT
-  const chat = new ChatManager();
 
   socket.on("mensajeChat", async (data) => {
     chat.createMessage(data);

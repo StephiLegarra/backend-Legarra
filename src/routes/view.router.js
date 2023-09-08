@@ -1,7 +1,7 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
-import { checkSession } from "../Middleware/checkSessionMiddleware.js";
+import { checkSession } from "../Middleware/checkSession.js";
 import { permission } from "../Middleware/permission.js";
 import { sessionExist } from "../Middleware/sessionExist.js";
 
@@ -105,9 +105,8 @@ router.get("/", async (request, response) => {
 
 //LOGIN
 router.get("/login", sessionExist, (request, response) => {
-  const { message } = request.query;
   try {
-    response.render("login", { message, tittle: "Log in" });
+    response.render("login");
   } catch (err) {
     response.status(500).send({ error: err.message });
   }

@@ -15,7 +15,7 @@ const registerUser = async () => {
   });
   const data = await response.json();
 
-  if (data) {
+  if (data.status === "OK") {
     console.log("El usuario ha sido registrado con exito");
     location.href = "/login";
   } else {

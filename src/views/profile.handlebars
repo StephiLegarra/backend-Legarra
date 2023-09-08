@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="user-data">
+        <h1>Bienvenido, {{user.first_name}} {{user.last_name}}</h1>
+        <p>Tu correo electrónico es: {{user.email}}</p>
+        <p>Tu rol es: {{user.role}}</p>
+      </div>
+
+      <form
+        action="/api/sessions/logout"
+        method="POST"
+        class="col-md-4 offset-md-4"
+      >
+        <button type="submit" class="btn btn-light">Cerrar Sesión</button>
+      </form>
+    </div>
+  </div>
+</div>

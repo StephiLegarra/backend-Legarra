@@ -19,7 +19,7 @@ sessionsRouter.get("/:email", async (request, response) => {
   const { email } = request.params;
 
   try {
-    const getUsers = await UM.getUsersByEmail(email);
+    const getUsers = await UM.getUserByEmail(email);
 
     if (!getUsers) {
       return response
@@ -72,18 +72,19 @@ sessionsRouter.post("/register", async (request, response) => {
 
 //LOGIN DE USUARIO
 sessionsRouter.get("/login", async (request, response) => {
+  console.log(`request.query: ${JSON.stringify(request.query)}`);
   const { user, pass } = request.query;
   try {
-    const userLogged = await UM.login(user, pass);
-    if (!userLogged) {
-      return response
-        .status(404)
-        .send({ error: "El usuario y/o la clave son incorrectos" });
+    const userLogged = await UM.login(user, pass, request);
+    if (userLogged) {
+      res.send({ status: "OK", message: userLogged });
+    } else {
+      console.log("Fallo al loguear en el servidor");
+      res
+        .status(401)
+        .send({ status: "Error", message: "No se pudo loguear el Usuario!" });
     }
-    response.status(200).send({
-      userLogged,
-      message: "El usuario ha iniado sesión correctamente",
-    });
+    console.log(`res.status: ${res.statusCode}`);
   } catch (error) {
     response.status(500).send({ error: error.message });
   }
