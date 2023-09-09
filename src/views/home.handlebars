@@ -1,28 +1,20 @@
 <div class="container">
-  <h2>TODOS NUESTROS PRODUCTOS</h2>
-  <br />
-  <div class="row">
-
-    {{#each getProducts.payload}}
-      <div class="col-md-6">
-        <div class="card border-0 mb-5">
-          <h3>{{this.title}} </h3>
-          <img
-            src="{{this.thumbnail}}"
-            class="img-fluid"
-            alt="imagen del producto"
-          />
-          <div class="card-body text-center">
-            <h4>Precio: ${{this.price}}</h4>
-            <h6>{{this.description}}</h6>
-            <p>ID: {{this.id}}</p>
-          </div>
-          <p> ----------------------------------------------------</p>
-        </div>
-      </div>
-    {{/each}}
+  <h2 class="pb-5">Bienvenidos al maravilloso mundo Pokémon!</h2>
+  <div class="row" id="video-container">
+    <div
+      class="col"
+      style="display: flex; align-items: center; justify-content: center; height: 400px;"
+    >
+      <iframe
+        width="800"
+        height="450"
+        src="https://www.youtube.com/embed/8RXz6Uru9WY"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
   </div>
-
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/realTimeProducts.js"></script>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="js/home.js"></script>

@@ -41,9 +41,7 @@ const checkAlreadyLoggedIn = (request, response, next) => {
 // HOME
 router.get("/", async (request, response) => {
   try {
-    const getProducts = await products.getProducts(request.query);
-    console.log(getProducts);
-    response.render("login");
+    response.render("home");
   } catch (error) {
     response.status(500).send({ error: error.message });
   }

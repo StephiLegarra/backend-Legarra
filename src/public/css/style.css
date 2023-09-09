@@ -50,3 +50,9 @@ label {
   color: antiquewhite;
   font-weight: bold;
 }
+
+#video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
