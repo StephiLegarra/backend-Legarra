@@ -52,6 +52,25 @@ app.use(
   })
 );
 
+/*
+ESTE USA EL PROFE: fijate
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+      ttl: 10000,
+    }),
+    secret: "3sUnS3cr3t0",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+
+*/
+
 app.use(express.static(__dirname + "/public"));
 
 app.use(express.json());
