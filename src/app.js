@@ -6,13 +6,17 @@ import __dirname from "./utils.js";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
-import session from "express-session";
-import cookieParser from "cookie-parser";
 
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/view.router.js";
+
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import passport from "passport";
+import { initializePassport, passportSession } from "./middleware/passport.js";
+import initializeGitHubPassport from "./middleware/github.js";
 
 const app = express();
 const puerto = 8080;
@@ -40,22 +44,6 @@ app.use(express.static(__dirname));
 app.use(cookieParser());
 app.use(
   session({
-    store: new MongoStore({
-      mongoUrl:
-        "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
-      ttl: 3600,
-    }),
-    secret: "3sUnS3cr3t0",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
-);
-
-/*
-ESTE USA EL PROFE: fijate
-app.use(
-  session({
     store: MongoStore.create({
       mongoUrl:
         "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
@@ -64,15 +52,15 @@ app.use(
     }),
     secret: "3sUnS3cr3t0",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 );
-
-
-*/
+initializeGitHubPassport();
+app.use(initializePassport, passportSession);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(__dirname + "/public"));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

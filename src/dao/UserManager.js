@@ -5,6 +5,10 @@ class UserManager {
   //NUEVO USUARIO
   async addUser(user) {
     try {
+      if (user.email == "adminCoder@coder") {
+        ures.rol = "admin";
+      }
+
       await userModel.create(user);
       console.log("User added!");
 
@@ -15,29 +19,27 @@ class UserManager {
   }
 
   //LOGIN
-  async login(user, pass, request) {
+  async login(user) {
     try {
       const userLogged =
         (await userModel.findOne({ email: user, password: pass })) || null;
 
       if (userLogged) {
         if (userLogged) {
-          const role =
-            userLogged.email === "stephanielegarra@gmail.com"
-              ? "admin"
-              : "usuario";
+          const rol =
+            userLogged.email === "adminCoder@coder.com" ? "admin" : "usuario";
 
-          request.session.user = {
+          req.session.user = {
             id: userLogged._id,
             email: userLogged.email,
             first_name: userLogged.first_name,
             last_name: userLogged.last_name,
-            role: role,
+            rol: rol,
           };
 
           console.log(
-            "Valor de request.session.user después de la autenticación:",
-            request.session.user
+            "Valor de req.session.user después de la autenticación:",
+            req.session.user
           );
 
           const userToReturn = userLogged;
@@ -68,6 +70,24 @@ class UserManager {
       }
 
       return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  //REESTABLECER CONTRASEÑA
+  async restorePassword(user, pass) {
+    try {
+      const userLogged =
+        (await userModel.updateOne({ email: user }, { password: pass })) ||
+        null;
+
+      if (userLogged) {
+        console.log("Password Restored!");
+        return userLogged;
+      }
+
+      return false;
     } catch (error) {
       return false;
     }
