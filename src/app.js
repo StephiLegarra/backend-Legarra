@@ -15,8 +15,8 @@ import viewsRouter from "./routes/view.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
-import { initializePassport, passportSession } from "./middleware/passport.js";
-import initializeGitHubPassport from "./middleware/github.js";
+import { initializePassport, passportSession } from "./config/passport.js";
+import initializeGitHubPassport from "./config/github.js";
 
 const app = express();
 const puerto = 8080;

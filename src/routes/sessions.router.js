@@ -2,7 +2,7 @@ import { Router } from "express";
 import UserManager from "../dao/UserManager.js";
 import passport from "passport";
 import { userModel } from "../dao/models/user.model.js";
-import { createHash } from "../middleware/bcrypt.js";
+import { createHash } from "../config/bcrypt.js";
 
 const sessionsRouter = Router();
 const UM = new UserManager();
