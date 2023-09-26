@@ -9,8 +9,7 @@ const userSchema = new mongoose.Schema({
   age: Number,
   password: String,
   cart: {type: String, ref: "carts"},
-  //  rol: { type: String, default: "usuario", enum: ["usuario", "admin"] },
-  rol: String
+  rol: { type: String, default: "user", enum: ["user", "admin"] },
 });
 
 export const userModel = mongoose.model(userCollection, userSchema);

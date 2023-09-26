@@ -26,6 +26,8 @@ h2 {
 
 h3 {
   background-color: rgb(139, 117, 160);
+  color: black;
+  text-transform: uppercase;
   display: inline-block;
   padding: 10px 120px;
 }
@@ -38,6 +40,11 @@ h4 {
 h5 {
   padding: 1% 20%;
   color: white;
+}
+
+h6 {
+  padding: 1% 5%;
+  color: black;
 }
 
 label {
