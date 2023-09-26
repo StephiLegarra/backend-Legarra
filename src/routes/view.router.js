@@ -117,7 +117,7 @@ router.get("/chat", checkSession, async (req, res) => {
 });
 
 //LOGIN
-router.get("/login", checkAlreadyLoggedIn, (req, res) => {
+router.get("/login", checkAlreadyLoggedIn, async (req, res) => {
   try {
     res.render("login");
   } catch (err) {
@@ -126,7 +126,7 @@ router.get("/login", checkAlreadyLoggedIn, (req, res) => {
 });
 
 //REGISTRARSE
-router.get("/register", checkAlreadyLoggedIn, (req, res) => {
+router.get("/register", checkAlreadyLoggedIn, async (req, res) => {
   try {
     res.render("register");
   } catch (err) {

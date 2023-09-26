@@ -3,32 +3,22 @@ const loginUser = async () => {
   let password = document.getElementById("password").value;
 
   try {
-    console.log(email);
-    console.log(password);
-    const response = await fetch(
-      `/api/sessions/login?user=${email}&pass=${password}`,
-      {
-        credentials: "include",
-      }
-    );
+    const response = await fetch("/api/sessions/login/", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+      body: JSON.stringify({ email: email, password: password }),
+    });
 
     if (!response.ok) {
-      console.log(`Error en la respuesta: ${response.status}`);
-      return;
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log(data);
-
-    if (data.status === "OK") {
-      console.log("inicio de sesión exitosa");
-      window.location.href = "/products";
-    } else {
-      console.log("Fallo al iniciar sesión");
+    if (data.status === "success") {
+      window.location.href = data.redirect;
     }
   } catch (error) {
-    console.log("Error en la petición", error);
+    console.log("Hubo un problema con la operación, usuario o contraseña incorrectos", error);
   }
 };
-
 document.getElementById("btnLogin").onclick = loginUser;

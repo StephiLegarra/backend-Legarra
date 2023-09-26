@@ -16,7 +16,7 @@ sessionsRouter.post("/login", passport.authenticate("login", { failureRedirect: 
       return res.status(401).send({status: "Error", message: "Usuario y/o contraseña incorrecto!",
       });
 
-      const { email, password } = req.body;
+      const {email,password} = req.body;
   
       let token = jwt.sign({ email:email, password:password, rol:"user"}, PRIVATE_KEY,{expiresIn:"24h"});
       res.cookie("coderCookieToken", token, {maxAge:3600*1000, httpOnly:true});

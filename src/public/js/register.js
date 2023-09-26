@@ -6,21 +6,23 @@ const registerUser = async () => {
   let password = document.getElementById("password").value;
 
   const user = { first_name, last_name, email, age, password };
-  console.log(user);
+  try {
+    const response = await fetch("/api/sessions/register", {
+      method: "POST",
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+      body: JSON.stringify(user),
+    });
 
-  const response = await fetch("/api/sessions/register", {
-    method: "POST",
-    headers: { "Content-type": "application/json; charset=UTF-8" },
-    body: JSON.stringify(user),
-  });
-  const data = await response.json();
-
-  if (data.status === "OK") {
-    console.log("El usuario ha sido registrado con exito");
-    location.href = "/login";
-  } else {
-    console.log("Error, no se ha podido registrar el usuario");
+    if (!response.ok) {
+        console.error("Error al registrar el usuario:", await response.text());
+    } else {
+        const data = await response.json();
+        if (data.status === "success" && data.redirect) {
+            window.location.href = data.redirect;
+        }
+    }
+  } catch (error) {
+    console.error("Hubo un error al registrar el usuario:", error);
   }
 };
 
-document.getElementById("btnRegister").onclick = registerUser;

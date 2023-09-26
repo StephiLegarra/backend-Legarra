@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
+import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
 import { isValidPassword, createHash } from "./bcrypt.js";
 import jwt from "passport-jwt";
