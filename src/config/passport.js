@@ -10,22 +10,39 @@ const LocalStrategy = local.Strategy;
 
 //ESTRATEGIAS DE PASSPORT
 const initializePassport = ()=>{
-  passport.use("register", new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, 
+passport.use("login", new LocalStrategy({passwordField:"password",usernameField:"email"},
+        async (username, password, done) => {
+          console.log("authenticate user:", username);
+  
+          try {
+            let user = await userModel.findOne({ email: username });
+  
+            if (!user) {
+              return done(null, false, { message: "Error! El usuario es incorrecto!" });
+            }
+            if (!isValidPassword(user, password)) {
+              return done(null, false, { message: "Error! La contraseña es incorrecta!" });
+            }
+            return done(null, user);
+          } catch (error) {
+            return done(error);
+          }
+        }
+      )
+    );
+
+  passport.use("register", new LocalStrategy({passReqToCallback:true, usernameField:"email"}, 
   async (req, username, password, done) => {
           const {first_name, last_name, email, age} = req.body;
           try {
               let user = await userModel.findOne({email:username})
               if (user){
-                  console.log("Este Usuario ya se encuentra registrado en nuestra base de datos");
+                  console.log("El usuario " + email + " ya se encuentra registrado!");
                   return done(null, false);
               }
-              user ={
-                  first_name,
-                  last_name,
-                  email,
-                  age,
-                  password: createHash(password)
-              }
+
+              user = {first_name, last_name, email, age, password: createHash(password)}
+
               if (user.email == "adminCoder@coder.com" && password === "adminCod3r123") {
                   user.rol = "admin";
                 } else {
@@ -42,33 +59,9 @@ const initializePassport = ()=>{
            }
   }))
   
-  passport.use(
-      "login",
-      new LocalStrategy(
-        { usernameField: "email", passwordField: "password" },
-        async (username, password, done) => {
-          console.log("authenticate user:", username);
-  
-          try {
-            let user = await userModel.findOne({ email: username });
-  
-            if (!user) {
-              return done(null, false, { message: "El usuario es incorrecto!" });
-            }
-            if (!isValidPassword(user, password)) {
-              return done(null, false, { message: "La contraseña es incorrecta!" });
-            }
-            return done(null, user);
-          } catch (error) {
-            return done(error);
-          }
-        }
-      )
-    );
-  
   passport.use("jwt", new JWTStrategy ({jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), 
       secretOrKey:"3sUnS3cr3t0"}, 
-      async(jwt_payload, done)=>{
+      async(jwt_payload, done) => {
           try {
               const user = await userModel.findOne({email: jwt_payload.email});
               if(!user){
@@ -76,7 +69,7 @@ const initializePassport = ()=>{
               }
               return done (null, user);
           } catch (error) {
-              return done (error);
+              return done (error)
           }
       }))
   }
@@ -92,8 +85,6 @@ passport.deserializeUser(async(id, done) => {
   done(null, user)
 })
 
-export default initializePassport;
-
 //COOKIEEXTRACTOR
 const cookieExtractor = (req) => {
   let token = null;
@@ -105,4 +96,4 @@ const cookieExtractor = (req) => {
   return token;
 };
 
-
+export default initializePassport;

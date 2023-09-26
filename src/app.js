@@ -13,7 +13,7 @@ import viewsRouter from "./routes/view.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
-import { initializePassport, passportSession } from "./config/passport.js"; //VER
+import initializePassport from "./config/passport.js"; 
 import initializeGitHubPassport from "./config/github.js";
 
 const app = express();
@@ -53,7 +53,7 @@ app.use(session({
     cookie: {secure:false}
   }));
 initializeGitHubPassport();
-app.use(initializePassport, passportSession);
+initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 

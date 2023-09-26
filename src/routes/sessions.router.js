@@ -1,7 +1,6 @@
 import { Router } from "express";
 import UserManager from "../dao/UserManager.js";
 import passport from "passport";
-import { userModel } from "../dao/models/user.model.js";
 import { createHash } from "../config/bcrypt.js";
 import { passportCall, authorization } from "../config/authorization.js";
 import jwt from "jsonwebtoken";
@@ -11,21 +10,16 @@ const sessionsRouter = Router();
 const UM = new UserManager();
 
 //LOGIN DE USUARIO
-sessionsRouter.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/faillogin" }),
-  async (req, res) => {
+sessionsRouter.post("/login", passport.authenticate("login", { failureRedirect: "/faillogin" }), async (req, res) => {
     try {
       if (!req.user)
-      return res.status(401).send({
-        status: "Error",
-        message: "Usuario y Contraseña incorrectos!",
+      return res.status(401).send({status: "Error", message: "Usuario y/o contraseña incorrecto!",
       });
 
       const { email, password } = req.body;
   
-      let token = jwt.sign({ email: email, password: password, rol: "user"}, PRIVATE_KEY,{expiresIn: "24h"});
-      res.cookie("coderCookieToken", token, {maxAge: 3600 * 1000, httpOnly: true,});
+      let token = jwt.sign({ email:email, password:password, rol:"user"}, PRIVATE_KEY,{expiresIn:"24h"});
+      res.cookie("coderCookieToken", token, {maxAge:3600*1000, httpOnly:true});
   
       console.log("token", token);
   
@@ -39,13 +33,10 @@ sessionsRouter.post(
       return res.status(200).json({ status: "success", redirect: "/products" });
     } catch (error) {
       res.status(500).send({ error: error.message });
-    }
-  }
-);
+    }});
 
 //REGISTRO DE USUARIO
-sessionsRouter.post("/register", (req,res, next)=>{ 
-  passport.authenticate("register", (err, user, info) => {
+sessionsRouter.post("/register", (req,res, next) => {passport.authenticate("register", (err, user, info) => {
   if(err){
       return res.status(500).json({status:"error", message: "Error interno"})
   }
@@ -109,7 +100,7 @@ sessionsRouter.get(
 );
 
 //CURRENT
-router.get("/current", passportCall("jwt"), authorization("user"), (req, res) => {
+sessionsRouter.get("/current", passportCall("jwt"), authorization("user"), (req, res) => {
   res.send({status:"OK", payload:req.user});
 });
 
