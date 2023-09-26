@@ -3,35 +3,40 @@ import UserManager from "../dao/UserManager.js";
 import passport from "passport";
 import { userModel } from "../dao/models/user.model.js";
 import { createHash } from "../config/bcrypt.js";
+import { passportCall, authorization } from "../config/authorization.js";
+import jwt from "jsonwebtoken";
 
+const PRIVATE_KEY = "3sUnS3cr3t0";
 const sessionsRouter = Router();
 const UM = new UserManager();
 
 //LOGIN DE USUARIO
-sessionsRouter.get(
+sessionsRouter.post(
   "/login",
-  passport.authenticate("local"),
+  passport.authenticate("login", { failureRedirect: "/faillogin" }),
   async (req, res) => {
     try {
       if (!req.user)
-        return res.status(400).send({ status: "error", error: "Invalid" });
+      return res.status(401).send({
+        status: "Error",
+        message: "Usuario y Contraseña incorrectos!",
+      });
 
-      const email = req.user.email;
-      let user = await userModel.findOne({ email });
-      if (user) {
-        req.session.user = {
-          name: `${user.first_name} ${user.last_name}`,
-          email: req.user.email,
-          age: req.user.age,
-          rol: req.user.rol,
-        };
-      }
-      if (user === "adminCoder@coder.com") {
-        req.session.user = {
-          rol: "admin",
-        };
-      }
-      res.sendStatus(201);
+      const { email, password } = req.body;
+  
+      let token = jwt.sign({ email: email, password: password, rol: "user"}, PRIVATE_KEY,{expiresIn: "24h"});
+      res.cookie("coderCookieToken", token, {maxAge: 3600 * 1000, httpOnly: true,});
+  
+      console.log("token", token);
+  
+      req.session.user = {
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        email: req.user.email,
+        age: req.user.age,
+        rol: req.user.rol
+      };
+      return res.status(200).json({ status: "success", redirect: "/products" });
     } catch (error) {
       res.status(500).send({ error: error.message });
     }
@@ -39,46 +44,21 @@ sessionsRouter.get(
 );
 
 //REGISTRO DE USUARIO
-sessionsRouter.post("/register", async (req, res) => {
-  try {
-    const { first_name, last_name, email, age, password } = req.body;
-    const existe = await UM.getUserByEmail({
-      email,
-    });
-    if (existe) {
-      return res.status(400).send({
-        status: "error",
-        error: "Este mail ya esta registrado",
-      });
-    }
-    const user = {
-      first_name,
-      last_name,
-      email,
-      age,
-      password: createHash(password),
-    };
-
-    let result = await UM.addUser(user);
-    console.log(result);
-
-    req.session.user = {
-      name: `${user.first_name} ${user.last_name}`,
-      email: user.email,
-      age: user.age,
-      rol: "usuario",
-    };
-
-    console.log(req.session.user);
-
-    res.redirect("/login");
-    res.status(201).send({
-      status: "success",
-      message: "Usuario Registrado!",
-    });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
+sessionsRouter.post("/register", (req,res, next)=>{ 
+  passport.authenticate("register", (err, user, info) => {
+  if(err){
+      return res.status(500).json({status:"error", message: "Error interno"})
   }
+  if(!user){
+      return res.status(401).json({status:"error", message: "Error al registarte bajo esos datos"})
+  }
+  req.logIn(user, (logInError)=>{
+      if(logInError){
+          return res.status(500).json({status:"error", message: "Error interno"})
+      }
+      return res.status(200).json({status:"success", redirect:"/login"})
+  })
+})(req, res, next); 
 });
 
 //LOGOUT DE USUARIO
@@ -127,5 +107,10 @@ sessionsRouter.get(
     res.redirect("/profile");
   }
 );
+
+//CURRENT
+router.get("/current", passportCall("jwt"), authorization("user"), (req, res) => {
+  res.send({status:"OK", payload:req.user});
+});
 
 export default sessionsRouter;

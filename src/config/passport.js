@@ -1,56 +1,108 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
-import { isValidPassword } from "./bcrypt.js";
+import { isValidPassword, createHash } from "./bcrypt.js";
+import jwt from "passport-jwt";
 
-//ESTRATEGIA LOCAL
-passport.use(
-  "local",
-  new LocalStrategy(
-    {
-      usernameField: "email",
-      passwordField: "password",
-      passReqToCallback: true,
-    },
-    async (req, email, password, done) => {
-      let user = await userModel.findOne({ email: email });
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
+const LocalStrategy = local.Strategy;
 
-      if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
-        user = {
-          first_name: "coderhouse",
-          email: email,
-          password: password,
-          rol: "admin",
-        };
-      }
-      if (!user) {
-        return done(error);
-      }
-      if (user.password != "adminCod3r123") {
-        if (!isValidPassword(password, user.password)) {
-          return done(error);
+//ESTRATEGIAS DE PASSPORT
+const initializePassport = ()=>{
+  passport.use("register", new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, 
+  async (req, username, password, done) => {
+          const {first_name, last_name, email, age} = req.body;
+          try {
+              let user = await userModel.findOne({email:username})
+              if (user){
+                  console.log("Este Usuario ya se encuentra registrado en nuestra base de datos");
+                  return done(null, false);
+              }
+              user ={
+                  first_name,
+                  last_name,
+                  email,
+                  age,
+                  password: createHash(password)
+              }
+              if (user.email == "adminCoder@coder.com" && password === "adminCod3r123") {
+                  user.rol = "admin";
+                } else {
+                  user.rol = "user";
+                }
+              let resultado = await userModel.create(user);
+              console.log("Usuario registrado correctamente! " + resultado);
+              if (resultado) {
+                  return done (null, resultado);
+              }
+          } catch (error) {
+              console.log("Error en el registro", error);
+              return done(error);
+           }
+  }))
+  
+  passport.use(
+      "login",
+      new LocalStrategy(
+        { usernameField: "email", passwordField: "password" },
+        async (username, password, done) => {
+          console.log("authenticate user:", username);
+  
+          try {
+            let user = await userModel.findOne({ email: username });
+  
+            if (!user) {
+              return done(null, false, { message: "El usuario es incorrecto!" });
+            }
+            if (!isValidPassword(user, password)) {
+              return done(null, false, { message: "La contraseña es incorrecta!" });
+            }
+            return done(null, user);
+          } catch (error) {
+            return done(error);
+          }
         }
-      }
-      if (user.password != "adminCod3r123") {
-        delete user.password;
-      }
-      done(null, user);
-    }
-  )
-);
+      )
+    );
+  
+  passport.use("jwt", new JWTStrategy ({jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), 
+      secretOrKey:"3sUnS3cr3t0"}, 
+      async(jwt_payload, done)=>{
+          try {
+              const user = await userModel.findOne({email: jwt_payload.email});
+              if(!user){
+                  return done (null, false, {message: "El usuario no pudo ser encontrado en nuestra base de datos"})
+              }
+              return done (null, user);
+          } catch (error) {
+              return done (error);
+          }
+      }))
+  }
 
-passport.serializeUser((user, next) => {
-  next(null, user["email"]);
-});
+//SERIALIZE
+passport.serializeUser((user, done) => {
+  done(null, user._id)
+})
 
-passport.deserializeUser((username, next) => {
-  const user = userModel.findOne({ email: username });
-  next(null, user);
-});
+//DESERIALIZE
+passport.deserializeUser(async(id, done) => {
+  let user = await userModel.findById(id)
+  done(null, user)
+})
 
-export const initializePassport = passport.initialize();
-export const passportSession = passport.session();
+export default initializePassport;
 
-export const autenticacionUserPass = passport.authenticate("local", {
-  failWithError: true,
-});
+//COOKIEEXTRACTOR
+const cookieExtractor = (req) => {
+  let token = null;
+
+  if (req && req.cookies) {
+    token = req.cookies["coderCookieToken"];
+  }
+
+  return token;
+};
+
+

@@ -44,6 +44,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+//REDIRECT 
+router.get("/", async (req, res) => {
+  try {
+    res.status(200).redirect("/login");
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
+//ERROR AL INGRESAR
+router.get("/faillogin", (req, res) =>{
+  res.status(401).json({
+      status:"error",
+      message: "Error en el ingreso al sitio con ese mail y contraseña"
+  });
+})
+
 //REAL TIME PRODUCTS
 router.get("/realtimeproducts", async (req, res) => {
   try {
@@ -96,15 +113,6 @@ router.get("/chat", checkSession, async (req, res) => {
     res.render("chat");
   } catch (error) {
     res.status(500).send({ error: error.message });
-  }
-});
-
-//REDIRECT
-router.get("/", async (req, res) => {
-  try {
-    res.status(200).redirect("/login");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
   }
 });
 

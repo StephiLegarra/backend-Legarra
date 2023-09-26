@@ -6,16 +6,14 @@ import __dirname from "./utils.js";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
-
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/view.router.js";
-
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
-import { initializePassport, passportSession } from "./config/passport.js";
+import { initializePassport, passportSession } from "./config/passport.js"; //VER
 import initializeGitHubPassport from "./config/github.js";
 
 const app = express();
@@ -42,19 +40,18 @@ app.use(express.static(__dirname));
 
 //SESSION
 app.use(cookieParser());
-app.use(
-  session({
-    store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
+app.use(session({
+    store: new MongoStore({
+      mongoUrl: "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      collectionName:"sessions",
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
       ttl: 10000,
     }),
     secret: "3sUnS3cr3t0",
     resave: false,
     saveUninitialized: true,
-  })
-);
+    cookie: {secure:false}
+  }));
 initializeGitHubPassport();
 app.use(initializePassport, passportSession);
 app.use(passport.initialize());
@@ -83,9 +80,7 @@ import UserManager from "./dao/UserManager.js";
 const UM = new UserManager();
 
 // CONECT MONGO DB
-mongoose.connect(
-  "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority"
-);
+mongoose.connect("mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority");
 
 mongoose.connection.on("connected", () => {
   console.log("Conectado a MongoDB");
