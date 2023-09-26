@@ -43,8 +43,8 @@ sessionsRouter.post("/register", (req,res, next) => {passport.authenticate("regi
   if(!user){
       return res.status(401).json({status:"error", message: "Error al registarte bajo esos datos"})
   }
-  req.logIn(user, (logInError)=>{
-      if(logInError){
+  req.logIn(user, (loginError)=>{
+      if(loginError){
           return res.status(500).json({status:"error", message: "Error interno"})
       }
       return res.status(200).json({status:"success", redirect:"/login"})

@@ -19,6 +19,13 @@ const registerUser = async () => {
         const data = await response.json();
         if (data.status === "success" && data.redirect) {
             window.location.href = data.redirect;
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: 'Usuario registrado con exito',
+              showConfirmButton: false,
+              timer: 2000
+            })
         }
     }
   } catch (error) {
@@ -26,3 +33,4 @@ const registerUser = async () => {
   }
 };
 
+document.getElementById("btnRegister").onclick = registerUser;

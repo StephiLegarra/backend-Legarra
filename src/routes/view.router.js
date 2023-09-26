@@ -53,14 +53,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-//ERROR AL INGRESAR
-router.get("/faillogin", (req, res) =>{
-  res.status(401).json({
-      status:"error",
-      message: "Error en el ingreso al sitio con ese mail y contraseña"
-  });
-})
-
 //REAL TIME PRODUCTS
 router.get("/realtimeproducts", async (req, res) => {
   try {
@@ -148,5 +140,13 @@ router.get("/profile", checkSession, (req, res) => {
 router.get("/restore", checkSession, (req, res) => {
   res.render("restore");
 });
+
+//ERROR AL INGRESAR
+router.get("/faillogin", (req, res) =>{
+  res.status(401).json({
+      status:"error",
+      message: "Error en el ingreso al sitio con ese mail y contraseña"
+  });
+})
 
 export default router;
