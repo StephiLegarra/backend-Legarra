@@ -11,18 +11,9 @@ class ProductManager {
 
   async addProduct(product) {
     try {
-      const { title, description, price, thumbnail, code, stock, category } =
-        product;
+      const { title, description, price, thumbnail, code, stock, category } = product;
 
-      if (
-        !title ||
-        !description ||
-        !price ||
-        !thumbnail ||
-        !code ||
-        !stock ||
-        !category
-      ) {
+      if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
         return console.log("Debes completar todos los datos!");
       }
 
@@ -76,18 +67,8 @@ class ProductManager {
       });
       let status = products ? "success" : "error";
 
-      let prevLink = products.hasPrevPage
-        ? "http://localhost:8080/products?limit=" +
-          limit +
-          "&page=" +
-          products.prevPage
-        : null;
-      let nextLink = products.hasNextPage
-        ? "http://localhost:8080/products?limit=" +
-          limit +
-          "&page=" +
-          products.nextPage
-        : null;
+      let prevLink = products.hasPrevPage ? "http://localhost:8080/products?limit=" + limit + "&page=" + products.prevPage : null;
+      let nextLink = products.hasNextPage ? "http://localhost:8080/products?limit=" + limit + "&page=" + products.nextPage : null;
 
       products = {
         status: status,
@@ -101,7 +82,6 @@ class ProductManager {
         prevLink: prevLink,
         nextLink: nextLink,
       };
-
       return products;
     } catch (err) {
       console.log(err.message);

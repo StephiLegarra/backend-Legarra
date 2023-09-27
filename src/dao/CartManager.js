@@ -24,10 +24,7 @@ class CartManager {
         CartManager.id = max;
       }
 
-      const newCart = {
-        id: CartManager.id++,
-        products: [],
-      };
+      const newCart = {id: CartManager.id++, products: []};
 
       await cartModel.create(newCart);
       console.log("El carrito ha sido creado");
@@ -80,16 +77,10 @@ class CartManager {
 
       if (!exist) {
         const productAdd = { product: product._id, quantity: 1, id: pid };
-        await cartModel.updateOne(
-          { id: cid },
-          { $push: { products: productAdd } }
-        );
+        await cartModel.updateOne({ id: cid },{ $push: { products: productAdd } });
         console.log("El producto ha sido agregado al carrito");
       } else {
-        await cartModel.updateOne(
-          { id: cid, "products.id": pid },
-          { $inc: { "products.$.quantity": 1 } }
-        );
+        await cartModel.updateOne({ id: cid, "products.id": pid }, { $inc: { "products.$.quantity": 1 } });
         console.log("Se agrego una unidad más del producto al carrito");
       }
       return product;

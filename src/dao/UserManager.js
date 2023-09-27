@@ -26,8 +26,7 @@ class UserManager {
 
       if (userLogged) {
         if (userLogged) {
-          const rol =
-            userLogged.email === "adminCoder@coder.com" ? "admin" : "usuario";
+          const rol = userLogged.email === "adminCoder@coder.com" ? "admin" : "usuario";
 
           req.session.user = {
             id: userLogged._id,
@@ -37,19 +36,13 @@ class UserManager {
             rol: rol,
           };
 
-          console.log(
-            "Valor de req.session.user después de la autenticación:",
-            req.session.user
-          );
+          console.log("Valor de req.session.user después de la autenticación:", req.session.user);
 
           const userToReturn = userLogged;
           console.log("Valor de userToReturn:", JSON.stringify(userToReturn));
           return userToReturn;
         }
-        console.log(
-          "Valor de userLogged antes de devolver falso:",
-          JSON.stringify(userLogged)
-        );
+        console.log("Valor de userLogged antes de devolver falso:", JSON.stringify(userLogged));
         return false;
       }
 
@@ -62,13 +55,11 @@ class UserManager {
   //TRAER USUARIO POR MAIL
   async getUserByEmail(user) {
     try {
-      const userRegisteredBefore =
-        (await userModel.findOne([{ email: user }])) || null;
+      const userRegisteredBefore = (await userModel.findOne([{ email: user }])) || null;
       if (userRegisteredBefore) {
         console.log("Mail registrado anteriormente");
         return user;
       }
-
       return true;
     } catch (error) {
       return false;
@@ -78,15 +69,12 @@ class UserManager {
   //REESTABLECER CONTRASEÑA
   async restorePassword(user, pass) {
     try {
-      const userLogged =
-        (await userModel.updateOne({ email: user }, { password: pass })) ||
-        null;
+      const userLogged = (await userModel.updateOne({ email: user }, { password: pass })) || null;
 
       if (userLogged) {
         console.log("Password Restored!");
         return userLogged;
       }
-
       return false;
     } catch (error) {
       return false;

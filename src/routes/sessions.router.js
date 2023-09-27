@@ -14,7 +14,7 @@ sessionsRouter.post("/login", passport.authenticate("login", { failureRedirect: 
     try {
       if (!req.user)
       return res.status(401).send({status: "Error", message: "Usuario y/o contraseña incorrecto!"});
-      role
+      
       const {email,password} = req.body;
   
       let token = jwt.sign({ email:email, password:password, rol:"user"}, PRIVATE_KEY,{expiresIn:"24h"});
@@ -68,29 +68,18 @@ sessionsRouter.get("/restore", async (req, res) => {
   const passwordRestored = await UM.restorePassword(user, pass);
 
   if (passwordRestored) {
-    res.send({
-      status: "OK",
-      message: "La contraseña fue actualizada correctamente!",
-    });
+    res.send({status: "OK", message: "La contraseña fue actualizada correctamente!"});
   } else {
-    res.status(401).send({
-      status: "Error",
-      message: "No se pudo actualizar la contraseña!",
-    });
+    res.status(401).send({status: "Error", message: "No se pudo actualizar la contraseña!"});
   }
 });
 
 //LOGIN CON GITHUB
-sessionsRouter.get(
-  "/github",
-  passport.authenticate("github", { scope: ["user:email"] }),
-  async (req, res) => {}
-);
+sessionsRouter.get("/github", passport.authenticate("github", { scope: ["user:email"] }), 
+  async (req, res) => {});
 
 //Callback -de github
-sessionsRouter.get(
-  "/githubcallback",
-  passport.authenticate("github", { failureRedirect: "/login" }),
+sessionsRouter.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }),
   async (req, res) => {
     req.session.user = req.user;
     req.session.loggedIn = true;

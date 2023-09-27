@@ -4,15 +4,11 @@ import { userModel } from "../dao/models/user.model.js";
 
 //INICIAR SESION CON GIHTUB
 const initializeGitHubPassport = () => {
-  passport.use(
-    "github",
-    new GitHubStrategy(
-      {
+  passport.use("github", new GitHubStrategy({
         clientID: "Iv1.1d8942389cbba2eb",
         clientSecret: "2f00b89e3bce4c99b9611c9c9f12af42ff08e61a",
         callbackURL: "http://localhost:8080/api/sessions/githubcallback",
-      },
-      async (accessToken, refreshToken, profile, done) => {
+      }, async (accessToken, refreshToken, profile, done) => {
         try {
           console.log(profile);
           let user = await userModel.findOne({ email: profile._json.email });
