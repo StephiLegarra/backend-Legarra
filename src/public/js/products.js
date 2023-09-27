@@ -18,3 +18,5 @@ addToCartButtons.forEach((button) => {
       });
   });
 });
+
+

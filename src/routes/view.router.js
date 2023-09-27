@@ -9,10 +9,7 @@ const carts = new CartManager();
 //CHECKSESSION
 //Control de acceso
 const checkSession = (req, res, next) => {
-  console.log(
-    "Verificando req.session.user en checkSession:",
-    req.session.user
-  );
+  console.log("Verificando req.session.user en checkSession:", req.session.user);
   if (req.session && req.session.user) {
     next();
   } else {
@@ -22,10 +19,7 @@ const checkSession = (req, res, next) => {
 
 const checkAlreadyLoggedIn = (req, res, next) => {
   console.log("Verificando req.session en checkAlreadyLoggedIn:", req.session);
-  console.log(
-    "Verificando req.session.user en checkAlreadyLoggedIn:",
-    req.session.user
-  );
+  console.log("Verificando req.session.user en checkAlreadyLoggedIn:", req.session.user);
   if (req.session && req.session.user) {
     console.log("Usuario ya autenticado, redirigiendo a /profile");
     res.redirect("/profile");

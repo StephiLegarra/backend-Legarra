@@ -12,7 +12,7 @@ const registerUser = async () => {
       headers: { "Content-type": "application/json; charset=UTF-8" },
       body: JSON.stringify(user),
     });
-
+    
     if (!response.ok) {
         console.error("Error al registrar el usuario:", await response.text());
     } else {

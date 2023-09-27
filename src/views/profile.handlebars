@@ -2,19 +2,15 @@
   <div class="row">
     <div class="col-md-8 offset-md-2">
       <div class="user-data">
-        <h1 class="pb-5">Bienvenidx,
-          {{user.first_name}}
-          {{user.last_name}}!</h1>
-        <h4>Tu correo electrónico es: {{user.email}}</h4>
-        <p>Tu rol es: {{user.rol}}</p>
+        <h1 class="pb-5">Bienvenidx,{{user.first_name}} {{user.last_name}}!</h1>
+        <h4 class="mb-3">Tu correo electrónico es: {{user.email}}</h4>
+        <p class="mb-3">Tu rol es: {{user.rol}}</p>
       </div>
+        <p class="mb-"> Si deseas actualizar tu contraseña 
+          <a href="/restore" class="custom-link"> Ingrese aqui </a></p>
 
-      <form
-        action="/api/sessions/logout"
-        method="POST"
-        class="col-md-4 offset-md-4"
-      >
-        <button type="submit" class="btn btn-light">Cerrar Sesión</button>
+      <form action="/api/sessions/logout" method="POST" class="col-md-4 offset-md-4">
+        <button type="submit" class="btn btn-light m-3">Cerrar Sesión</button>
       </form>
     </div>
   </div>

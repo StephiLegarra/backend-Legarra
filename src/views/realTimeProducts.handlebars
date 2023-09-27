@@ -1,40 +1,39 @@
 <div class="container">
-  <h2>TODOS NUESTROS PRODUCTOS</h2>
-  <br/>
- <div id="content" class="row"></div>
+  <h2 class="mb-4">TODOS NUESTROS PRODUCTOS</h2>
+  <div id="content" class="row"></div>
 </div>
 
 <div class="container">
   <div class="row mb-3">
     <div class="col-md-8 mx-auto">
        <p style="color: white;"> ----------------------------------------------------</p>
-      <h2>NUEVO PRODUCTO</h2>
+       <h2>NUEVO PRODUCTO</h2>
        <p style="color: white;"> ----------------------------------------------------</p>
-      <form  id="miFormularioPost" onsubmit>
+       <form  id="miFormularioPost" onsubmit>
          <div class="mb-3">
             <label for="title" class="form-label">Title:</label>
             <input type="text" class="form-control" id="title" name="title" required />
-         <br /></div>
+         </div>
          <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Imagen:</label>
             <input type="text" class="form-control" id="thumbnail" name="thumbnail">
-          <br/> </div>
-        <div class="mb-3">
+         </div>
+         <div class="mb-3">
               <label for="Description" class="form-label">Description:</label>
               <input type="text" class="form-control" id="description" name="description" required />
-        <br /></div>
-        <div class="mb-3">
+         </div>
+         <div class="mb-3">
               <label for="price" class="form-label">price:</label>
               <input type="text" class="form-control" id="price" name="price" required />
-        <br /></div>
-        <div class="mb-3">
+         </div>
+         <div class="mb-3">
               <label for="category" class="form-label">category:</label>
               <input type="text" class="form-control" id="category" name="category" required />
-        <br /></div>
-        <div class="mb-3">
+         </div>
+         <div class="mb-3">
               <label for="stock" class="form-label">stock:</label>
               <input type="text" class="form-control" id="stock" name="stock" required />
-        <br /></div>
+         </div>
         <button type="submit" class="btn btn-light" onclick="addProduct()" id="btnAgregarProducto">Enviar</button>
       </form> 
     </div>
@@ -42,16 +41,15 @@
 
   
     <div>
-      <h2>ELIMINAR PRODUCTO</h2>
-       <p style="color: white;"> ----------------------------------------------------</p>
-      <form id="miFormularioDelete" onsubmit>
+     <h2>ELIMINAR PRODUCTO</h2>
+     <p style="color: white;"> ----------------------------------------------------</p>
+     <form id="miFormularioDelete" onsubmit>
         <label for="id">id:</label>
         <input type="text" id="id" name="id" required />
         <br /> <br>
         <button type="submit" class="btn btn-light" onclick="deleteProduct()" id="btnEliminarProducto">Enviar</button>
       </form>
     </div>
-
   </div>
 
 </div>

@@ -4,25 +4,16 @@
   <div class="row">
     <div class="col-md-12">
       <div class="d-flex justify-content-center align-items-center">
-        <div
-          class="card border-0 mb-5"
-          style="max-width: 500px; border-radius: 15px;"
-        >
+        <div class="card border-0 mb-5" style="max-width: 500px; border-radius: 15px;">
           <h3>{{getProducts.title}}</h3>
           <div class="slides">
-            <img
-              src="{{getProducts.thumbnail}}"
-              alt="imagen del producto"
-              class="img-fluid"
-            />
+            <img src="{{getProducts.thumbnail}}" alt="imagen del producto" class="img-fluid"/>
           </div>
           <div class="card-body text-center">
             <h4>Precio: ${{getProducts.price}}</h4>
             <h6>{{getProducts.description}}</h6>
             <p class="card_id"> {{getProducts.id}}</p>
-            <button class="btn btn-secondary btn-block" id="addToCart">
-              Agregar al carrito
-            </button>
+            <button class="btn btn-secondary btn-block" id="addToCart"> Agregar al carrito</button>
           </div>
         </div>
       </div>

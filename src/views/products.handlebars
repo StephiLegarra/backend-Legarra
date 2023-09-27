@@ -2,14 +2,9 @@
   <h2 class="pb-5">TODOS NUESTROS PRODUCTOS</h2>
   <div class="row">
     <div class="row d-flex align-items-center pb-4">
-      <h4 class="col-md-8 text-center">Bienvenidx,
-        {{user.role}}:
-        {{user.first_name}}
-        {{user.last_name}}!</h4>
+      <h4 class="col-md-8 text-center">Bienvenidx,{{user.rol}}: {{user.first_name}} {{user.last_name}}!</h4>
       <a href="/profile" class="col-md-4 text-md-end custom-link">
-        <i class="bi bi-person-circle"> </i>
-        Mi perfil
-      </a>
+        <i class="bi bi-person-circle"> </i> Mi perfil </a>
     </div>
 
     {{#each getProducts.payload}}
@@ -18,19 +13,14 @@
           <h3>{{this.title}} </h3>
           <div class="slides">
             <a href="/products/{{this.id}}">
-              <img
-                src="{{this.thumbnail}}"
-                alt="imagen del producto"
-                class="img-fluid"
-              />
+              <img src="{{this.thumbnail}}" alt="imagen del producto" class="img-fluid" />
             </a>
           </div>
           <div class="card-body text-center">
             <h4>Precio: ${{this.price}}</h4>
             <h6>{{this.description}}</h6>
             <p class="card_id">{{this.id}}</p>
-            <button class="btn btn-secondary btn-block" id="addToCart">Agregar
-              al carrito</button>
+            <button class="btn btn-secondary btn-block" id="addToCart">Agregar al carrito</button>
           </div>
         </div>
       </div>
@@ -43,18 +33,13 @@
         <ul class="pagination justify-content-center">
           {{#if getProducts.hasPrevPage}}
             <li class="page-item">
-              <a class="page-link" href="{{getProducts.prevLink}}">
-                Anterior
-              </a>
+              <a class="page-link" href="{{getProducts.prevLink}}"> Anterior </a>
             </li>
           {{/if}}
 
           {{#if getProducts.hasPrevPage}}
             <li class="page-item">
-              <a
-                class="page-link"
-                href="{{getProducts.prevLink}}"
-              >{{getProducts.prevPage}}</a>
+              <a class="page-link" href="{{getProducts.prevLink}}">{{getProducts.prevPage}}</a>
             </li>
           {{/if}}
 
@@ -64,10 +49,7 @@
 
           {{#if getProducts.hasNextPage}}
             <li class="page-item">
-              <a
-                class="page-link"
-                href="{{getProducts.nextLink}}"
-              >{{getProducts.nextPage}}</a>
+              <a class="page-link" href="{{getProducts.nextLink}}">{{getProducts.nextPage}}</a>
             </li>
           {{/if}}
 

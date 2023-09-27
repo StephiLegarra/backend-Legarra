@@ -27,12 +27,8 @@ const httpServer = app.listen(puerto, () => {
 const socketServer = new Server(httpServer);
 app.set("socketServer", socketServer);
 
-app.engine(
-  "handlebars",
-  expressHandlebars.engine({
-    handlebars: allowInsecurePrototypeAccess(Handlebars),
-  })
-);
+app.engine("handlebars",
+  expressHandlebars.engine({handlebars: allowInsecurePrototypeAccess(Handlebars)}));
 
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
@@ -143,10 +139,7 @@ socketServer.on("connection", async (socket) => {
     }
   });
 
-  socket.broadcast.emit(
-    "mensajeKey",
-    "Hay un nuevo producto en la base de datos"
-  );
+  socket.broadcast.emit("mensajeKey","Hay un nuevo producto en la base de datos");
 
   //CHAT
   socket.on("mensajeChat", async (data) => {

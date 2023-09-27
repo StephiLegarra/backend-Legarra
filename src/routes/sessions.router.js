@@ -13,9 +13,8 @@ const UM = new UserManager();
 sessionsRouter.post("/login", passport.authenticate("login", { failureRedirect: "/faillogin" }), async (req, res) => {
     try {
       if (!req.user)
-      return res.status(401).send({status: "Error", message: "Usuario y/o contraseña incorrecto!",
-      });
-
+      return res.status(401).send({status: "Error", message: "Usuario y/o contraseña incorrecto!"});
+      role
       const {email,password} = req.body;
   
       let token = jwt.sign({ email:email, password:password, rol:"user"}, PRIVATE_KEY,{expiresIn:"24h"});
