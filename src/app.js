@@ -15,14 +15,13 @@ import session from "express-session";
 import passport from "passport";
 import initializePassport from "./config/passport.js"; 
 import initializeGitHubPassport from "./config/github.js";
+import { PORT } from "./config/configs.js";
 
+//EXPRESS
 const app = express();
-const puerto = 8080;
 
 // SERVER HTTP
-const httpServer = app.listen(puerto, () => {
-  console.log(`Servidor inicializado en puerto ${puerto}`);
-});
+const httpServer = app.listen(PORT, () => {console.log(`Servidor inicializado en puerto ${PORT}`)});
 // SOCKET SERVER
 const socketServer = new Server(httpServer);
 app.set("socketServer", socketServer);
