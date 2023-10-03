@@ -1,12 +1,13 @@
 import passport from "passport";
 import GitHubStrategy from "passport-github2";
 import { userModel } from "../dao/models/user.model.js";
+import { CLIENT_SECRET_GITHUB, CLIENT_ID_GITHUB } from "../config/config.js";
 
 //INICIAR SESION CON GIHTUB
 const initializeGitHubPassport = () => {
   passport.use("github", new GitHubStrategy({
-        clientID: "Iv1.1d8942389cbba2eb",
-        clientSecret: "2f00b89e3bce4c99b9611c9c9f12af42ff08e61a",
+        clientID: CLIENT_ID_GITHUB,
+        clientSecret: CLIENT_SECRET_GITHUB,
         callbackURL: "http://localhost:8080/api/sessions/githubcallback",
       }, async (accessToken, refreshToken, profile, done) => {
         try {

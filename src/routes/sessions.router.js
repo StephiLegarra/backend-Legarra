@@ -1,8 +1,8 @@
 import { Router } from "express";
 import UserManager from "../dao/UserManager.js";
 import passport from "passport";
-import { createHash } from "../config/bcrypt.js";
-import { passportCall, authorization } from "../config/authorization.js";
+import { createHash } from "../middleware/bcrypt.js";
+import { passportCall, authorization } from "../middleware/authorization.js";
 import jwt from "jsonwebtoken";
 
 const PRIVATE_KEY = "3sUnS3cr3t0";

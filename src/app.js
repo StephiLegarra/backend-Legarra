@@ -13,9 +13,9 @@ import viewsRouter from "./routes/view.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
-import initializePassport from "./config/passport.js"; 
-import initializeGitHubPassport from "./config/github.js";
-import { PORT } from "./config/configs.js";
+import initializePassport from "./middleware/passport.js"; 
+import initializeGitHubPassport from "./middleware/github.js";
+import { PORT, MONGODB_URL, SECRET_SESSIONS } from "./config/config.js";
 
 //EXPRESS
 const app = express();
@@ -37,12 +37,12 @@ app.use(express.static(__dirname));
 app.use(cookieParser());
 app.use(session({
     store: new MongoStore({
-      mongoUrl: "mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      mongoUrl: MONGODB_URL,
       collectionName:"sessions",
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
       ttl: 10000,
     }),
-    secret: "3sUnS3cr3t0",
+    secret: SECRET_SESSIONS,
     resave: false,
     saveUninitialized: true,
     cookie: {secure:false}
@@ -75,7 +75,7 @@ import UserManager from "./dao/UserManager.js";
 const UM = new UserManager();
 
 // CONECT MONGO DB
-mongoose.connect("mongodb+srv://stephanielegarra:Cluster2023@stephanielegarra.lxv1yij.mongodb.net/ecommerce?retryWrites=true&w=majority");
+mongoose.connect(MONGODB_URL);
 
 mongoose.connection.on("connected", () => {
   console.log("Conectado a MongoDB");

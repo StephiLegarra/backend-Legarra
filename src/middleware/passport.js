@@ -3,6 +3,7 @@ import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
 import { isValidPassword, createHash } from "./bcrypt.js";
 import jwt from "passport-jwt";
+import { ADMIN_PASS, ADMIN_PASS, ADMIN_USER, JWT_KEY } from "../config/config.js";
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
@@ -43,7 +44,7 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
 
               user = {first_name, last_name, email, age, password: createHash(password)}
 
-              if (user.email == "adminCoder@coder.com" && password === "adminCod3r123") {
+              if (user.email == ADMIN_USER && password === ADMIN_PASS) {
                   user.rol = "admin";
                 } else {
                   user.rol = "user";
@@ -60,7 +61,7 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
   }))
   
   passport.use("jwt", new JWTStrategy ({jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), 
-      secretOrKey:"3sUnS3cr3t0"}, 
+      secretOrKey:JWT_KEY}, 
       async(jwt_payload, done) => {
           try {
               const user = await userModel.findOne({email: jwt_payload.email});
