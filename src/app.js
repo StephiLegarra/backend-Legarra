@@ -16,6 +16,7 @@ import passport from "passport";
 import initializePassport from "./middleware/passport.js"; 
 import initializeGitHubPassport from "./middleware/github.js";
 import { PORT, MONGODB_URL, SECRET_SESSIONS } from "./config/config.js";
+import cors from "cors";
 
 //EXPRESS
 const app = express();
@@ -44,7 +45,7 @@ app.use(session({
     }),
     secret: SECRET_SESSIONS,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {secure:false}
   }));
 initializeGitHubPassport();
@@ -61,6 +62,8 @@ app.use("/api/carts/", cartsRouter);
 app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 
+app.use(cors()); 
+
 //IMPORT
 import ProductManager from "./dao/ProductManager.js";
 const productManager = new ProductManager();
@@ -76,11 +79,9 @@ const UM = new UserManager();
 
 // CONECT MONGO DB
 mongoose.connect(MONGODB_URL);
-
 mongoose.connection.on("connected", () => {
   console.log("Conectado a MongoDB");
 });
-
 mongoose.connection.on("error", (err) => {
   console.error("Error conectando a MongoDB:", err);
 });

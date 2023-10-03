@@ -3,7 +3,7 @@ import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
 import { isValidPassword, createHash } from "./bcrypt.js";
 import jwt from "passport-jwt";
-import { ADMIN_PASS, ADMIN_PASS, ADMIN_USER, JWT_KEY } from "../config/config.js";
+import { ADMIN_PASS, ADMIN_USER, JWT_KEY } from "../config/config.js";
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;

@@ -2,6 +2,7 @@ import passport from "passport";
 import GitHubStrategy from "passport-github2";
 import { userModel } from "../dao/models/user.model.js";
 import { CLIENT_SECRET_GITHUB, CLIENT_ID_GITHUB } from "../config/config.js";
+import AuthenticationService from "../services/auth.service.js";
 
 //INICIAR SESION CON GIHTUB
 const initializeGitHubPassport = () => {
@@ -11,22 +12,14 @@ const initializeGitHubPassport = () => {
         callbackURL: "http://localhost:8080/api/sessions/githubcallback",
       }, async (accessToken, refreshToken, profile, done) => {
         try {
-          console.log(profile);
-          let user = await userModel.findOne({ email: profile._json.email });
+          const authService = new AuthenticationService();
+          console.log("Perfil: ", JSON.stringify(profile, null, 2));
+          const user = await authService.githubCallback(profile);
 
           if (user) {
-            return done(null, user);
+              return done(null, user);
           } else {
-            let newUser = {
-              first_name: profile._json.name,
-              last_name: "",
-              email: profile._json.email,
-              age: 100,
-              password: "",
-            };
-
-            let result = await userModel.create(newUser);
-            return done(null, result);
+              return done(null, false);
           }
         } catch (error) {
           return done(error);
