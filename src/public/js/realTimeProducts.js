@@ -93,6 +93,7 @@ socket.on("mensajeKey", (data) => {
   console.log("Se agrego un nuevo producto:" + data);
 });
 */
+
 // DELETE PRODUCT
 const btnEliminarProducto = document.getElementById("btnEliminarProducto");
 btnEliminarProducto.addEventListener("click", async (event) => {

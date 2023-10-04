@@ -4,14 +4,19 @@ class CartServices{
     constructor(){
        this.cartManager = new CartManager();
     }
+
     async creatNewCart (){
         return await this.cartManager.newCart();
-
     }
+
+    async getCarts() {
+        return await this.cartManager.getCarts();
+    }
+
     async getByID(id){
-        return await this.cartManager.getCart(id);
-
+        return await this.cartManager.getCartById(id);
     }
+
     async addNewProduct(cid,pid){
         const resultado = await this.cartManager.addProductToCart(cid, pid);
         if(resultado){
@@ -20,6 +25,11 @@ class CartServices{
             throw new Error("Error al agregar este producto al carrito")
         }
     }
+
+    async addArrayProducts(cid,body) {
+        return await this.cartManager.addArrayProducts(cid, body);
+    }
+
     async updateQuantity(cid, pid, quantity){
         const result = await this.cartManager.updateQuantityProductFromCart(cid, pid, quantity);
         if (result) {
@@ -29,6 +39,7 @@ class CartServices{
         }
         return await this.cartManager.updateQuantityProductFromCart(cid, pid, quantity)
     };
+
     async deleteProduct(cid, pid){
         const result = await this.cartManager.deleteProductFromCart(cid, pid);
         if (result) {
@@ -44,8 +55,9 @@ class CartServices{
           }
         return await this.cartManager.deleteProductFromCart(cid, pid);
     };
+
     async cleanCart(cid){
-        const result = await this.cartManager.deleteProductsFromCart(cid);
+        const result = await this.cartManager.emptyCart(cid);
 
         if (result) {
           res.send({ status: "ok", message: "El carrito se vació correctamente!" });
@@ -55,7 +67,7 @@ class CartServices{
             message: "Error! No se pudo vaciar el Carrito!",
           });
         }
-        return await this.cartManager.deleteProductsFromCart(cid);
+        return await this.cartManager.deleteProductFromCart(cid);
     };
 
 

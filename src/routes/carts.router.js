@@ -1,12 +1,13 @@
 import { Router } from "express";
-import CartManager from "../dao/CartManager.js";
-import ProductManager from "../dao/ProductManager.js";
+import cartsControl from "../controllers/cart.controller.js";
 
 const cartsRouter = Router();
-const carts = new CartManager();
-const products = new ProductManager();
+const CM = new CartManager();
+const PM = new ProductManager();
 
 // CREAR CARRITO
+cartsRouter.post("/", cartsControl.createNewCart.bind(cartsControl));
+/*
 cartsRouter.post("/", async (req, res) => {
   try {
     const newCart = await carts.newCart();
@@ -15,8 +16,11 @@ cartsRouter.post("/", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se pudo crear el Carrito!"});
   }
 });
+*/
 
 //GET CARTS
+cartsRouter.get("/", cartsControl.getCarts.bind(cartsControl))
+/*
 cartsRouter.get("/", async (req, res) => {
   try {
     const getCarts = await carts.getCarts();
@@ -25,8 +29,11 @@ cartsRouter.get("/", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se ha encontrado ningun producto en ningun carrito!"});
   }
 });
+*/
 
 // VER PRODUCTOS DEL CARRITO
+cartsRouter.get("/:cid", cartsControl.getCartByID.bind(cartsControl));
+/*
 cartsRouter.get("/:cid", async (req, res) => {
   const { cid } = req.params;
 
@@ -40,8 +47,11 @@ cartsRouter.get("/:cid", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se han encontrado productos en el carrito!"});
   }
 });
+*/
 
 // AGREGAR PRODUCTOS AL CARRITO
+cartsRouter.post("/:cid/products/:pid", cartsControl.addProduct.bind(cartsControl));
+/*
 cartsRouter.post("/:cid/products/:pid", async (req, res) => {
   const { cid, pid } = req.params;
 
@@ -65,8 +75,11 @@ cartsRouter.post("/:cid/products/:pid", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se pudo agregar el producto al carrito!"});
   }
 });
+*/
 
 // ACTUALIZAR EL CARRITO CON UN ARRAY DE PRODUCTOS
+cartsRouter.put("/:cid", cartsControl.newArrayCart.bind(cartsControl));
+/*
 cartsRouter.put("/:cid", async (req, res) => {
   const { body } = req;
   const { cid } = req.params;
@@ -91,8 +104,11 @@ cartsRouter.put("/:cid", async (req, res) => {
     res.status(500).send({error: error.message});
   }
 });
+*/
 
 //ACTUALIZAR CANTIDAD DE EJEMPLARES DEL PRODUCTO EN EL CARRITO
+cartsRouter.put("/:cid/products/:pid", cartsControl.updateQuantity.bind(cartsControl));
+/*
 cartsRouter.put("/:cid/products/:pid", async (req, res) => {
   const { cid, pid } = req.params;
   const { quantity } = req.body;
@@ -117,8 +133,11 @@ cartsRouter.put("/:cid/products/:pid", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se pudo actualizar el producto del carrito!"});
   }
 });
+*/
 
 // ELIMINAR PRODUCTOS DEL CARRITO
+cartsRouter.delete("/:cid/products/:pid", cartsControl.deleteThisProduct.bind(cartsControl));
+/*
 cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
   const { cid, pid } = req.params;
 
@@ -142,8 +161,11 @@ cartsRouter.delete("/:cid/products/:pid", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se pudo eliminar el producto del carrito!"});
   }
 });
+*/
 
 // VACIAR CARRITO
+cartsRouter.delete("/:cid", cartsControl.cleanCart.bind(cartsControl));
+/*
 cartsRouter.delete("/:cid", async (req, res) => {
   const { cid } = req.params;
 
@@ -161,5 +183,5 @@ cartsRouter.delete("/:cid", async (req, res) => {
     res.status(500).send({status: "error", message: "Error! No se pudo vaciar el carrito!"});
   }
 });
-
+*/
 export default cartsRouter;

@@ -23,7 +23,7 @@ class UserController {
         try {
             const newPass = await this.userService.restorePass(user, createHash(pass));
             if(newPass){
-                return res.send({status:"ok", message: "Contraseña nueva guarda correctamente"});
+                return res.send({status:"ok", message: "Contraseña actualizada correctamente"});
                 location.href = "/profile"
             }else{
                 return res.status(401).send({status:"error", message:"No se pudo actualizar la contraseña"});

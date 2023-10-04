@@ -1,10 +1,13 @@
 import { Router } from "express";
 import ProductManager from "../dao/ProductManager.js";
+import productControl from "../controllers/products.controller.js"
 
 const productsRouter = Router();
-const products = new ProductManager();
+const PM = new ProductManager();
 
 // OBTENER PRODUCTOS
+productsRouter.get("/", productControl.getProducts.bind(productControl));
+/*
 productsRouter.get("/", async (req, res) => {
   // const { limit, page, sort, query } = req.query;
 
@@ -15,8 +18,11 @@ productsRouter.get("/", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+*/
 
 // OBTENER PRODUCTO POR ID
+productsRouter.get("/:id", productControl.getByID.bind(productControl));
+/*
 productsRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -31,8 +37,11 @@ productsRouter.get("/:id", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+*/
 
 // AGREGAR PRODUCTOS
+productsRouter.post("/", productControl.addProduct.bind(productControl));
+/*
 productsRouter.post("/", async (req, res) => {
   const { title, description, price, thumbnail, code, stock, category } = req.body;
 
@@ -60,9 +69,13 @@ productsRouter.post("/", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+*/
 
 // ACTUALIZAR PRODUCTOS
+productsRouter.put("/:id", productControl.updateProd.bind(productControl));
+/*
 productsRouter.put("/:id", async (req, res) => {
+  
   const { id } = req.params;
 
   const { title, description, price, thumbnail, code, stock, category } = req.body;
@@ -90,8 +103,11 @@ productsRouter.put("/:id", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+*/
 
 // ELIMINAR PRODUCTO
+productsRouter.delete("/:id", productControl.deleteProd.bind(productControl));
+/*
 productsRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -107,5 +123,6 @@ productsRouter.delete("/:id", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+*/
 
 export default productsRouter;
