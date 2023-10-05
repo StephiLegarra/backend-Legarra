@@ -1,5 +1,5 @@
 import UserManager from "../dao/UserManager.js";
-import usersModel from "../dao/models/user.model.js";
+import { userModel } from "../dao/models/user.model.js";
 import jwt from "jsonwebtoken";
 import { JWT_KEY } from "../config/config.js";
 
@@ -17,6 +17,7 @@ class AuthenticationService {
             const token = jwt.sign({id:user._id, email: user.email, rol: user.rol}, this.secretKey, {expiresIn:'24h'});
             return {user, token}
     }
+    
     async githubCallback(profile){
         try {
             if(!profile||!profile._json){
@@ -26,15 +27,15 @@ class AuthenticationService {
                 console.warn('Email nulo');
                 profile._json.email = 'sinemail@ejemplo.com';
             }
-            let user = await usersModel.findOne({email:profile._json.email});
+            let user = await userModel.findOne({email:profile._json.email});
             if (!user){
-                user = await usersModel.create({
+                user = await userModel.create({
                     first_name:profile._json.name || "GitHubUser",
                     last_name:"",
                     email:profile._json.email,
                     age:100,
                     password:"",
-                    rol: "usuario"
+                    rol: "user"
                 })
             } 
             return user;

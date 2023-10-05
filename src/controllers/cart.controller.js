@@ -4,6 +4,7 @@ import ProductsServices from "../services/products.service.js";
 class CartsControl {
     constructor(){
         this.cartServices = new CartServices();
+        this.productsServices = new ProductsServices();
     }
 
     //CREAR CARRITO
@@ -44,8 +45,7 @@ class CartsControl {
     async addProduct(req,res){
         const { cid, pid } = req.params;
         try {
-            const products = new ProductManager();
-            const getProduct = await this.ProductsServices.getProductsById(parseInt(pid));
+            const getProduct = await this.productsServices.getProductsById(parseInt(pid));
             const getCart = await this.cartServices.getCartById(parseInt(cid));
         
             if (!getCart) {
@@ -75,7 +75,7 @@ class CartsControl {
               }
               console.log(body);
               body.forEach(async (item) => {
-                const getProduct = await this.ProductsServices.getProductsById(parseInt(item.id));
+                const getProduct = await this.productsServices.getProductsById(parseInt(item.id));
                 if (!getProduct) {
                   return res.status(404).send({error: "El id del producto no ha sido encontrado"});
                 }
@@ -92,8 +92,7 @@ class CartsControl {
         const { cid, pid } = req.params;
         const { quantity } = req.body;
       try {
-        const products = new ProductManager();
-        const getProduct = await this.ProductsServices.getProductsById(parseInt(pid));
+        const getProduct = await this.productsServices.getProductsById(parseInt(pid));
         const getCart = await this.cartServices.getCartById(parseInt(cid));
     
         if (!getCart) {
@@ -116,8 +115,7 @@ class CartsControl {
     async deleteThisProduct(req,res){
         const { cid, pid } = req.params;
         try {
-            const products = new ProductManager();
-            const getProduct = await this.ProductsServices.getProductsById(parseInt(pid));
+            const getProduct = await this.productsServices.getProductsById(parseInt(pid));
             const getCart = await this.cartServices.getCartById(parseInt(cid));
         
             if (!getCart) {

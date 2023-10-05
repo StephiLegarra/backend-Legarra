@@ -18,6 +18,7 @@ class UserController {
     
         return res.status(response.status === "success" ? 200 : 400).json(response);
       }
+
     async restore(req, res){
         const {user, pass} = req.query;
         try {
@@ -34,6 +35,7 @@ class UserController {
             return res.status(500).send({status:"error", message:"Error Interno"})
         }
     }
+    
     current(req, res){
         if(req.user){
             return res.send({status:"ok", payload:req.user});
