@@ -103,7 +103,6 @@ socketServer.on("connection", async (socket) => {
 
   //ELIMINAR PRODUCTO POR ID
   socket.on("deleteProduct",async(id)=>{
-    console.log(id);
     const productsList = await PM.getProductsViews();
     await PM.deleteProduct(id);
     socketServer.emit("envioDeProductos", productsList);
