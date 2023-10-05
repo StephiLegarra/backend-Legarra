@@ -40,6 +40,15 @@ class ProductManager {
     }
   }
 
+   //FORMULARIO DESDE LA VISTA
+   getProductsViews =async ()=>{
+    try {
+        return await productModel.find().lean();
+    } catch (error) {
+        return error
+    }
+  }
+
   /* async getProducts(limit) {
     try {
       const getProducts = await productModel.find().lean();
@@ -48,6 +57,7 @@ class ProductManager {
       console.log(err.message);
     }
   }*/
+
 
   async getProducts(obj) {
     try {

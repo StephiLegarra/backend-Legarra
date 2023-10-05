@@ -1,22 +1,26 @@
 <div class="container">
-  <h2 class="mb-4">TODOS NUESTROS PRODUCTOS</h2>
-  <div id="content" class="row"></div>
-</div>
 
-<div class="container">
+  
+   <div class="container-fluid">
+        <h2 class="mb-4">TODOS NUESTROS PRODUCTOS</h2>
+        <div class="row">
+         <article id="content"></article>
+        </div>
+   </div>
+
   <div class="row mb-3">
     <div class="col-md-8 mx-auto">
-       <p style="color: white;"> ----------------------------------------------------</p>
-       <h2>NUEVO PRODUCTO</h2>
-       <p style="color: white;"> ----------------------------------------------------</p>
-       <form  id="miFormularioPost" onsubmit>
+       <form  id="formProduct">
+         <p style="color: white;"> ----------------------------------------------------</p>
+         <h2>NUEVO PRODUCTO</h2>
+         <p style="color: white;"> ----------------------------------------------------</p>
          <div class="mb-3">
             <label for="title" class="form-label">Title:</label>
             <input type="text" class="form-control" id="title" name="title" required />
          </div>
          <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Imagen:</label>
-            <input type="text" class="form-control" id="thumbnail" name="thumbnail">
+            <input type="text" class="form-control" id="thumbnail" name="thumbnail" required />
          </div>
          <div class="mb-3">
               <label for="Description" class="form-label">Description:</label>
@@ -30,30 +34,30 @@
               <label for="category" class="form-label">category:</label>
               <input type="text" class="form-control" id="category" name="category" required />
          </div>
+          <div class="mb-3">
+              <label for="code" class="form-label">code:</label>
+              <input type="text" class="form-control" id="code" name="code" required />
+         </div>
          <div class="mb-3">
               <label for="stock" class="form-label">stock:</label>
               <input type="text" class="form-control" id="stock" name="stock" required />
          </div>
-        <button type="submit" class="btn btn-light" onclick="addProduct()" id="btnAgregarProducto">Enviar</button>
-      </form> 
-    </div>
-  <p style="color: white;"> ----------------------------------------------------</p>
+        <button type="submit" class="btn btn-light" id="btnAddProduct">Agregar</button>
 
-  
-    <div>
-     <h2>ELIMINAR PRODUCTO</h2>
-     <p style="color: white;"> ----------------------------------------------------</p>
-     <form id="miFormularioDelete" onsubmit>
+        <p class="mt-2" style="color: white;"> ----------------------------------------------------</p>
+        <h2>ELIMINAR PRODUCTO</h2>
+        <p style="color: white;"> ----------------------------------------------------</p>
+        <div class="mb-3">
         <label for="id">id:</label>
-        <input type="text" id="id" name="id" required />
-        <br /> <br>
-        <button type="submit" class="btn btn-light" onclick="deleteProduct()" id="btnEliminarProducto">Enviar</button>
-      </form>
-    </div>
+        <input class="pb-3" type="text" id="id" name="id" />
+        </div>
+        <button type="submit" class="btn btn-light" id="btnDeleteProduct">Eliminar</button>
+        </form>
+    </div> 
   </div>
 
-</div>
-</div>
+  </div>
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/realTimeProducts.js"></script>

@@ -66,7 +66,7 @@ app.use(cors());
 
 //IMPORT
 import ProductManager from "./dao/ProductManager.js";
-const productManager = new ProductManager();
+const PM = new ProductManager();
 
 import ChatManager from "./dao/ChatManager.js";
 const chat = new ChatManager();
@@ -91,55 +91,29 @@ socketServer.on("connection", async (socket) => {
   console.log("Conexión establecida");
 
   // PRODUCTOS REAL TIME
-  const products = await productManager.getProducts();
-  socket.emit("realTimeProducts", products);
+  const allProducts = await PM.getProducts();
+  socket.emit("realTimeProducts", allProducts);
 
   // CREAR PRODUCTO
-  socket.on("nuevoProducto", async (data) => {
-    const product = {
-      title: data.title,
-      thumbnail: data.thumbnail,
-      price: data.price,
-      description: data.description,
-      code: data.code,
-      category: data.category,
-      stock: data.stock,
-      status: "",
-    };
-    productManager.addProduct(product);
-    const products = productManager.getProducts();
-    socket.emit("realTimeProducts", products);
+  socket.on("nuevoProducto", async (obj) => {
+    await PM.addProduct(obj);
+    const productsList = await PM.getProductsViews();
+    socketServer.emit("envioDeProductos", productsList);
   });
-  /* socket.on("nuevoProducto", async (data) => {
-    try {
-      const productos = new ProductManager();
-      console.log("Se agrego el producto");
-      console.log(data);
-
-      await productos.addProduct(data);
-      socket.emit("msgServer", "Nuevo producto agregado");
-      socket.emit("msgServer", data);
-    } catch (err) {
-      socket.emit("error", { error: err.message });
-    }
-  });*/
 
   //ELIMINAR PRODUCTO POR ID
-  socket.on("mensajeID", async (data) => {
-    try {
-      const productos = new ProductManager();
-      console.log("Se envio el ID a eliminar");
-      console.log(data);
-      let ID = parseInt(data);
+  socket.on("deleteProduct",async(id)=>{
+    console.log(id);
+    const productsList = await PM.getProductsViews();
+    await PM.deleteProduct(id);
+    socketServer.emit("envioDeProductos", productsList);
+    });
 
-      await productos.deleteProduct(ID);
-      socket.emit("msgServer", "Producto eliminado");
-    } catch (err) {
-      socket.emit("error", { error: err.message });
-    }
+  socket.on("eliminarProducto", (data)=>{
+    PM.deleteProduct(parseInt(data));
+    const productsList = PM.getProducts();
+    socketServer.emit("envioDeProductos", productsList);
   });
-
-  socket.broadcast.emit("mensajeKey","Hay un nuevo producto en la base de datos");
 
   //CHAT
   socket.on("mensajeChat", async (data) => {
