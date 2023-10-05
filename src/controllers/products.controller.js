@@ -19,7 +19,7 @@ class ProductControl{
     async getByID (req, res){
         try {
             const { id } = req.params;
-            const getProducts = await this.productServices.getProductsById(parseInt(id));
+            const getProducts = await this.productServices.getPbyID(parseInt(id));
 
            if (!getProducts) {
            return res.status(404).send({ error: "producto no encontrado" });
@@ -47,18 +47,13 @@ class ProductControl{
                 return false;
               }
 
-              const codeProd = await products.validateCode(code);
-                if (codeProd) {res.status(400).send({status: "error", message: "Error! el código ingresado ya existe!"});
-                 return false;
-              }
-
-              const newProduct = {title,description,price,thumbnail,code,stock,category};
-               newProduct.status = true;
-               await this.productServices.addProduct(newProduct);
-               res.status(200).send({newProduct, message: "el producto ha sido agregado correctamente"});
+              const product = {title,description,price,thumbnail,code,stock,category};
+               product.status = true;
+               await this.productServices.addProduct(product);
+               res.status(200).send({product, message: "el producto ha sido agregado correctamente"});
            
         } catch (error) {
-            res.status(500).send({status: "error", message: "Error Interno"});
+            res.status(500).send({status: "error", message: "Error interno"});
         }
     }
 
@@ -68,7 +63,7 @@ class ProductControl{
         const { title, description, price, thumbnail, code, stock, category } = req.body;
          
         try {
-            const getProducts = await this.productServices.getProductsById(parseInt(id));
+            const getProducts = await this.productServices.getPbyID(parseInt(id));
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }
@@ -84,7 +79,7 @@ class ProductControl{
         
             const actProduct = {title,description,price,thumbnail,code,stock,category};
             actProduct.status = true;
-            await this.productServices.updateProduct(parseInt(id), actProduct);
+            await this.productServices.updateProd(parseInt(id), actProduct);
             res.status(200).send({ actProduct, message: "el producto ha sido actualizado" });     
          } catch (error) {
             console.log(error);
@@ -96,12 +91,11 @@ class ProductControl{
     async deleteProd (req, res){
         const { id } = req.params;
         try {
-            const getProducts = await this.productServices.getProductsById(parseInt(id));
+            const getProducts = await this.productServices.getPbyID(parseInt(id));
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }
-        
-            products.deleteProduct(parseInt(id));
+           await this.productServices.deleteProd(parseInt(id));
             res.status(200).send({ status: "ok", message: "el producto ha sido eliminado" });
         } catch (error) {
             res.status(500).send({status: "error", message: "Error Interno"});

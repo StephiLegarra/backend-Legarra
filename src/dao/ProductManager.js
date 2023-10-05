@@ -17,10 +17,12 @@ class ProductManager {
         return console.log("Debes completar todos los datos!");
       }
 
-      if (await this.validateCode(product.code)) {
-        console.log("El código ingresado ya existe");
-        return false;
-      } else {
+      const exists = await productModel.findOne({code});
+      if (exists) {
+        console.log("Este código ya fue ingresado anteriormente!");
+        return null;
+      }
+
         const products = await productModel.find();
         this.products = products;
 
@@ -32,14 +34,10 @@ class ProductManager {
         await productModel.create(product);
         console.log("El producto fue agregado correctamente");
         return true;
-      }
+      //}
     } catch (err) {
       console.log(err.message);
     }
-  }
-
-  async validateCode(code) {
-    return (await productModel.findOne({ code: code })) || false;
   }
 
   /* async getProducts(limit) {

@@ -6,10 +6,6 @@ class ProductsServices{
     }
 
     async addProduct(product){
-        if(await this.productManager.validateCode(product.code)){
-            console.log("Error codigo ya existente");
-            return null;
-        }
         return await this.productManager.addProduct(product);
     }
 
