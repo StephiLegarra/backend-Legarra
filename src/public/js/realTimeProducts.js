@@ -10,7 +10,6 @@ function updateProductList(products){
  const content = document.getElementById("content");
   let productos = " ";
 
-  if (Array.isArray(products)) {
   products.forEach((product) => {
       productos+= `<div class="col-md-6">
                    <div class="card border-black mb-5">
@@ -26,9 +25,7 @@ function updateProductList(products){
                    </div>`    
   });
   content.innerHTML= productos;
-} else {
-  console.error("'products' no es un array válido.");
-}}
+}
 
 // ADD PRODUCT
 const formProduct = document.getElementById("formProduct");

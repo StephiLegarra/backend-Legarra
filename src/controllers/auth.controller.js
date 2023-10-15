@@ -1,10 +1,12 @@
 import AuthenticationService from "../services/auth.service.js";
+import CartServices from "../services/cart.service.js";
 
 class AuthControl {
     constructor(){
         this.authService = new AuthenticationService();
-
+        this.cartService = new CartServices();
     }
+
     async login (req, res){
         const {email, password} = req.body;
         const userInfo = await this.authService.login(email, password);
@@ -20,8 +22,11 @@ class AuthControl {
             rol: userInfo.user.rol
         }
         console.log("Rol: ", userInfo.user.rol);
+        //CREAR CARRITO VACIO
+        this.cartService.createNewCart();
         return res.status(200).json({status:"success", user: userInfo.user, redirect: "/profile"});
     }
+
     async githubCallback(req, res){
         console.log("Contolando acceso con GitHub");
         try {
