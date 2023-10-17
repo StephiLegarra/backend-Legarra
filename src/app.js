@@ -11,6 +11,7 @@ import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/view.router.js";
 import emailRouter from './routes/email.router.js';
 import smsRouter from './routes/sms.router.js';
+import ticketsRouter from "./routes/tickets.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -64,6 +65,7 @@ app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
+app.use('/api/tickets', ticketsRouter);
 
 app.use(cors()); 
 
