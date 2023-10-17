@@ -149,6 +149,26 @@ class CartsControl {
             res.status(500).send({status: "error", message: "Error! No se pudo vaciar el carrito!"});
         }
     }
+
+    //PURCHASE
+    async purchase(req, res){
+      const { cid } = req.params;
+      try {
+        //traer el carrito
+        const getCart = await this.cartServices.getByID(parseInt(cid));
+        //obtener productos del carrito
+        let products = getCart.products;
+        //obtener el usuario
+        const user = req.user;
+        //llamar al servicio
+        this.purchaseServices.purchase(cartId,products,user);
+  
+
+      } catch(error){
+        res.status(500).send({status: "error", message: "Error! No se pudo procesar la compra!"});
+      }
+
+    }
 }
 
 export default new CartsControl();

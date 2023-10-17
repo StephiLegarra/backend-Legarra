@@ -169,6 +169,20 @@ class CartManager {
       console.log(err.message);
     }
   }
+
+/*
+  //PURCHASE
+  async purchase(req,res) {
+    try {
+      const {cid} = req.params;
+      const cart = await this.getCart(cid);
+      if (!cart) {
+
+      }
+    }
+  }
+  */
+ 
 }
 
 export default CartManager;

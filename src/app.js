@@ -77,15 +77,6 @@ const CM = new CartManager();
 import UserManager from "./dao/UserManager.js";
 const UM = new UserManager();
 
-// CONECT MONGO DB
-mongoose.connect(MONGODB_URL);
-mongoose.connection.on("connected", () => {
-  console.log("Conectado a MongoDB");
-});
-mongoose.connection.on("error", (err) => {
-  console.error("Error conectando a MongoDB:", err);
-});
-
 // APERTURA SOCKET ON
 socketServer.on("connection", async (socket) => {
   console.log("Conexión establecida");

@@ -1,4 +1,4 @@
-import ProductManager from "../dao/ProductManager.js";
+import {ProductManager} from "../dao/factory.js";
 
 class ProductsServices{
     constructor(){
@@ -23,6 +23,10 @@ class ProductsServices{
 
     async deleteProd(id){
         return await this.productManager.deleteProduct(id);
+    }
+
+    async validateStock(id, quantity){
+        return await this.productManager.validateStock(id, quantity);
     }
 }
 

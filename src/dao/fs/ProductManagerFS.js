@@ -3,7 +3,7 @@
 // FILE SYSTEM
 import fs from "fs/promises";
 
-class ProductManager {
+class ProductManagerFS {
   constructor() {
     this.products = [];
     this.path = "./Products.json";
@@ -128,4 +128,4 @@ class ProductManager {
   }
 }
 
-export default ProductManager;
+export default ProductManagerFS;

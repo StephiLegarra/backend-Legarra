@@ -1,5 +1,4 @@
 import ProductsServices from "../services/products.service.js";
-import { socketServer } from "../app.js";
 
 class ProductControl{
     constructor(){
@@ -52,8 +51,6 @@ class ProductControl{
                product.status = true;
                await this.productServices.addProduct(product);
                res.status(200).send({product, message: "el producto ha sido agregado correctamente"});
-               socketServer.emit("addProduct", product);
-           
         } catch (error) {
             res.status(500).send({status: "error", message: "Error interno"});
         }
@@ -99,7 +96,6 @@ class ProductControl{
             }
            await this.productServices.deleteProd(parseInt(id));
             res.status(200).send({ status: "ok", message: "el producto ha sido eliminado" });
-            socketServer.emit("deleteProduct", {_id:id});
         } catch (error) {
             res.status(500).send({status: "error", message: "Error Interno"});
         }

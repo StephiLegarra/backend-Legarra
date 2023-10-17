@@ -31,5 +31,8 @@ cartsRouter.delete("/:cid/products/:pid", cartsControl.deleteThisProduct.bind(ca
 // VACIAR CARRITO
 cartsRouter.delete("/:cid", cartsControl.cleanCart.bind(cartsControl));
 
+//PROCESAR LA COMPRA
+//cartsRouter.post("/purchase/:cid", cartsControl.purchase(cartsControl));
+
 
 export default cartsRouter;

@@ -1,4 +1,4 @@
-import UserManager from "../dao/UserManager.js";
+import {UserManager} from "../dao/factory.js"
 
 class UserService {
     constructor(){

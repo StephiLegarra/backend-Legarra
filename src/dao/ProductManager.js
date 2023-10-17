@@ -137,6 +137,17 @@ class ProductManager {
       console.log(err.message);
     }
   }
+
+  async validateStock(id, quantity) {
+    try {
+      let product = await this.getProductsById(parseInt(id));
+      let availableStock = product.stock - quantity;
+      // o con un if (product.stock > quantity)
+
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
 }
 
 export default ProductManager;

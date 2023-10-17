@@ -1,8 +1,11 @@
-import CartManager from "../dao/CartManager.js";
+//import CartManager from "../dao/CartManager.js";
+import {CartManager }from "../dao/factory.js";
+import ProductsServices from "./products.service.js";
 
 class CartServices{
     constructor(){
        this.cartManager = new CartManager();
+       this.productService = new ProductsServices();
     }
 
     async createNewCart (){

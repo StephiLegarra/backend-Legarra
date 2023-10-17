@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   cart: {type: String, ref: "carts"},
   rol: { type: String, default: "user", enum: ["user", "admin"] },
+  active: Boolean
 });
 
 export const userModel = mongoose.model(userCollection, userSchema);

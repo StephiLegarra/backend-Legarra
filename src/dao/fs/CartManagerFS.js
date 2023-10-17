@@ -3,7 +3,7 @@
 // FILE SYSTEM
 import fs from "fs/promises";
 
-class CartManager {
+class CartManagerFS {
   constructor() {
     this.carts = [];
     this.path = "./Carts.json";
@@ -115,4 +115,4 @@ class CartManager {
   }
 }
 
-export default CartManager;
+export default CartManagerFS;
