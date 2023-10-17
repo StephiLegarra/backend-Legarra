@@ -4,12 +4,13 @@ import expressHandlebars from "express-handlebars";
 import { allowInsecurePrototypeAccess } from "@handlebars/allow-prototype-access";
 import __dirname from "./utils.js";
 import { Server } from "socket.io";
-import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/view.router.js";
+import emailRouter from './routes/email.router.js';
+import smsRouter from './routes/sms.router.js';
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -61,6 +62,8 @@ app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
+app.use("/api/email", emailRouter);
+app.use("/api/sms", smsRouter);
 
 app.use(cors()); 
 
