@@ -1,5 +1,5 @@
-import { TWILIO_AUTH, TWILIO_AUTH, TWILIO_NUMBER } from '../config/config.js';
-import twilio from 'twilio';               
+import { TWILIO_AUTH, TWILIO_SID, TWILIO_NUMBER } from '../config/config.js';
+import twilio from "twilio";            
 
 const twilioClient = twilio(TWILIO_SID, TWILIO_AUTH);  
 const twilioSMSOptions = {  
