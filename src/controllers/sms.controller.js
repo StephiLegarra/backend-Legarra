@@ -1,22 +1,21 @@
-//import BusinessService from "../services/dao/business.dao.js";
-import config from "../config/config.js";
-import twilio from 'twilio';                //traemos la libreria de twilio
+import { TWILIO_AUTH, TWILIO_AUTH, TWILIO_NUMBER } from '../config/config.js';
+import twilio from 'twilio';               
 
-const twilioClient = twilio(config.twilioAccountSID, config.twilioAuthToken);  //iniciamos el twilioclient donde le pasamos SID y TOKEN
-const twilioSMSOptions = {   //aca desarrollamos el sms
-    body: "Esto es un mensaje SMS de prueba usando Twilio desde Coderhouse. Hola mi amor te llego?",
-    from: config.twilioSmsNumber,   //del nro que tenemos en .env
-    to: "+542494322040"    //modificar a quien le mandamos
+const twilioClient = twilio(TWILIO_SID, TWILIO_AUTH);  
+const twilioSMSOptions = {  
+    body: "No te pierdas nuestras ofertas! visita nuestro sitio web y aprovecha a llevarte el peluche más lindo!",
+    from: TWILIO_NUMBER, 
+    to: "+542494676598"    
 }
 
 export const sendSMS = async (req, res) => {
     try {
-        console.log("Enviando SMS using Twilio account.");
+        console.log("Enviando un SMS usando la cuenta de Twilio!");
         console.log(twilioClient);
-        const result = await twilioClient.messages.create(twilioSMSOptions);  //llamamos a twilioclient y le creamos el mensaje
+        const result = await twilioClient.messages.create(twilioSMSOptions); 
         res.send({message: "Success!", payload: result});
     } catch (error) {
-        console.error("Hubo un problema enviando el SMS usando Twilio.");
+        console.error("Hubo un problema enviando el SMS usando Twilio!");
         res.status(500).send({error: error});
     }
 }

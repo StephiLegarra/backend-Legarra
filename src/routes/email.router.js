@@ -1,9 +1,8 @@
 import { Router } from "express";
-import {sendEmail, sendEmailWithAttachments} from '../controllers/email.controller.js';
+import { sendEmail } from "../controllers/email.controller.js";
 
-const router = Router();
+const emailRouter = Router();
 
-router.get("/", sendEmail);
-router.get("/attachments", sendEmailWithAttachments);
+emailRouter.get("/", sendEmail);
 
-export default router;
+export default emailRouter;
