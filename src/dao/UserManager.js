@@ -63,16 +63,20 @@ class UserManager {
   }
 
   //REESTABLECER CONTRASEÑA
-  async restorePassword(email, hashP) {
+  async restorePassword(email, hashedPassword) {
     try {
-        const userLogged = await userModel.updateOne({email:email}, {password:hashP}) || null;
-        
-        if (userLogged) {
-            console.log("Password Restored!");
-            return ({status:200, redirect:"/profile"});
-        }
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        console.log("Usuario no encontrado.");
         return false;
+      }
+
+      user.password = hashedPassword;
+      await user.save();
+      console.log("Contraseña actualizada correctamente!");
+      return true;
     } catch (error) {
+        console.error("Error al intentar el cambio de contraseña!");
         return false;
     }
   }

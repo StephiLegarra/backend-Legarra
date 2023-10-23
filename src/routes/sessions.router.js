@@ -19,7 +19,7 @@ sessionsRouter.post("/register", userController.register.bind(userController));
 sessionsRouter.post("/logout", (req,res) => authController.logout(req,res));
 
 //RESTORE PASS - ACTUALIZAR CONTRASEÑA
-sessionsRouter.get("/restore", userController.restore.bind(userController));
+sessionsRouter.get("/restore", userController.restorePass.bind(userController));
 
 //LOGIN CON GITHUB
 sessionsRouter.get("/github", passport.authenticate("github", {scope:["user:email"]}), async (req,res) => {});

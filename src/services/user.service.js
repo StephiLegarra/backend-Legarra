@@ -1,21 +1,27 @@
 import {UserManager} from "../dao/factory.js"
+import { ADMIN_USER, ADMIN_PASS } from "../config/config.js";
+import CartManager from "../dao/CartManager.js";
 
 class UserService {
     constructor(){
         this.usersManager = new UserManager();
+        this.cartManager = new CartManager();
 
     }
 
-    async register({ first_name, last_name, email, age, password, rol }) {
+    async register({ first_name, last_name, email, age, password, rol, isAdmin, cart }) {
       try {
-        const rol = email === "admin@example.com" ? "admin" : "user";
+        const rol = email == ADMIN_USER && password === ADMIN_PASS ? "admin" : "user";
+        let cart = this.cartManager.newCart();
         const user = await this.usersManager.addUser({
           first_name,
           last_name,
           email,
           age,
           password,
-          rol
+          rol,
+          isAdmin,
+          cart,
         });
   
         if (user) {
@@ -29,11 +35,8 @@ class UserService {
       }
     }
     
-    async restorePass (user, hashP){
-      const clave = await this.usersManager.restorePassword(user, hashP)
-      if(clave){
-         return { status: "success", clave, redirect: "/profile" };
-      }
+    async restorePass (user, hashedPassword){
+      return await this.userManager.restorePassword(user, hashedPassword);
     }
     
 }

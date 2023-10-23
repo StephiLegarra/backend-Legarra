@@ -7,29 +7,33 @@ class UserController {
     }
     
     async register(req, res) {
-        const { first_name, last_name, email, age, password, rol } = req.body;
+        const { first_name, last_name, email, age, password, rol, isAdmin, cart} = req.body;
         const response = await this.userService.register({
           first_name,
           last_name,
           email,
           age,
           password,
-          rol
+          rol,
+          isAdmin,
+          cart
         });
     
-        return res.status(response.status === "success" ? 200 : 400).json(response);
+        return res.status(response.status === "success" ? 200 : 400).json({
+            status: response.status,
+            data: response.user,
+            redirect: response.redirect,
+          });
       }
 
-    async restore(req, res){
+    async restorePass(req, res){
         const {user, pass} = req.query;
         try {
             const newPass = await this.userService.restorePass(user, createHash(pass));
             if(newPass){
                 return res.send({status:"ok", message: "Contraseña actualizada correctamente"});
-                location.href = "/profile"
             }else{
                 return res.status(401).send({status:"error", message:"No se pudo actualizar la contraseña"});
-
             }
         } catch (error) {
             console.log(error);
@@ -38,8 +42,8 @@ class UserController {
     }
     
     current(req, res){
-        if(req.user){
-            return res.send({status:"ok", payload:req.user});
+        if(req.session.user){
+            return res.send({status:"ok", payload:new UserResponse(req.session.user)});
         }else{
             return res.status(401).send({status:"error", message: "No tiene autoriacion para acceder"})
         }

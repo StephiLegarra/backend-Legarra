@@ -1,48 +1,57 @@
 import AuthenticationService from "../services/auth.service.js";
-import CartServices from "../services/cart.service.js";
 
 class AuthController {
     constructor(){
         this.authService = new AuthenticationService();
-        this.cartService = new CartServices();
     }
 
     async login (req, res){
         const {email, password} = req.body;
-        const userInfo = await this.authService.login(email, password);
-        console.log("Informacion de usuario: ", userInfo);
-        if(!userInfo || !userInfo.user){
-         return res.status(401).json({status:"error", message: "Informacion invalida"});
+        const userData = await this.authService.login(email, password);
+        console.log("Información de usuario: ", userData);
+        if(!userData || !userData.user){
+         return res.status(401).json({status:"error", message:"La información es inválida"});
         }
+
         req.session.user = {
-            id: userInfo.user._id,
-            email: userInfo.user.email,
-            first_name: userInfo.user.first_name,
-            last_name: userInfo.user.last_name,
-            rol: userInfo.user.rol
+            id: userData.user._id || userData.user._id, 
+            email: userData.user.email,
+            first_name: userData.user.first_name,
+            last_name: userData.user.last_name,
+            age: userData.user.age,
+            rol: userData.user.rol,
+            isAdmin: userData.user.isAdmin,
+            cart: userData.user.cart
         }
-        console.log("Rol: ", userInfo.user.rol);
-        //CREAR CARRITO VACIO
-        this.cartService.createNewCart();
-        return res.status(200).json({status:"success", user: userInfo.user, redirect: "/profile"});
+
+        res.cookie("coderCookieToken", userData.token, {httpOnly: true,secure: false});
+        console.log("Todo salió bien! lo estamos redirigiendo..!");
+        return res.status(200).json({ status: "success", user: userData.user, redirect: "/products" });
     }
 
     async githubCallback(req, res){
         console.log("Contolando acceso con GitHub");
         try {
             if(req.user){
-                req.session.user = req.user;
-                req.session.logged = true;
-                return res.redirect("/profile");
+                req.session.loggedIn = true;
+                req.session.email = req.user.email;
+                req.session.isAdmin = req.user.isAdmin;
+                req.session.cart = req.user.cart;
+                return res.redirect("/products");
             }else{
                 return res.redirect("/login");
             }
-
         } catch (error) {
-            console.error("Ocurrio un error", error);
+            console.error("Algo salio mal!", error);
             return res.redirect("/login")
         }
     }
+    
+    async profile(req,res){
+        const user = { email: req.session.email, isAdmin: req.session.isAdmin, cart: req.session.cart };
+        return res.render('profile', {user:user});
+    }
+
     logout(req, res){
         req.session.destroy((error)=>{
             if(error){
