@@ -2,7 +2,7 @@ import CartServices from "../services/cart.service.js";
 import { cartModel } from "../dao/models/cart.model.js";
 import ProductManager from "../dao/ProductManager.js";
 import ticketController from "./ticket.controller.js";
-
+import { v4 as uuidv4 } from "uuid";
 
 class CartController {
     constructor(){
@@ -119,16 +119,7 @@ class CartController {
         }
     }
 
-    async cleanCart(cid){
-      //  return await this.cartManager.emptyCart(cartId);
-      const result = await this.cartManager.emptyCart(cartId);
-      if (result) {
-        return { status: "ok", message: "El carrito se vació correctamente!" };
-      } else {
-        throw new Error('Error! No se pudo vaciar el Carrito!');
-      }
-    };
-
+   
     //CREAR TICKET DE COMPRA
     async createPurchaseTicket(req, res) {
       try {
@@ -217,7 +208,6 @@ class CartController {
       }
     }
 
-    //
     async purchese(req, res) {
       try {
         const { cid } = req.params;
@@ -229,7 +219,7 @@ class CartController {
   
         const idCart = cartFound._id;
   
-        // Calcula el total de la compra
+        // TOTAL COMPRA
         let cart = cartFound.products.map((item) => {
           return {
             id: item._id._id,
@@ -244,7 +234,6 @@ class CartController {
         cart.forEach((producto) => {
           precioTotal += producto.price * producto.quantity;
         });
-  
         return res.status(200).render('purchase', { cart: cart, idCart, infoUser, precioTotal });
       } catch (error) {
         console.log(error);

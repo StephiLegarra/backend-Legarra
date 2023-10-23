@@ -1,4 +1,4 @@
-import { ticketModel } from "../dao/models/ticket.model.js";
+import { ticketModel } from "../dao/models/tickets.model.js";
 
 class TicketService {
   async createTicket(data) {

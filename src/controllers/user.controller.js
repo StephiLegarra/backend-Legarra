@@ -26,10 +26,10 @@ class UserController {
           });
       }
 
-    async restorePass(req, res){
+    async restorePassword(req, res){
         const {user, pass} = req.query;
         try {
-            const newPass = await this.userService.restorePass(user, createHash(pass));
+            const newPass = await this.userService.restorePassword(user,createHash(pass));
             if(newPass){
                 return res.send({status:"ok", message: "Contraseña actualizada correctamente"});
             }else{
@@ -37,7 +37,7 @@ class UserController {
             }
         } catch (error) {
             console.log(error);
-            return res.status(500).send({status:"error", message:"Error Interno"})
+            return res.status(500).json({status:"error", message:"Error Interno"})
         }
     }
     

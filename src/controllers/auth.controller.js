@@ -33,6 +33,7 @@ class AuthController {
         console.log("Contolando acceso con GitHub");
         try {
             if(req.user){
+                req.session.user = req.user;
                 req.session.loggedIn = true;
                 req.session.email = req.user.email;
                 req.session.isAdmin = req.user.isAdmin;
