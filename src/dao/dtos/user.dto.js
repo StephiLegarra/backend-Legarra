@@ -1,10 +1,11 @@
 export default class UserDto{
     constructor(user){
-        this.full_name =  `${user.first_name} ${user.last_name}`
-        this.first_name = user.name;
-        this.last_name = user.lastname;
+        this.firstName = user.first_name;
+        this.lastName = user.last_name;
         this.email = user.email;
-        this.password = user.password;
-        this.active = true; 
+        this.role = user.role;
+        this.age = user.age;
+        this.isAdmin = user.isAdmin;
+        this.cartID = user.cart;
     }
 }

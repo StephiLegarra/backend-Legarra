@@ -1,18 +1,21 @@
 import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
+import cartController from "../controllers/cart.controller.js";
+import { isUser, isNotAdmin } from "../middleware/authorization.js";
 
-const router = express.Router();
-const products = new ProductManager();
-const carts = new CartManager();
+const viewsRouter = express.Router();
+const PM = new ProductManager();
+const CM = new CartManager();
 
 //CHECKSESSION
 //Control de acceso
 const checkSession = (req, res, next) => {
   if (req.session && req.session.user) {
-    console.log("Chequeando sesion: ", req.session);
+    console.log("Chequeando sesion: ", req.session.user);
     next();
   } else {
+    console.log("Error! Redireccionamos al login!");
     res.redirect("/login");
   }
 };
@@ -28,7 +31,7 @@ const checkAlreadyLoggedIn = (req, res, next) => {
 };
 
 // HOME
-router.get("/", async (req, res) => {
+viewsRouter.get("/", checkSession, async (req, res) => {
   try {
     res.render("home");
   } catch (error) {
@@ -36,17 +39,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-//REDIRECT 
-router.get("/", async (req, res) => {
-  try {
-    res.status(200).redirect("/login");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
-  }
-});
-
 //REAL TIME PRODUCTS
-router.get("/realtimeproducts", async (req, res) => {
+viewsRouter.get("/realtimeproducts", async (req, res) => {
   try {
     res.render("realtimeproducts");
   } catch (error) {
@@ -55,9 +49,9 @@ router.get("/realtimeproducts", async (req, res) => {
 });
 
 //PRODUCTS
-router.get("/products", checkSession, async (req, res) => {
+viewsRouter.get("/products", checkSession, async (req, res) => {
   try {
-    const getProducts = await products.getProducts(req.query);
+    const getProducts = await PM.getProducts(req.query);
     const user = req.session.user;
     res.render("products", { getProducts, user });
   } catch (error) {
@@ -66,10 +60,10 @@ router.get("/products", checkSession, async (req, res) => {
 });
 
 //PRODUCT
-router.get("/products/:id", async (req, res) => {
-  const { id } = req.params;
+viewsRouter.get("/products/:pid", async (req, res) => {
+  const { pid } = req.params;
   try {
-    const getProducts = await products.getProductsById(parseInt(id));
+    const getProducts = await PM.getProductsById(pid);
     res.render("product", { getProducts });
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -77,22 +71,29 @@ router.get("/products/:id", async (req, res) => {
 });
 
 // CARTS
-router.get("/carts/:cid", checkSession, async (req, res) => {
-  const { cid } = req.params;
+viewsRouter.get("/carts", async (req, res) => {
   try {
-    const cart = await carts.getCartById(parseInt(cid));
+    const cid = req.user.cart.id;
+    const cart = await CM.getCartById(cid);
     if (!cart) {
-      return res.status(404).send({ error: "El carrito no existe" });
+      return res.status(404).send({status:"error", message: "El carrito no existe!" });
     }
-
-    res.render("cart", { cart });
+    console.log(JSON.stringify(cart, null, 4));
+    res.render("cart", {products: cart.products});
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
 });
 
+// CART PURCHASE
+viewsRouter.post("/carts/:cid/purchase", async (req, res) => {
+  const cid = req.params.cid;
+  cartController.getPurchase(req, res, cid);
+});
+
+
 //CHAT
-router.get("/chat", checkSession, async (req, res) => {
+viewsRouter.get("/chat", isUser, isNotAdmin, async (req, res) => {
   try {
     res.render("chat");
   } catch (error) {
@@ -101,7 +102,7 @@ router.get("/chat", checkSession, async (req, res) => {
 });
 
 //LOGIN
-router.get("/login", checkAlreadyLoggedIn, async (req, res) => {
+viewsRouter.get("/login", checkAlreadyLoggedIn, async (req, res) => {
   try {
     res.render("login");
   } catch (err) {
@@ -110,7 +111,7 @@ router.get("/login", checkAlreadyLoggedIn, async (req, res) => {
 });
 
 //REGISTRARSE
-router.get("/register", checkAlreadyLoggedIn, async (req, res) => {
+viewsRouter.get("/register", checkAlreadyLoggedIn, async (req, res) => {
   try {
     res.render("register");
   } catch (err) {
@@ -119,7 +120,7 @@ router.get("/register", checkAlreadyLoggedIn, async (req, res) => {
 });
 
 //PERFIL DEL USUARIO
-router.get("/profile", checkSession, (req, res) => {
+viewsRouter.get("/profile", checkSession, (req, res) => {
   try {
     const userData = req.session.user;
     res.render("profile", { user: userData });
@@ -129,16 +130,19 @@ router.get("/profile", checkSession, (req, res) => {
 });
 
 //RESTORE (ACTUALIZAR CONTRASEÑA)
-router.get("/restore", checkSession, (req, res) => {
+viewsRouter.get("/restore", async (req, res) => {
   res.render("restore");
 });
 
 //ERROR AL INGRESAR
-router.get("/faillogin", (req, res) =>{
-  res.status(401).json({
-      status:"error",
-      message: "Error en el ingreso al sitio con ese mail y contraseña"
-  });
+viewsRouter.get("/faillogin", (req, res) =>{
+  res.status(401).json({status:"error", message: "Error en el ingreso al sitio con ese mail y contraseña"});
 })
 
-export default router;
+//ERROR AL REGISTRARSE
+viewsRouter.get("/failregister", async (req, res) =>{
+  res.send({status: "Error", message: "Error! No se pudo registar el Usuario!"});
+})
+
+
+export default viewsRouter;

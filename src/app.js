@@ -11,7 +11,6 @@ import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/view.router.js";
 import emailRouter from './routes/email.router.js';
 import smsRouter from './routes/sms.router.js';
-import ticketsRouter from "./routes/tickets.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -56,6 +55,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(__dirname + "/public"));
+app.use("/images", express.static(__dirname + "/src/public/images"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -65,9 +65,11 @@ app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
-app.use('/api/tickets', ticketsRouter);
 
-app.use(cors()); 
+app.use(cors({
+  credentials:true,
+  method: ["GET", "POST", "PUT", "DELETE"]
+})); 
 
 //IMPORT
 import ProductManager from "./dao/ProductManager.js";

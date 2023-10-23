@@ -1,24 +1,23 @@
 import { Router } from "express";
-import ProductManager from "../dao/ProductManager.js";
-import productControl from "../controllers/products.controller.js"
+import productController from "../controllers/products.controller.js"
+import { isAdmin } from "../middleware/authorization.js";
 
 const productsRouter = Router();
-const PM = new ProductManager();
 
 // OBTENER PRODUCTOS
-productsRouter.get("/", productControl.getProducts.bind(productControl));
+productsRouter.get("/", isAdmin, productController.getProducts.bind(productController));
 
 // OBTENER PRODUCTO POR ID
-productsRouter.get("/:id", productControl.getByID.bind(productControl));
+productsRouter.get("/:pid", isAdmin, productController.getByID.bind(productController));
 
 // AGREGAR PRODUCTOS
-productsRouter.post("/", productControl.addProduct.bind(productControl));
+productsRouter.post("/", isAdmin, productController.addProduct.bind(productController));
 
 // ACTUALIZAR PRODUCTOS
-productsRouter.put("/:id", productControl.updateProd.bind(productControl));
+productsRouter.put("/:id", isAdmin, productController.updateProd.bind(productController));
 
 // ELIMINAR PRODUCTO
-productsRouter.delete("/:id", productControl.deleteProd.bind(productControl));
+productsRouter.delete("/:id", isAdmin, productController.deleteProd.bind(productController));
 
 
 export default productsRouter;

@@ -1,7 +1,7 @@
 import AuthenticationService from "../services/auth.service.js";
 import CartServices from "../services/cart.service.js";
 
-class AuthControl {
+class AuthController {
     constructor(){
         this.authService = new AuthenticationService();
         this.cartService = new CartServices();
@@ -52,4 +52,4 @@ class AuthControl {
         })
     }
 }
-export default AuthControl;
+export default AuthController;

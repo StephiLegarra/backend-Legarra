@@ -1,23 +1,22 @@
 import { Router } from "express";
-import UserManager from "../dao/UserManager.js";
 import passport from "passport";
-import { passportCall, authorization } from "../middleware/authorization.js";
+import { passportCall, authorization } from "../middleware/passportAuthorization.js";
 import UserController from "../controllers/user.controller.js";
-import AuthControl from "../controllers/auth.controller.js";
+import AuthController from "../controllers/auth.controller.js";
+import { isUser } from "../middleware/authorization.js";
 
 const sessionsRouter = Router();
-const UM = new UserManager();
 const userController = new UserController();
-const authControl = new AuthControl();
+const authController = new AuthController();
 
 //LOGIN DE USUARIO
-sessionsRouter.post("/login", (req,res) => authControl.login(req,res));
+sessionsRouter.post("/login", (req,res) => authController.login(req,res));
 
 //REGISTRO DE USUARIO
 sessionsRouter.post("/register", userController.register.bind(userController));
 
 //LOGOUT DE USUARIO - CERRAR SESION
-sessionsRouter.post("/logout", (req,res) => authControl.logout(req,res));
+sessionsRouter.post("/logout", (req,res) => authController.logout(req,res));
 
 //RESTORE PASS - ACTUALIZAR CONTRASEÑA
 sessionsRouter.get("/restore", userController.restore.bind(userController));
@@ -28,9 +27,8 @@ sessionsRouter.get("/github", passport.authenticate("github", {scope:["user:emai
 //Callback -de github
 sessionsRouter.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }),
   async (req, res) => {
-    req.session.user = req.user;
-    req.session.loggedIn = true;
-    res.redirect("/profile");
+    console.log("GitHub Callback Route");
+    authController.githubCallback(req, res);
   }
 );
 
@@ -38,6 +36,9 @@ sessionsRouter.get("/githubcallback", passport.authenticate("github", { failureR
 sessionsRouter.get("/current", passportCall("jwt"), authorization("user"), (req, res) => {
  userController.current(req,res)
 });
+
+//PROFILE
+sessionsRouter.get("/profile", isUser, authController.perfil);
 
 
 export default sessionsRouter;

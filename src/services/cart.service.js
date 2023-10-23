@@ -1,43 +1,61 @@
 //import CartManager from "../dao/CartManager.js";
-import {CartManager }from "../dao/factory.js";
-import ProductsServices from "./products.service.js";
+import {CartManager } from "../dao/factory.js";
 
 class CartServices{
     constructor(){
        this.cartManager = new CartManager();
-       this.productService = new ProductsServices();
     }
 
-    async createNewCart (){
+    async createCart (){
         return await this.cartManager.newCart();
     }
 
-    async getCarts() {
+    async allCarts() {
         return await this.cartManager.getCarts();
     }
 
-    async getByID(id){
+    async getCart(id){
         return await this.cartManager.getCartById(id);
     }
 
-    async addNewProduct(cid,pid){
-        return await this.cartManager.addProductToCart(cid,pid);
+    async addProduct(cid,pid){
+        return await this.cartManager.addProductToCart(cid, pid);
     }
 
-    async addArrayProducts(cid,body) {
-        return await this.cartManager.addArrayProducts(cid, body);
+    async updateCart(cid,body) {
+        const result = await this.cartManager.updateProducts(cartId, products);
+        if (result) {
+          return { status: "ok", message: "El carrito se actualizó correctamente" };
+        } else {
+          throw new Error("Error: No se pudo actualizar el carrito");
+        }
     }
 
-    async updateQuantity(cid, pid, quantity){
-        return await this.cartManager.updateQuantityProductFromCart(cid, pid, quantity);
+    async updateQuantity(cartId, productId, quantity){
+        return await this.cartManager.updateQuantityProductFromCart(cartId, productId, quantity);
     };
 
-    async deleteProduct(cid, pid){
-        return await this.cartManager.deleteProductFromCart(cid,pid);
+    async deleteProduct(cartId, productId){
+     //   return await this.cartManager.deleteProductFromCart(cartId,productId);
+     const result = await this.cartManager.deleteProductFromCart(
+        cartId,
+        productId
+      );
+      if (result) {
+        return { status: "ok", message: "El producto se eliminó correctamente" };
+      } else {
+        throw new Error("Error: No se pudo eliminar el producto del carrito");
+      }
     };
 
     async cleanCart(cid){
-        return await this.cartManager.emptyCart(cid);
+      //  return await this.cartManager.emptyCart(cartId);
+      const result = await this.cartManager.emptyCart(cartId);
+      if (result) {
+        return { status: "ok", message: "El carrito se vació correctamente!" };
+      } else {
+        throw new Error('Error! No se pudo vaciar el Carrito!');
+      }
     };
 
 }

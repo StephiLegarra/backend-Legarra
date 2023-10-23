@@ -1,52 +1,26 @@
 //Stephanie Legarra - Curso Backend - Comisión: 55305
-
 import { cartModel } from "./models/cart.model.js";
+import mongoose from "mongoose";
 import ProductManager from "./ProductManager.js";
-
-const PM = new ProductManager();
 
 class CartManager {
   constructor() {
-    this.carts = [];
+    this.productManager = new ProductManager();
   }
-
-  static id = 1;
 
   // CREAR CARRITO
   async newCart() {
     try {
-      const carts = await cartModel.find();
-      this.carts = carts;
-
-      if (this.carts.length !== 0) {
-        const max = Math.max(...this.carts.map((item) => item.id)) + 1;
-
-        CartManager.id = max;
-      }
-
-      const newCart = {id: CartManager.id++, products: []};
-
-      await cartModel.create(newCart);
-      console.log("El carrito ha sido creado");
-      return newCart;
+      let cart = await cartModel.create({ products: [] });
+      console.log("Cart created:", cart);
+      let id = cart._id;
+      return {id};
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  async getCart(id) {
-    try {
-      if (this.getCartById(id)) {
-        return (await cartModel.findOne({ id: id }).lean()) || null;
-      } else {
-        console.log("No se encontró el carrito");
-        return null;
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
+  // VER CARRITOS
   async getCarts() {
     try {
       return await cartModel.find().lean();
@@ -55,60 +29,79 @@ class CartManager {
     }
   }
 
+  //VALIDAR ID
+  validateId(id) {
+    return mongoose.Types.ObjectId.isValid(id);
+  }
+
   // BUSCAR CARRITO POR ID
   async getCartById(id) {
     try {
-      const cart = await cartModel.findOne({ id: id }).lean();
-      if (!cart) {
-        return console.log("no se encontró el carrito");
+      if (this.validateId(id)){
+        return (await cartModel.findOne({ _id: id }).lean());
+      } else {
+        console.log("no se encontró el carrito");
+        return null;
       }
-      return cart;
     } catch (err) {
       console.log(err.message);
     }
   }
 
   // AGREGAR UN PRODUCTO AL CARRITO
-  async addProductToCart(cid, pid) {
+  async addProductToCart(cid, pid, quantity) {
     try {
-      const cart = await cartModel.findOne({ id: cid });
-      const exist = cart.products.find((item) => item.id === pid);
-      const product = await PM.getProductsById(parseInt(pid));
+      console.log(`Agregar el producto ID: ${pid} al carrito: ${cid}`);
 
-      if (!exist) {
-        const productAdd = { product: product._id, quantity: 1, id: pid };
-        await cartModel.updateOne({ id: cid },{ $push: { products: productAdd } });
-        console.log("El producto ha sido agregado al carrito");
+      if (
+        mongoose.Types.ObjectId.isValid(cid) &&
+        mongoose.Types.ObjectId.isValid(pid)
+         ) {
+        const product = await this.productManager.getProductById(pid);
+        console.log("El stock del producto es: ", product.stock);
+        
+      if(!product) {
+          console.log("Lo siento! ese producto no ha sido encontrado!");
+          return {status: "error", message: "Lo siento! ese producto no ha sido encontrado!"};
+        }
+
+      if (product.stock < quantity) { 
+          return { status: "error", message: "Lo siento! No hay suficientes unidades de este producto!" };
+        }
+
+      const updateResult = await cartModel.updateOne(
+         { _id: cid, "products.product": pid },
+         { $inc: { "products.$.quantity": 1 } }
+        );
+         console.log("Se agrego una unidad más del producto al carrito!", updateResult);
+
+      if (updateResult.matchedCount === 0) {
+          const pushResult = await cartModel.updateOne(
+            { _id: cid },
+            { $push: { products: { product: pid, quantity: 1 } } }
+          );
+          console.log("Productos agregados:", pushResult);
+        }
+        return {status: "ok", message: "El producto ha sido agregado al carrito"};
       } else {
-        await cartModel.updateOne({ id: cid, "products.id": pid }, { $inc: { "products.$.quantity": 1 } });
-        console.log("Se agrego una unidad más del producto al carrito");
-      }
-      return product;
+        return {status: "error", message: "ID inválido!"};
+       }
     } catch (err) {
       console.log(err.message);
     }
   }
 
-  // ACTUALIZAR EL CARRITO CON UN ARRAY DE PRODUCTOS
-  async addArrayProducts(cid, body) {
+  // ACTUALIZAR PRODUCTOS
+  async updateProducts(cid, products) {
     try {
-      const array = [];
-      for (const item of body) {
-        const object = await PM.getProductsById(item.id);
-        array.push({
-          id: item.id,
-          quantity: item.quantity,
-          product: object._id,
-        });
-      }
-      console.log(array);
-      const filter = { id: cid };
-      const update = { $set: { products: array } };
+      await cartModel.updateOne(
+        { _id: cid },
+        { products: products },
+        { new: true, upsert: true }
+      );
+      console.log("Product updated!");
 
-      const updateCart = await cartModel.findOneAndUpdate(filter, update, {
-        new: true,
-      });
-      return updateCart;
+      return true;
     } catch (err) {
       console.log(err.message);
     }
@@ -117,17 +110,42 @@ class CartManager {
   // MODIFICAR CANTIDAD DE EJEMPLARES
   async updateQuantityProductFromCart(cid, pid, quantity) {
     try {
-      const cart = await cartModel.findOne({ id: cid });
-      const exist = cart.products.find((item) => item.id === pid);
-      exist.quantity = quantity;
+      if (this.validateId(cid)) {
+        const cart = await this.getCart(cid);
+        if (!cart) {
+          console.log("El carrito no fue encontrado!");
+          return false;
+        }
 
-      if (exist) {
-        await cartModel.updateOne({ id: cid }, { products: cart.products });
-        console.log("Se actualizo la cantidad de ejemplares del producto");
+        console.log("PID:", pid);
+        console.log("Cart products:",
+          cart.products.map((item) =>
+            item.product._id
+              ? item.product._id.toString()
+              : item.product.toString()
+          )
+        );
+
+        const product = cart.products.find(
+          (item) =>
+            (item.product._id
+              ? item.product._id.toString()
+              : item.product.toString()) === pid.toString()
+        );
+
+        if (product) {
+          product.quantity = quantity;
+        await cartModel.updateOne({ _id: cid }, { products: cart.products });
+          console.log("Se actualizo la cantidad de ejemplares del producto!");
+          return true;
+        } else {
+          console.log("No ha sido podido actualizar la cantidad del producto en el carrito!");
+          return false;
+        }
       } else {
-        console.log("No ha sigo encontrado el producto en el carrito");
+        console.log("No ha sido encontrado el producto en el carrito!");
+        return false;
       }
-      return true;
     } catch (err) {
       console.log(err.message);
     }
@@ -136,13 +154,16 @@ class CartManager {
   // ELIMINAR UN PRODUCTO DEL CARRITO
   async deleteProductFromCart(cid, pid) {
     try {
-      const cart = await cartModel.findOne({ id: cid });
-      const exist = cart.products.filter((item) => item.id !== pid);
+      if (mongoose.Types.ObjectId.isValid(cid)) {
+        const updateResult = await cartModel.updateOne(
+          { _id: cid },
+          { $pull: { products: { product: pid } } }
+        );
 
-      if (exist) {
-        await cartModel.updateOne({ id: cid }, { products: exist });
-        console.log("El producto ha sido eliminado!");
-        return true;
+        if (updateResult.matchedCount > 0) {
+          console.log("El producto ha sido eliminado!");
+          return true;
+        }
       } else {
         console.log("El producto en el carrito no ha sido encontrado");
         return false;
@@ -155,10 +176,9 @@ class CartManager {
   // VACIAR CARRITO
   async emptyCart(cid) {
     try {
-      const cart = await cartModel.findOne({ id: cid });
-
-      if (cart) {
-        await cartModel.updateOne({ id: cid }, { products: [] });
+      if (this.validateId(cid)) {
+        const cart = await this.getCart(cid);
+        await cartModel.updateOne({ _id: cid }, { products: [] });
         console.log("El carrito ha sido eliminado!");
         return true;
       } else {
@@ -169,19 +189,6 @@ class CartManager {
       console.log(err.message);
     }
   }
-
-/*
-  //PURCHASE
-  async purchase(req,res) {
-    try {
-      const {cid} = req.params;
-      const cart = await this.getCart(cid);
-      if (!cart) {
-
-      }
-    }
-  }
-  */
  
 }
 

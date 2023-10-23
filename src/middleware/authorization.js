@@ -1,29 +1,30 @@
-import passport from "passport";
-
-export const passportCall = (strategy) => {
-  return async (req, res, next) => {
-    passport.authenticate(strategy, function (error, user, info) {
-      if (error) return error;
-
-      if (!user) {
-        return res.status(401).send({ error: info.messages ? info.messages : info.toString() });
-      }
-      req.user = user;
-      next();
-    })(req, res, next);
-  };
-};
-
-export const authorization = (rol) => {
-  return async (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).send({ status: "error", message: "Unauthorizated" });
+// isUser
+  export function isUser(req, res, next) {
+    if (req.session?.email) {
+      return next();
     }
-
-    if (req.user.rol != rol) {
-      return res.status(403).send({ status: "error", message: "No permissions" });
+    return res.status(401).render('error', { error: 'Error de autenticación!' });
+  }
+  
+  export function isNotAdmin(req, res, next) {
+    if (req.session?.role !== 'admin') {
+      return next();
     }
-
-    next();
+    return res.status(403).render('error', { error: 'Error de autorización!' });
+  }
+  
+  export const isCartOwner = (req, res, next) => {
+    if (req.session?.cart === req.params.cid) {
+      return next();
+    }
+    return res.status(403).render('error', { error: 'Error de autorización!' });
   };
-};
+
+// isAdmin
+export function isAdmin(req, res, next) {
+    if (req.session?.isAdmin) {
+      return next();
+    }
+    return res.status(403).render('error', { error: 'Error de autorización!' });
+  }
+  

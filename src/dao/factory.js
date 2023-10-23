@@ -1,7 +1,6 @@
 import { PERSISTENCE,MONGODB_URL } from "../config/config.js";
 import mongoose from "mongoose";
 
-//let Users;
 let ProductManager;
 let CartManager;
 let UserManager;
