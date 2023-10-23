@@ -8,8 +8,12 @@ class ProductController{
     //OBTENER PRODUCTOS
     async getProducts (req,res){
         try {
-            const getProducts = await this.productServices.getProducts(req.query);
-            res.status(200).send({ getProducts })
+            const products = await this.productServices.getProducts(req.query);
+            res.status(200).send({ products })
+            const userSession = req.session.email;
+            const userSessionisAdmin = req.session.isAdmin;
+            const cart = req.session.cart;
+            return res.status(200).render('products', {products, userSession, userSessionisAdmin, cart});
         } catch (error) {
             res.status(500).send({status:"error", message: "Error al obtener productos"});
         }
@@ -18,14 +22,15 @@ class ProductController{
     //OBTENER PRODUCTO POR ID
     async getByID (req, res){
         try {
-            const { id } = req.params;
-            const getProducts = await this.productServices.getPbyID(parseInt(id));
-
-           if (!getProducts) {
-           return res.status(404).send({ error: "producto no encontrado" });
-           }
-            res.status(200).send({ getProducts });
-
+            const { pid } = req.params;
+            const product = await this.productServices.getPbyID(pid);
+            if (product) {
+                res.json(product);
+                return;
+              } else {
+                res.status(404).send({ status: "error", message: "El producto no fue encontrado!" });
+                return;
+              }
         } catch (error) {
             res.status(500).send({status:"error", message:"Error al buscar el producto por su ID"});
             return;
@@ -57,12 +62,12 @@ class ProductController{
     }
 
     //ACTUALIZAR PRODUCTOS
-    async updateProd(req, res){
-        const { id } = req.params;
+    async updateProduct(req, res){
+        const { pid } = req.params;
         const { title, description, price, thumbnail, code, stock, category } = req.body;
          
         try {
-            const getProducts = await this.productServices.getPbyID(parseInt(id));
+            const getProducts = await this.productServices.getPbyID(pid);
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }
@@ -78,7 +83,7 @@ class ProductController{
         
             const actProduct = {title,description,price,thumbnail,code,stock,category};
             actProduct.status = true;
-            await this.productServices.updateProd(parseInt(id), actProduct);
+            await this.productServices.updateProduct(parseInt(id), actProduct);
             res.status(200).send({ actProduct, message: "el producto ha sido actualizado" });     
          } catch (error) {
             console.log(error);
@@ -87,15 +92,27 @@ class ProductController{
     }
 
     //ELIMINAR PRODUCTO
-    async deleteProd (req, res){
-        const { id } = req.params;
+    async deleteProduct (req, res){
+        const { pid } = req.params;
         try {
-            const getProducts = await this.productServices.getPbyID(parseInt(id));
+            if (!mongoose.Types.ObjectId.isValid(pid)) {
+                console.log("ID del producto no válido");
+                res.status(400).send({status: "error", message: "ID del producto no válido"});
+                return;
+              }
+            const getProducts = await this.productServices.getPbyID(pid);
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }
-           await this.productServices.deleteProd(parseInt(id));
-            res.status(200).send({ status: "ok", message: "el producto ha sido eliminado" });
+          const deleted = await this.productServices.deleteProduct(pid);
+          if(deleted) {
+            console.log("El producto fue eliminado correctamente!");
+             res.status(200).send({ status: "ok", message: "el producto ha sido eliminado" });
+             socketServer.emit("product_deleted", { _id: pid });
+          } else {
+            console.log("Error al intentar eliminar el producto");
+            res.status(500).send({status: "error", message: "Error eliminando el producto"});
+          }
         } catch (error) {
             res.status(500).send({status: "error", message: "Error Interno"});
         }

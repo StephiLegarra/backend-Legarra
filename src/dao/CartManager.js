@@ -12,7 +12,7 @@ class CartManager {
   async newCart() {
     try {
       let cart = await cartModel.create({ products: [] });
-      console.log("Cart created:", cart);
+      console.log("El carrito fue creado: ", cart);
       let id = cart._id;
       return {id};
     } catch (err) {
@@ -99,7 +99,7 @@ class CartManager {
         { products: products },
         { new: true, upsert: true }
       );
-      console.log("Product updated!");
+      console.log("El producto ha sido actualizado correctamente!");
 
       return true;
     } catch (err) {

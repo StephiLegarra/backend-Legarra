@@ -22,13 +22,8 @@ class CartServices{
         return await this.cartManager.addProductToCart(cid, pid);
     }
 
-    async updateCart(cid,body) {
-        const result = await this.cartManager.updateProducts(cartId, products);
-        if (result) {
-          return { status: "ok", message: "El carrito se actualizó correctamente" };
-        } else {
-          throw new Error("Error: No se pudo actualizar el carrito");
-        }
+    async updateCart(cartId, products) {
+      return await this.cartManager.updateProducts(cartId, products);
     }
 
     async updateQuantity(cartId, productId, quantity){
@@ -36,27 +31,13 @@ class CartServices{
     };
 
     async deleteProduct(cartId, productId){
-     //   return await this.cartManager.deleteProductFromCart(cartId,productId);
-     const result = await this.cartManager.deleteProductFromCart(
-        cartId,
-        productId
-      );
-      if (result) {
-        return { status: "ok", message: "El producto se eliminó correctamente" };
-      } else {
-        throw new Error("Error: No se pudo eliminar el producto del carrito");
-      }
+    return await this.cartManager.deleteProductFromCart(cartId,productId);
     };
 
-    async cleanCart(cid){
-      //  return await this.cartManager.emptyCart(cartId);
-      const result = await this.cartManager.emptyCart(cartId);
-      if (result) {
-        return { status: "ok", message: "El carrito se vació correctamente!" };
-      } else {
-        throw new Error('Error! No se pudo vaciar el Carrito!');
-      }
+    async cleanCart(cartId){
+      return await this.cartManager.emptyCart(cartId);
     };
+
 
 }
 

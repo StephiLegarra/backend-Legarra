@@ -6,13 +6,12 @@ class UserService {
     constructor(){
         this.usersManager = new UserManager();
         this.cartManager = new CartManager();
-
     }
 
-    async register({ first_name, last_name, email, age, password, rol, isAdmin, cart }) {
+    async register({ first_name, last_name, email, age, password, rol, isAdmin, cart}) {
       try {
         const rol = email == ADMIN_USER && password === ADMIN_PASS ? "admin" : "user";
-        let cart = this.cartManager.newCart();
+        var cart = this.cartManager.newCart();
         const user = await this.usersManager.addUser({
           first_name,
           last_name,
@@ -21,7 +20,7 @@ class UserService {
           password,
           rol,
           isAdmin,
-          cart,
+          cart
         });
   
         if (user) {
@@ -35,11 +34,10 @@ class UserService {
       }
     }
     
-    async restorePass (user, hashedPassword){
+    async restorePass(user, hashedPassword){
       return await this.userManager.restorePassword(user, hashedPassword);
     }
     
 }
-
 
 export default UserService;

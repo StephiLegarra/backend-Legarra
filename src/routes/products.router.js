@@ -14,10 +14,10 @@ productsRouter.get("/:pid", isAdmin, productController.getByID.bind(productContr
 productsRouter.post("/", isAdmin, productController.addProduct.bind(productController));
 
 // ACTUALIZAR PRODUCTOS
-productsRouter.put("/:id", isAdmin, productController.updateProd.bind(productController));
+productsRouter.put("/:id", isAdmin, productController.updateProduct.bind(productController));
 
 // ELIMINAR PRODUCTO
-productsRouter.delete("/:id", isAdmin, productController.deleteProd.bind(productController));
+productsRouter.delete("/:id", isAdmin, productController.deleteProduct.bind(productController));
 
 
 export default productsRouter;

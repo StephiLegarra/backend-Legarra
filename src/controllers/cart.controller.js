@@ -63,9 +63,12 @@ class CartController {
         try {
             const { cid } = req.params;
             const products = req.body.products;
-            await this.cartService.updateCart(cid, products);
-            res.status(200).send({status: "ok",message: "El producto se agregó correctamente!"});
-
+            const result = await this.cartService.updateCart(cid, products);
+            if (result) {
+               res.status(200).send({status: "ok",message: "El producto se agregó correctamente!"});
+            } else {
+              throw new Error("Error: No se pudo actualizar el carrito");
+            }
             } catch (error) {
             res.status(500).send({status:"error", message: error.message});
         }
@@ -77,11 +80,9 @@ class CartController {
         const { quantity } = req.body;
       try {
         const result = await this.cartServices.updateQuantity(cid,pid,quantity);
-    
         if (!result) {
           return res.status(404).send({error: "Error! No se pudo actualizar la cantidad del producto en el carrito!"});
         }
-    
         res.status(200).send({status: "ok", message:"La cantidad de ejemplares del producto se actualizó correctamente!"});
       } catch (error) {
         res.status(500).send({status: "error", message: error.message});
@@ -93,9 +94,13 @@ class CartController {
         try {
            const { cid, pid } = req.params;
            const result = await this.cartService.deleteProduct(cid, pid);
-           res.status(200).send({result, message: "Se ha eliminado el producto del carrito correctamente!"});
+           if (result) {
+              res.status(200).send({result, message: "Se ha eliminado el producto del carrito correctamente!"});
+           } else {
+            throw new Error("Error: No se pudo eliminar el producto del carrito");
+           }
         } catch (error) {
-          res.status(500).send({status:"error", message: "Error! No se pudo eliminar el producto del carrito"});
+          res.status(500).send({status:"error", message: error.message});
         }
     }
 
@@ -104,11 +109,25 @@ class CartController {
         try {
             const { cid } = req.params;
            const result = await this.cartServices.cleanCart(cid);
+           if (result) {
             res.status(200).send({result, message: "Se ha vaciado el carrito correctamente!!"});
+           } else {
+            throw new Error("Error! No se pudo vaciar el Carrito!");
+          }
         } catch (error) {
             res.status(500).send({status: "error", message: "Error! No se pudo vaciar el carrito!"});
         }
     }
+
+    async cleanCart(cid){
+      //  return await this.cartManager.emptyCart(cartId);
+      const result = await this.cartManager.emptyCart(cartId);
+      if (result) {
+        return { status: "ok", message: "El carrito se vació correctamente!" };
+      } else {
+        throw new Error('Error! No se pudo vaciar el Carrito!');
+      }
+    };
 
     //CREAR TICKET DE COMPRA
     async createPurchaseTicket(req, res) {

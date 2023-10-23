@@ -2,6 +2,9 @@ import UserManager from "../dao/UserManager.js";
 import { userModel } from "../dao/models/user.model.js";
 import jwt from "jsonwebtoken";
 import { JWT_KEY } from "../config/config.js";
+import CartServices from "./cart.service.js";
+
+const cartService = new CartServices();
 
 class AuthenticationService {
     constructor() {
@@ -27,6 +30,7 @@ class AuthenticationService {
                 console.warn('Email nulo');
                 profile._json.email = 'sinemail@ejemplo.com';
             }
+
             let user = await userModel.findOne({email:profile._json.email});
             if (!user){
                 user = await userModel.create({
@@ -35,12 +39,14 @@ class AuthenticationService {
                     email:profile._json.email,
                     age:100,
                     password:"",
-                    rol: "user"
+                    rol: "user",
+                    isAdmin: false,
+                    cart: await cartService.createCart()
                 })
             } 
             return user;
         } catch (error) {
-            console.error("Un error ocurrio ", error);
+            console.error("Algo salió mal! ", error);
             throw error;
         }
     }

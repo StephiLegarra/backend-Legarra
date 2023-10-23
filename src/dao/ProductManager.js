@@ -1,5 +1,5 @@
 // Stephanie Legarra - Curso Backend - Comisión: 55305
-//MONGOOSE
+
 import { productModel } from "./models/product.model.js";
 
 class ProductManager {
@@ -9,6 +9,7 @@ class ProductManager {
 
   static id = 1;
 
+   //AGREGAR PRODUCTOS
   async addProduct(product) {
     try {
       const { title, description, price, thumbnail, code, stock, category } = product;
@@ -34,9 +35,18 @@ class ProductManager {
         await productModel.create(product);
         console.log("El producto fue agregado correctamente");
         return true;
-      //}
     } catch (err) {
       console.log(err.message);
+    }
+  }
+
+  //VALIDAR CODIGO
+  async validateCode(code) {
+    try {
+      return await productModel.exists({ code: code });
+    } catch (error) {
+      console.error("Error al validar el código del producto!", error);
+      return false;
     }
   }
 
@@ -49,32 +59,21 @@ class ProductManager {
     }
   }
 
-  /* async getProducts(limit) {
+   //OBTENER PRODUCTOS
+  async getProducts(params = {}) {
+    let { limit = 10, page = 1, query = {}, sort = {} } = params;
+    console.log("Query object:", query, "Type:", typeof query);
+    sort = sort ? (sort === "asc" ? { price: 1 } : { price: -1 }) : {};
+
     try {
-      const getProducts = await productModel.find().lean();
-      return getProducts;
-    } catch (err) {
-      console.log(err.message);
-    }
-  }*/
-
-
-  async getProducts(obj) {
-    try {
-      let { limit, page, query, sort } = obj;
-
-      limit = limit ? limit : 10;
-      page = page ? page : 1;
-      query = query || {};
-      sort = sort ? (sort == "asc" ? 1 : -1) : 0;
-
       let products = await productModel.paginate(query, {
         limit: limit,
         page: page,
-        sort: { price: sort },
+        sort: sort,
+        lean: true,
       });
-      let status = products ? "success" : "error";
 
+      let status = products ? "success" : "error";
       let prevLink = products.hasPrevPage ? "http://localhost:8080/products?limit=" + limit + "&page=" + products.prevPage : null;
       let nextLink = products.hasNextPage ? "http://localhost:8080/products?limit=" + limit + "&page=" + products.nextPage : null;
 
@@ -98,11 +97,7 @@ class ProductManager {
 
   async getProductsById(id) {
     try {
-      const product = await productModel.findOne({ id: id }).lean();
-      if (!product) {
-        return console.log("no se encontró el producto");
-      }
-      return product;
+      return await productModel.findById(id).lean();
     } catch (err) {
       console.log(err.message);
     }
@@ -110,12 +105,14 @@ class ProductManager {
 
   async updateProduct(id, product) {
     try {
-      if (await this.getProductsById(id)) {
-        await productModel.updateOne({ id: id }, product);
-        console.log("El producto fue actualizado correctamente");
+      const updatedProduct = await productModel.findByIdAndUpdate(id, product, {
+        new: true,
+      });
+      if (updatedProduct) {
+        console.log("El producto fue actualizado!");
         return true;
       } else {
-        console.log("no se encontró el producto");
+        console.log("El producto no fue encontrado!");
         return false;
       }
     } catch (err) {
@@ -125,29 +122,30 @@ class ProductManager {
 
   async deleteProduct(id) {
     try {
-      if (await this.getProductsById(id)) {
-        await productModel.deleteOne({ id: id });
-        console.log("El producto fue eliminado correctamente");
-        return true;
-      } else {
-        console.log("no se encontró el producto");
-        return false;
-      }
-    } catch (err) {
+      const deletedProduct = await productModel.findByIdAndDelete(id);
+        if (deletedProduct) {
+            console.log("El producto eliminado correctamente: ", deletedProduct);
+            return true;
+        } else {
+            console.log("El producto no fue encontrado: ", id);
+            return false;
+        }
+      } catch (err) {
       console.log(err.message);
     }
   }
 
-  async validateStock(id, quantity) {
+  async updateProduct(pid, updateData) {
     try {
-      let product = await this.getProductsById(parseInt(id));
-      let availableStock = product.stock - quantity;
-      // o con un if (product.stock > quantity)
-
+      const updatedProduct = await productModel.findByIdAndUpdate(pid, updateData, {
+        new: true,
+      });
+      return updatedProduct ? true : false;
     } catch (err) {
       console.log(err.message);
     }
   }
+
 }
 
 export default ProductManager;
