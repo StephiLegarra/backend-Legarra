@@ -97,10 +97,7 @@ async function realizarCompra() {
   } catch (error) {
     console.error("Error al realizar la compra", error);
   }
-
-  
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartButton = document.getElementById("cartButton");

@@ -117,7 +117,7 @@ class CartController {
           return res.status(400).json({ error: "El usuario no está definido" });
         }
   
-        const cart = await this.cartService.getCart(req.params.cid);
+        const cart = await this.cartServices.getCart(req.params.cid);
   
         if (!cart) {
           return res.status(404).json({ error: "El carrito no pudo ser encontrado!" });
