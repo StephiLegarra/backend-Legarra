@@ -1,5 +1,4 @@
-import { generateMockProduct } from "./utils.mocking.js";
-
+import { generateMockProduct } from "./utils.moking.js";
 
 export const getMockProducts = async (req, res) => {
     try {

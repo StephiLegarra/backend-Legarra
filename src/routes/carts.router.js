@@ -1,8 +1,10 @@
 import { Router } from "express";
+import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
 import { authorization, passportCall } from "../middleware/passportAuthorization.js";
 
 const cartsRouter = Router();
+const CM = new CartManager();
 
 // CREAR CARRITO
 cartsRouter.post("/", cartController.createCart.bind(cartController));
@@ -29,7 +31,9 @@ cartsRouter.delete("/:cid/products/:pid", cartController.deleteProduct.bind(cart
 cartsRouter.delete("/:cid", cartController.cleanCart.bind(cartController));
 
 //PROCESAR LA COMPRA
-cartsRouter.get("/:cid/purchase", cartController.purchese);
-cartsRouter.get("/:cid/purchase/ticket", cartController.ticketEnd);
+cartsRouter.post("/:cid/purchase", (req, res, next) => {
+    console.log('Ruta de compra accedida');
+    next();
+  }, passportCall("jwt"), cartController.createPurchaseTicket.bind(cartController));
 
 export default cartsRouter;

@@ -4,7 +4,6 @@ import { passportCall, authorization } from "../middleware/passportAuthorization
 import UserController from "../controllers/user.controller.js";
 import UserManager from "../dao/UserManager.js";
 import AuthController from "../controllers/auth.controller.js";
-import { isUser } from "../middleware/authorization.js";
 import errorHandler from "../services/errors/errorsHandler.js";
 
 const sessionsRouter = Router();
@@ -41,6 +40,5 @@ sessionsRouter.get("/current", passportCall("jwt"), authorization("user"), (req,
 });
 
 
-
-serviceRouter.use(errorHandler);
+sessionsRouter.use(errorHandler);
 export default sessionsRouter;

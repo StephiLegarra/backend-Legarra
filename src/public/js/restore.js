@@ -7,6 +7,13 @@ const restorePassword = async () => {
   
   if (data.status === "OK") {
     window.location.href= "/profile";
+    Swal.fire({
+      position: 'top-end',
+      icon: 'success',
+      title: 'Contraseña actualizada con exito',
+      showConfirmButton: false,
+      timer: 2000
+    })
   }
 };
 
