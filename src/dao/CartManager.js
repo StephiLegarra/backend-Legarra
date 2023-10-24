@@ -13,6 +13,7 @@ class CartManager {
     try {
       let cart = await cartModel.create({ products: [] });
       console.log("El carrito fue creado: ", cart);
+      console.log("ID:" + cart._id);
       return {
         status: "ok",
         message: "El Carrito se creó correctamente!",
@@ -60,7 +61,7 @@ class CartManager {
         mongoose.Types.ObjectId.isValid(cid) &&
         mongoose.Types.ObjectId.isValid(pid)
          ) {
-        const product = await this.productManager.getProductById(pid);
+        const product = await this.productManager.getProductsById(pid);
         console.log("El stock del producto es: ", product.stock);
         
       if(!product) {

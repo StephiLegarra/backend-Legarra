@@ -7,7 +7,6 @@ class TicketController {
   
     async createTicket(req) {
       try {
-  
           const data = req.body;
           const ticket = await this.ticketService.createTicket(data);
   

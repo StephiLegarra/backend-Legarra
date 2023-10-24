@@ -1,24 +1,22 @@
-//Crea el carrito al tocar el boton de comprar ahora
 const crearCarrito = async () => {
-    try {
-        if (localStorage.getItem("carrito")) {
-            return JSON.parse(localStorage.getItem("carrito"));
-        } else {
-            const response = await fetch("/api/carts/", {
-                method: "POST",
-                headers: { "Content-type": "application/json; charset=UTF-8" }
-            });
-            const data = await response.json();
-            console.log('Data del carrito:', data);
-            localStorage.setItem("carrito", JSON.stringify({ id: data.id }));
-            return { id: data.id };
-        }
-    } catch (error) {
-        console.log("Error en Crear el Carrito! " + error);
+  try {
+    if (localStorage.getItem("carrito")) {
+      return JSON.parse(localStorage.getItem("carrito"));
+    } else {
+      const response = await fetch("/api/carts/", {
+        method: "POST",
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      });
+      const data = await response.json();
+      console.log("Data del carrito:", data);
+      localStorage.setItem("carrito", JSON.stringify({ id: data.id }));
+      return { id: data.id };
     }
-}
+  } catch (error) {
+    console.log("Error en Crear el Carrito! " + error);
+  }
+};
 
-//Obtiene el ID del carrito
 const obtenerIdCarrito = async () => {
   try {
     let cart = await crearCarrito();
@@ -32,18 +30,23 @@ const obtenerIdCarrito = async () => {
   }
 };
 
-//Agrega el producto al carrito encontrado antes 
 const agregarProductoAlCarrito = async (pid) => {
   try {
     let cid = await obtenerIdCarrito();
     console.log("Verificando IDs:", cid, pid);
-    const response = await fetch("/api/carts/" + cid + "/products/" + pid, {
+
+    if (!cid) {
+      console.error("El CID es undefined.");
+      return;
+    }
+    console.log("Verificando IDs:", cid, pid);
+    const response = await fetch(`/api/carts/${cid}/products/${pid}`, {
       method: "POST",
       headers: { "Content-type": "application/json; charset=UTF-8" },
     });
 
-    const data = await response.json(); 
-
+    const data = await response.json();
+    
     if (response.ok) {
       console.log("Se agregó al Carrito!", data);
     } else {
@@ -51,7 +54,7 @@ const agregarProductoAlCarrito = async (pid) => {
         "Error en agregar el Producto al Carrito! Status:",
         response.status,
         data
-      ); 
+      );
     }
   } catch (error) {
     console.log("Error en agregar el Producto al Carrito! " + error);
@@ -97,6 +100,7 @@ async function realizarCompra() {
 
   
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const cartButton = document.getElementById("cartButton");

@@ -12,12 +12,12 @@
           <div class="card-body text-center">
             <h4>Precio: ${{getProducts.price}}</h4>
             <h6>{{getProducts.description}}</h6>
-            <p class="card_id"> {{getProducts.id}}</p>
-            <button class="btn btn-secondary btn-block" id="addToCart"> Agregar al carrito</button>
+            <p class="card_id"> {{getProducts._id}}</p>
+            <button class="btn btn-secondary btn-block" onclick="agregarProductoAlCarrito('{{getProducts._id}}')"> Agregar al carrito</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<script src="/js/product.js"></script>
+<script src="/js/cart.js"></script>

@@ -28,6 +28,12 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
             if (!isValidPassword(user, password)) {
               return done(null, false, { message: "Error! La contraseña es incorrecta!" });
             }
+
+            if (!user.cart) {
+              const cart = await cartService.createCart()
+              user.cart = cart._id;
+              await userService.updateUser(username, user)
+          }
             return done(null, user);
           } catch (error) {
             return done(error);
@@ -46,7 +52,7 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
                   return done(null, false);
               }
 
-              user = {first_name, last_name, email, age, password: createHash(password), rol, isAdmin:false, cart: await cartService.createCart()};
+              user = {first_name, last_name, email, age, password: createHash(password), rol};
 
               if (user.email == ADMIN_USER && password === ADMIN_PASS) {
                   user.rol = "admin";

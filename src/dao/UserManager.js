@@ -2,6 +2,7 @@
 import { userModel } from "./models/user.model.js";
 import { isValidPassword, createHash } from "../middleware/bcrypt.js";
 
+
 class UserManager {
   //NUEVO USUARIO
   async addUser({first_name, last_name, email, age, password, rol}) {
@@ -71,11 +72,18 @@ class UserManager {
       console.log("Contraseña actualizada correctamente!");
       return true;
     } catch (error) {
-        console.error("Error al intentar el cambio de contraseña!");
+        console.error("Error al intentar el cambio de contraseña! ", error);
         return false;
     }
   }
 
+  //ACTUALIZAR USUARIO
+  async update(userId, userToReplace) {
+    const filter = { email: userId }
+    const update = { $set: userToReplace };
+    const result = await userModel.updateOne(filter, update);
+    return result;
+}
 }
 
 export default UserManager;

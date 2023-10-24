@@ -1,5 +1,4 @@
-//import CartManager from "../dao/CartManager.js";
-import {CartManager } from "../dao/factory.js";
+import CartManager from "../dao/CartManager.js";
 
 class CartServices{
     constructor(){

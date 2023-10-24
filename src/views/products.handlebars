@@ -12,7 +12,7 @@
         <div class="card border-0 mb-5">
           <h3>{{this.title}} </h3>
           <div class="slides">
-            <a href="/products/{{this.id}}">
+            <a href="/products/{{this._id}}">
               <img src="{{this.thumbnail}}" alt="imagen del producto" class="img-fluid" />
             </a>
           </div>
@@ -20,7 +20,7 @@
             <h4>Precio: ${{this.price}}</h4>
             <h6>{{this.description}}</h6>
             <p class="card_id">{{this.id}}</p>
-            <button class="btn btn-secondary btn-block" id="addToCart">Agregar al carrito</button>
+          <a href="/products/{{this._id}}"> <button class="btn btn-secondary btn-block" type="button">Ver más</button> </a>
           </div>
         </div>
       </div>
@@ -65,4 +65,4 @@
   </div>
 </div>
 
-<script src="/js/products.js"></script>
+<script src="/js/cart.js"></script>

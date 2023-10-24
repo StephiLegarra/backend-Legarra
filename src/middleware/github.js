@@ -13,7 +13,7 @@ const initializeGitHubPassport = () => {
       }, async (accessToken, refreshToken, profile, done) => {
         try {
           const authService = new AuthenticationService();
-          console.log("Perfil: ", JSON.stringify(profile, null, 2));
+          console.log("Profile: ", JSON.stringify(profile, null, 2));
           const user = await authService.githubCallback(profile);
 
           if (user) {

@@ -36,8 +36,11 @@ class AuthController {
             first_name: userData.user.first_name,
             last_name: userData.user.last_name,
             age: userData.user.age,
-            rol: userData.user.rol
+            rol: userData.user.rol,
+            cart: userData.user.cart
         }
+        const newCart = await this.cartsService.createCart();
+        console.log(newCart);
       }
        res.cookie("coderCookieToken", userData.token, {httpOnly: true,secure: false});
        console.log("Todo salió bien! lo estamos redirigiendo..!");

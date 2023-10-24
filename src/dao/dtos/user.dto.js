@@ -6,8 +6,6 @@ class UserDTO {
       this.email = user.email;
       this.rol = user.rol;
       this.age = user.age;
-      this.isAdmin = user.isAdmin;
-      this.cartID = user.cart;
     }
   }
   
