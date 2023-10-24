@@ -13,8 +13,11 @@ class CartManager {
     try {
       let cart = await cartModel.create({ products: [] });
       console.log("El carrito fue creado: ", cart);
-      let id = cart._id;
-      return {id};
+      return {
+        status: "ok",
+        message: "El Carrito se creó correctamente!",
+        id: cart._id,
+      };
     } catch (err) {
       console.log(err.message);
     }
@@ -87,7 +90,11 @@ class CartManager {
         return {status: "error", message: "ID inválido!"};
        }
     } catch (err) {
-      console.log(err.message);
+      console.error(err);
+      return {
+        status: "error",
+        message: "Ocurrió un error al agregar el producto al carrito!",
+      };
     }
   }
 
@@ -100,10 +107,10 @@ class CartManager {
         { new: true, upsert: true }
       );
       console.log("El producto ha sido actualizado correctamente!");
-
       return true;
     } catch (err) {
-      console.log(err.message);
+      console.log("Error! No se pudo actualizar!");
+      return false
     }
   }
 
@@ -146,7 +153,8 @@ class CartManager {
         return false;
       }
     } catch (err) {
-      console.log(err.message);
+      console.error("Error al querer actualizar los productos", err);
+      return false;
     }
   }
 
@@ -168,7 +176,8 @@ class CartManager {
         return false;
       }
     } catch (err) {
-      console.log(err.message);
+      console.error(err);
+      return false;
     }
   }
 

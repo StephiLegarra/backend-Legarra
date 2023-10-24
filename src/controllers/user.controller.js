@@ -1,6 +1,9 @@
 import { createHash } from "../middleware/bcrypt.js";
 import UserService from "../services/user.service.js";
 import UserResponse from "../dao/dtos/user.response.js";
+import { generateUserError } from "../services/errors/errorMessages/user.creation.error.js";
+import EErrors from "../services/errors/errorsEnum.js";
+import CustomeError from "../services/errors/customeError.js";
 
 class UserController {
     constructor (){
@@ -8,16 +11,27 @@ class UserController {
     }
     
     async register(req, res) {
-        const { first_name, last_name, email, age, password, rol, isAdmin, cart} = req.body;
+        try{
+        const { first_name, last_name, email, age, password, rol} = req.body;
+      
+        if( !first_name || !email || !age || !password){
+            const customeError = new CustomeError({
+              name: "User creation error",
+              cause: generateUserError({
+                first_name, last_name, email, age, password}),
+              message: "Error al intentar registrar al usuario",
+              code:400,
+            });
+            return next(customeError);
+          }
+
         const response = await this.userService.register({
           first_name,
           last_name,
           email,
           age,
           password,
-          rol,
-          isAdmin,
-          cart
+          rol
         });
     
         return res.status(response.status === "success" ? 200 : 400).json({
@@ -25,28 +39,41 @@ class UserController {
             data: response.user,
             redirect: response.redirect,
           });
+        } catch (error) {
+            return next(error);
+        }
       }
 
-    async restorePassword(req, res){
+    async restorePassword(req, res, next){
         const {user, pass} = req.query;
         try {
             const passwordRestored = await this.userService.restorePassword(user,createHash(pass));
             if (passwordRestored) {
               return res.send({status: "OK", message: "La contraseña se ha actualizado correctamente!"});
             } else {
-              return res.status(401).send({status: "Error", message: "No se pudo actualizar la contraseña!"});
+                const customeError = new CustomeError({
+                    name: "Restore Error",
+                    massage: "No fue posible actualizar la contraseña",
+                    code: EErrors.PASSWORD_RESTORATION_ERROR,
+                  });
+                  return next(customeError);  
             }
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ status: "error", message: "Error interno del servidor" });
+           return next(error);
         }
     }
     
-    current(req, res){
+    current(req, res, next){
         if(req.session.user){
             return res.send({status:"ok", payload:new UserResponse(req.session.user)});
         }else{
-            return res.status(401).send({status:"error", message: "No tiene autoriacion para acceder"})
+            const customeError = new CustomeError({
+                name: "Auth Error",
+                massage: "No fue posible acceder a Current",
+                code: EErrors.AUTHORIZATION_ERROR,
+              });
+              return next(customeError);  
         }
     }
 }

@@ -11,6 +11,7 @@ import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/view.router.js";
 import emailRouter from './routes/email.router.js';
 import smsRouter from './routes/sms.router.js';
+import mockingRouter from "./src/moking/mock.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -25,7 +26,7 @@ const app = express();
 // SERVER HTTP
 const httpServer = app.listen(PORT, () => {console.log(`Servidor inicializado en puerto ${PORT}`)});
 // SOCKET SERVER
-const socketServer = new Server(httpServer);
+export const socketServer = new Server(httpServer);
 app.set("socketServer", socketServer);
 
 app.engine("handlebars",
@@ -65,6 +66,7 @@ app.use("/api/sessions/", sessionsRouter);
 app.use("/", viewsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
+app.use("/mockingproducts", mockingRouter);
 
 app.use(cors({
   credentials:true,
@@ -90,10 +92,10 @@ socketServer.on("connection", async (socket) => {
 
   // PRODUCTOS REAL TIME
   const allProducts = await PM.getProducts();
-  socket.emit("realTimeProducts", allProducts);
+  socket.emit("initial_products", allProducts);
 
   // CREAR PRODUCTO
-  socket.on("nuevoProducto", async (obj) => {
+  socket.on("addProduct", async (obj) => {
     await PM.addProduct(obj);
     const productsList = await PM.getProductsViews();
     socketServer.emit("envioDeProductos", productsList);
@@ -111,6 +113,16 @@ socketServer.on("connection", async (socket) => {
     const productsList = PM.getProducts();
     socketServer.emit("envioDeProductos", productsList);
   });
+
+  // CONEXION USUARIO
+  socket.on("nuevoUsuario",(usuario)=>{
+    console.log("usuario", usuario);
+    socket.broadcast.emit("broadcast", usuario);
+    });
+
+  socket.on("disconnect", ()=>{
+    console.log("Usuario desconectado");
+    });
 
   //CHAT
   socket.on("mensajeChat", async (data) => {

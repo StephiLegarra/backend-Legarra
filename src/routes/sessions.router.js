@@ -2,12 +2,15 @@ import { Router } from "express";
 import passport from "passport";
 import { passportCall, authorization } from "../middleware/passportAuthorization.js";
 import UserController from "../controllers/user.controller.js";
+import UserManager from "../dao/UserManager.js";
 import AuthController from "../controllers/auth.controller.js";
 import { isUser } from "../middleware/authorization.js";
+import errorHandler from "../services/errors/errorsHandler.js";
 
 const sessionsRouter = Router();
 const userController = new UserController();
 const authController = new AuthController();
+const UM = new UserManager();
 
 //LOGIN DE USUARIO
 sessionsRouter.post("/login", (req,res) => authController.login(req,res));
@@ -32,13 +35,12 @@ sessionsRouter.get("/githubcallback", passport.authenticate("github", { failureR
   }
 );
 
-//CURRENT
+//CURRENT - ACTUAL
 sessionsRouter.get("/current", passportCall("jwt"), authorization("user"), (req, res) => {
  userController.current(req,res)
 });
 
-//PROFILE
-sessionsRouter.get("/profile", isUser, authController.profile);
 
 
+serviceRouter.use(errorHandler);
 export default sessionsRouter;

@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 
 //CREA EL HASH
-export const createHash = (password) =>
-  bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+export function createHash (password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10))};
 
 //VALIDACION DE CONTRASEÑA
 export const isValidPassword = (user, password) =>

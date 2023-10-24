@@ -2,7 +2,6 @@ import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
-import { isUser, isNotAdmin } from "../middleware/authorization.js";
 
 const viewsRouter = express.Router();
 const PM = new ProductManager();
@@ -71,7 +70,7 @@ viewsRouter.get("/products/:pid", async (req, res) => {
 });
 
 // CARTS
-viewsRouter.get("/carts", async (req, res) => {
+viewsRouter.get("/carts/:cid", async (req, res) => {
   try {
     const cid = req.user.cart.id;
     const cart = await CM.getCartById(cid);
@@ -92,7 +91,7 @@ viewsRouter.post("/carts/:cid/purchase", async (req, res) => {
 });
 
 //CHAT
-viewsRouter.get("/chat",  isUser, isNotAdmin, async (req, res) => {
+viewsRouter.get("/chat",checkSession, async (req, res) => {
   try {
     res.render("chat");
   } catch (error) {

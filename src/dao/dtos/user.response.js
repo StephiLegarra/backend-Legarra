@@ -5,3 +5,5 @@ export default class UserResponse {
       this.email = user.email;
     }
   }
+  
+  

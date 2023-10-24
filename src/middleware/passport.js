@@ -5,11 +5,13 @@ import { isValidPassword, createHash } from "./bcrypt.js";
 import jwt from "passport-jwt";
 import { ADMIN_PASS, ADMIN_USER, JWT_KEY } from "../config/config.js";
 import CartServices from "../services/cart.service.js";
+import UserService from "../services/user.service.js";
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWT = jwt.ExtractJwt;
 const LocalStrategy = local.Strategy;
 const cartService = new CartServices();
+const userService = new UserService();
 
 //ESTRATEGIAS DE PASSPORT
 const initializePassport = ()=>{

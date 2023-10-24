@@ -2,9 +2,6 @@ import UserManager from "../dao/UserManager.js";
 import { userModel } from "../dao/models/user.model.js";
 import jwt from "jsonwebtoken";
 import { JWT_KEY } from "../config/config.js";
-import CartServices from "./cart.service.js";
-
-const cartService = new CartServices();
 
 class AuthenticationService {
     constructor() {
@@ -39,9 +36,7 @@ class AuthenticationService {
                     email:profile._json.email,
                     age:100,
                     password:"",
-                    rol: "user",
-                    isAdmin: false,
-                    cart: await cartService.createCart()
+                    rol: "user"
                 })
             } 
             return user;

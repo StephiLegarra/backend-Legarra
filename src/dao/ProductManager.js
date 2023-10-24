@@ -1,5 +1,4 @@
 // Stephanie Legarra - Curso Backend - Comisión: 55305
-
 import { productModel } from "./models/product.model.js";
 
 class ProductManager {
@@ -36,7 +35,8 @@ class ProductManager {
         console.log("El producto fue agregado correctamente");
         return true;
     } catch (err) {
-      console.log(err.message);
+      console.error("Error al agregar el producto:", err);
+      return false;
     }
   }
 
@@ -44,18 +44,18 @@ class ProductManager {
   async validateCode(code) {
     try {
       return await productModel.exists({ code: code });
-    } catch (error) {
-      console.error("Error al validar el código del producto!", error);
+    } catch (err) {
+      console.error("Error al validar el código del producto! ", err);
       return false;
     }
   }
 
    //FORMULARIO DESDE LA VISTA
-   getProductsViews =async ()=>{
+  async getProductsViews() {
     try {
         return await productModel.find().lean();
-    } catch (error) {
-        return error
+    } catch (err) {
+        return err
     }
   }
 
@@ -91,7 +91,8 @@ class ProductManager {
       };
       return products;
     } catch (err) {
-      console.log(err.message);
+      console.error("Error al obtener los productos: ", err);
+      return {status: "error",payload: []};
     }
   }
 
@@ -99,7 +100,8 @@ class ProductManager {
     try {
       return await productModel.findById(id).lean();
     } catch (err) {
-      console.log(err.message);
+      console.error("Error al obtener los productos por ID: ", err);
+      return null;
     }
   }
 
@@ -116,7 +118,8 @@ class ProductManager {
         return false;
       }
     } catch (err) {
-      console.log(err.message);
+      console.error("Error al actualizar el producto: ", err);
+      return false;    
     }
   }
 
@@ -131,7 +134,8 @@ class ProductManager {
             return false;
         }
       } catch (err) {
-      console.log(err.message);
+        console.error('Error eliminando producto:', err);
+        return false;
     }
   }
 
@@ -142,7 +146,8 @@ class ProductManager {
       });
       return updatedProduct ? true : false;
     } catch (err) {
-      console.log(err.message);
+      console.error("Error al actualizar el producto: ", err);
+      return false;
     }
   }
 

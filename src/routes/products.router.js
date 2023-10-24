@@ -1,23 +1,28 @@
 import { Router } from "express";
 import productController from "../controllers/products.controller.js"
-import { isAdmin } from "../middleware/authorization.js";
+import ProductsServices from "../services/products.service.js";
+import ProductManager from "../dao/ProductManager.js";
+import { passportCall, authorization } from "../middleware/passportAuthorization.js";
+import errorHandler from "../services/errors/errorsHandler.js";
 
 const productsRouter = Router();
+const PM = new ProductManager();
+const productService = new ProductsServices();
 
 // OBTENER PRODUCTOS
-productsRouter.get("/", isAdmin, productController.getProducts.bind(productController));
+productsRouter.get("/", passportCall('jwt'), authorization(['admin']), productController.getProducts.bind(productController));
 
 // OBTENER PRODUCTO POR ID
-productsRouter.get("/:pid", isAdmin, productController.getByID.bind(productController));
+productsRouter.get("/:pid", productController.getByID.bind(productController));
 
 // AGREGAR PRODUCTOS
-productsRouter.post("/", isAdmin, productController.addProduct.bind(productController));
+productsRouter.post("/", passportCall('jwt'), authorization(['admin']), productController.addProduct.bind(productController));
 
 // ACTUALIZAR PRODUCTOS
-productsRouter.put("/:id", isAdmin, productController.updateProduct.bind(productController));
+productsRouter.put("/:id", passportCall('jwt'), authorization(['admin']), productController.updateProduct.bind(productController));
 
 // ELIMINAR PRODUCTO
-productsRouter.delete("/:id", isAdmin, productController.deleteProduct.bind(productController));
+productsRouter.delete("/:id", passportCall('jwt'), authorization(['admin']), productController.deleteProduct.bind(productController));
 
-
+productsRouter.use(errorHandler);
 export default productsRouter;

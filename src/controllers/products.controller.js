@@ -1,4 +1,8 @@
 import ProductsServices from "../services/products.service.js";
+import {socketServer} from "../app.js"
+import mongoose from "mongoose";
+import CustomeError from "../services/errors/customeError.js";
+import { productError } from "../services/errors/errorMessages/product.error.js";
 
 class ProductController{
     constructor(){
@@ -9,37 +13,49 @@ class ProductController{
     async getProducts (req,res){
         try {
             const products = await this.productServices.getProducts(req.query);
-            res.status(200).send({ products })
-            const userSession = req.session.email;
-            const userSessionisAdmin = req.session.isAdmin;
-            const cart = req.session.cart;
-            return res.status(200).render('products', {products, userSession, userSessionisAdmin, cart});
+            res.status(200).send(products);
         } catch (error) {
+          const productErr = new CustomeError({
+            name: "Product Fetch Error",
+            message: "Error al obtener los productos",
+            code:500,
+            cause:error.message,
+          });
+          console.error(productErr);
             res.status(500).send({status:"error", message: "Error al obtener productos"});
         }
     }
     
     //OBTENER PRODUCTO POR ID
-    async getByID (req, res){
+    async getByID (req, res, next){
         try {
             const { pid } = req.params;
-            const product = await this.productServices.getPbyID(pid);
+            if(!mongoose.Types.ObjectId.isValid(pid)){
+              throw new CustomeError({
+                name: "Invalid ID",
+                message: "El ID no es correcto",
+                code:400,
+                cause: productError(pid),
+              });
+            }
+            const product = await this.productServices.getByID(pid);
             if (product) {
-                res.json(product);
-                return;
-              } else {
-                res.status(404).send({ status: "error", message: "El producto no fue encontrado!" });
-                return;
-              }
+              throw new CustomeError({
+                name: "Product not found",
+                message: "El producto no pudo ser encontrado",
+                code:404,
+              });
+              } 
+              res.status(200).json({ status: "success", data: product });
+        return;   
         } catch (error) {
-            res.status(500).send({status:"error", message:"Error al buscar el producto por su ID"});
-            return;
+            next(error)
         }
     }
 
     //AGREGAR PRODUCTOS
     async addProduct(req, res){
-        const { title, description, price, thumbnail, code, stock, category } = req.body;
+        let { title, description, price, thumbnail, code, stock, category } = req.body;
       
         try {
             if (!title || !description || !price || !code || !stock || !category || !thumbnail) {
@@ -55,8 +71,28 @@ class ProductController{
               const product = {title,description,price,thumbnail,code,stock,category};
                product.status = true;
                await this.productServices.addProduct(product);
-               res.status(200).send({product, message: "el producto ha sido agregado correctamente"});
+
+               if (product && product._id) {
+                console.log("Producto añadido correctamente:", product);
+                res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"});
+                socketServer.emit("product_created", {
+                  _id: product._id,
+                  title,
+                  description,
+                  code,
+                  price,
+                  stock,
+                  category,
+                  thumbnail
+                });
+                return;
+              } else {
+                console.log("Error al añadir producto, product:", product);
+                res.status(500).send({status: "error", message: "Error! No se pudo agregar el Producto!"});
+                return;
+              }
         } catch (error) {
+            console.error("Error en addProduct:", error, "Stack:", error.stack);
             res.status(500).send({status: "error", message: "Error interno"});
         }
     }
@@ -84,7 +120,12 @@ class ProductController{
             const actProduct = {title,description,price,thumbnail,code,stock,category};
             actProduct.status = true;
             await this.productServices.updateProduct(pid, actProduct);
-            res.status(200).send({ actProduct, message: "el producto ha sido actualizado" });     
+            if (actProduct) {
+              res.status(200).send({status: "ok", message: "El Producto se actualizó correctamente!"});
+              socketServer.emit("product_updated");
+            } else {
+              res.status(500).send({status: "error", message: "Error! No se pudo actualizar el Producto!"});
+            }
          } catch (error) {
             console.log(error);
             res.status(500).send({status: "error", message: "Error Interno"});
@@ -104,8 +145,9 @@ class ProductController{
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }
-          const deleted = await this.productServices.deleteProduct(pid);
-          if(deleted) {
+         
+            const deleted = await this.productServices.deleteProduct(pid);
+            if(deleted) {
             console.log("El producto fue eliminado correctamente!");
              res.status(200).send({ status: "ok", message: "el producto ha sido eliminado" });
              socketServer.emit("product_deleted", { _id: pid });
@@ -114,6 +156,7 @@ class ProductController{
             res.status(500).send({status: "error", message: "Error eliminando el producto"});
           }
         } catch (error) {
+            console.error(error);
             res.status(500).send({status: "error", message: "Error Interno"});
         }
     }
