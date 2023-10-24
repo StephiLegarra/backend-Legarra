@@ -91,9 +91,8 @@ viewsRouter.post("/carts/:cid/purchase", async (req, res) => {
   cartController.getPurchase(req, res, cid);
 });
 
-
 //CHAT
-viewsRouter.get("/chat", isUser, isNotAdmin, async (req, res) => {
+viewsRouter.get("/chat",  isUser, isNotAdmin, async (req, res) => {
   try {
     res.render("chat");
   } catch (error) {

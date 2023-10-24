@@ -117,7 +117,6 @@ class CartManager {
           return false;
         }
 
-        console.log("PID:", pid);
         console.log("Cart products:",
           cart.products.map((item) =>
             item.product._id

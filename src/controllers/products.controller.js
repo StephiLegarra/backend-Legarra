@@ -83,7 +83,7 @@ class ProductController{
         
             const actProduct = {title,description,price,thumbnail,code,stock,category};
             actProduct.status = true;
-            await this.productServices.updateProduct(parseInt(id), actProduct);
+            await this.productServices.updateProduct(pid, actProduct);
             res.status(200).send({ actProduct, message: "el producto ha sido actualizado" });     
          } catch (error) {
             console.log(error);

@@ -1,8 +1,10 @@
 import CartServices from "../services/cart.service.js";
 import { cartModel } from "../dao/models/cart.model.js";
 import ProductManager from "../dao/ProductManager.js";
-import ticketController from "./ticket.controller.js";
 import { v4 as uuidv4 } from "uuid";
+import ticketController from "./ticket.controller.js";
+import { ticketModel } from "../dao/models/tickets.model.js";
+import UserDTO from "../dao/dtos/user.dto.js";
 
 class CartController {
     constructor(){
@@ -14,9 +16,9 @@ class CartController {
     async createCart(req, res){
         try {
             const newCart = await this.cartServices.createCart();
-            res.status(200).send({ newCart, message: "El carrito ha sido creado" }); 
+            res.status(200).send({newCart}); 
         } catch (error) {
-            res.status(500).send({status: "error", message: "Error! No se pudo crear el Carrito!"});
+            res.status(500).send({status: "error", message: error.message});
         }
     }
 
@@ -26,7 +28,7 @@ class CartController {
             const getCarts = await this.cartServices.allCarts();
             res.status(200).send(getCarts);
         } catch (error) {
-            res.status(500).send({status: "error", message: "Error! No se ha encontrado ningun producto en ningun carrito!"});
+            res.status(500).send({status: "error", message: error.message});
         }
     }
 
@@ -48,7 +50,6 @@ class CartController {
         try {
             const { cid, pid } = req.params;
             const result = await this.cartServices.addProduct(cid,pid);
-        
             if (!result) {
               return res.status(404).send({error: "Error! No se pudo agregar el producto al carrito!"});
             }
@@ -67,7 +68,7 @@ class CartController {
             if (result) {
                res.status(200).send({status: "ok",message: "El producto se agregó correctamente!"});
             } else {
-              throw new Error("Error: No se pudo actualizar el carrito");
+               res.status(404).send("Error: No se pudo actualizar el carrito!");
             }
             } catch (error) {
             res.status(500).send({status:"error", message: error.message});
@@ -83,7 +84,7 @@ class CartController {
         if (!result) {
           return res.status(404).send({error: "Error! No se pudo actualizar la cantidad del producto en el carrito!"});
         }
-        res.status(200).send({status: "ok", message:"La cantidad de ejemplares del producto se actualizó correctamente!"});
+        res.status(200).send({result, message:"La cantidad de ejemplares del producto se actualizó correctamente!"});
       } catch (error) {
         res.status(500).send({status: "error", message: error.message});
       }
@@ -208,6 +209,7 @@ class CartController {
       }
     }
 
+     //COMPRA
     async purchese(req, res) {
       try {
         const { cid } = req.params;
@@ -266,14 +268,14 @@ class CartController {
           if (quantityInCart <= availableStock) {
             const precioTotalProducto = productPrice * quantityInCart;
             cartConStock.push({ idProduct, quantity: quantityInCart, precioTotalProducto, title });
-            const product = this.productClass.getProductById(idProduct);
+            const product = this.productManager.getProductById(idProduct);
             let quantityTotal = availableStock - quantityInCart;
-            productClass.updateOne(
+          productManager.updateOne(
               idProduct,
               product.title,
               product.description,
               product.price,
-              product.thumbnails,
+              product.thumbnail,
               product.code,
               quantityTotal,
               product.category,

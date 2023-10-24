@@ -9,7 +9,10 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: GMAIL_USER,    
         pass: GMAIL_PASSWORD  
-    }
+    },
+    tls: {
+        rejectUnauthorized: false
+      }
 });
 
 transporter.verify(function(error, success) {
@@ -52,6 +55,6 @@ export const sendEmail = (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).send({error:  error, message: "No se pudo enviar el email desde:" + GMAIL_USER});
+        res.status(500).send({error: error, message: "No se pudo enviar el email desde:" + GMAIL_USER});
     }
 };

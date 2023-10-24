@@ -1,5 +1,6 @@
 import { createHash } from "../middleware/bcrypt.js";
 import UserService from "../services/user.service.js";
+import UserResponse from "../dao/dtos/user.response.js";
 
 class UserController {
     constructor (){
@@ -29,15 +30,15 @@ class UserController {
     async restorePassword(req, res){
         const {user, pass} = req.query;
         try {
-            const newPass = await this.userService.restorePassword(user,createHash(pass));
-            if(newPass){
-                return res.send({status:"ok", message: "Contraseña actualizada correctamente"});
-            }else{
-                return res.status(401).send({status:"error", message:"No se pudo actualizar la contraseña"});
+            const passwordRestored = await this.userService.restorePassword(user,createHash(pass));
+            if (passwordRestored) {
+              return res.send({status: "OK", message: "La contraseña se ha actualizado correctamente!"});
+            } else {
+              return res.status(401).send({status: "Error", message: "No se pudo actualizar la contraseña!"});
             }
         } catch (error) {
-            console.log(error);
-            return res.status(500).json({status:"error", message:"Error Interno"})
+            console.error(error);
+            return res.status(500).json({ status: "error", message: "Error interno del servidor" });
         }
     }
     

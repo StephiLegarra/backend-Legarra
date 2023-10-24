@@ -13,7 +13,7 @@ class ProductsServices{
         return await this.productManager.getProducts(params);
     }
 
-    async getPbyID (id){
+    async getByID (id){
         return await this.productManager.getProductsById(id);
     }
 

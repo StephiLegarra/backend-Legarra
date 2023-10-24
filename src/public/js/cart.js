@@ -23,6 +23,9 @@ const obtenerIdCarrito = async () => {
   try {
     let cart = await crearCarrito();
     console.log("Carrito obtenido:", cart);
+    if (!cart.id) {
+      console.error("El ID del carrito es undefined");
+    }
     return cart.id;
   } catch (error) {
     console.log("Error en obtener el Id del Carrito! " + error);
@@ -55,11 +58,61 @@ const agregarProductoAlCarrito = async (pid) => {
   }
 };
 
-// Compra
-async function comprar(){
+async function realizarCompra() {
   try {
-   // const cartID : 
+    const cartId = await obtenerIdCarrito();
+    console.log("Cart ID:", cartId);
+    if (!cartId) {
+      throw new Error("Carrito no encontrado");
+    }
+
+    const url = `/api/carts/${cartId}/purchase`; // URL corregida
+    console.log("URL de compra:", url); // Log de la URL para verificar
+
+    const response = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("response:", response);
+    if (!response.ok) {
+      console.error("Error en la respuesta", response.statusText);
+      const text = await response.text();
+      console.error(text);
+      return;
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      const data = await response.json();
+      console.log("Compra realizada con éxito", data); 
+    } else {
+      console.error("Respuesta no JSON:", await response.text());
+    }
   } catch (error) {
-    
+    console.error("Error al realizar la compra", error);
   }
+
+  
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cartButton = document.getElementById("cartButton");
+
+  if (cartButton) {
+    cartButton.addEventListener("click", async () => {
+      try {
+        const cartId = await obtenerIdCarrito();
+        if (cartId) {
+          window.location.href = `/carts/${cartId}`;
+        } else {
+          console.error("El ID del carrito es undefined");
+        }
+      } catch (error) {
+        console.error("Error al obtener el ID del carrito: " + error);
+      }
+    });
+  }
+});
