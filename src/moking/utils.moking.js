@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 
+//GENERAR PRODUCTOS CON FAKER
 export const generateMockProduct = () => {
     let product = {
         _id: faker.database.mongodbObjectId(),

@@ -1,5 +1,6 @@
 import { generateMockProduct } from "./utils.moking.js";
 
+//OBTENGO 100 PRODUCTOS USANDO EL MOCK DE FAKER
 export const getMockProducts = async (req, res) => {
     try {
         let products = [];
@@ -9,6 +10,6 @@ export const getMockProducts = async (req, res) => {
         res.send({status: "success", payload: products});
     } catch (error) {
         console.error(error);
-        res.status(500).send({error:  error, message: "Could not get the products:"});
+        res.status(500).send({error:  error, message: "Lo siento! No se pudieron obtener los productos!"});
     }
 };
