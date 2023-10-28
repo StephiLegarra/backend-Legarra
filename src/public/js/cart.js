@@ -79,7 +79,9 @@ async function realizarCompra() {
         "Content-Type": "application/json",
       },
     });
+
     console.log("response:", response);
+
     if (!response.ok) {
       console.error("Error en la respuesta", response.statusText);
       const text = await response.text();
@@ -99,6 +101,7 @@ async function realizarCompra() {
   }
 }
 
+
 document.addEventListener("DOMContentLoaded", () => {
   const cartButton = document.getElementById("cartButton");
 
@@ -106,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cartButton.addEventListener("click", async () => {
       try {
         const cartId = await obtenerIdCarrito();
+        console.log(cartId);
         if (cartId) {
           window.location.href = `/carts/${cartId}`;
         } else {
