@@ -1,12 +1,12 @@
 export const updateQuantityInCartError = (cart, productId) =>{
-    return `Una o varias propiedades fueron enviadas incompletas o son invalidas.
+    return `Una o varias propiedades fueron enviadas de forma incompleta o son inválidas.
             Propiedades requeridas:
             * ID de carrito: type String, recibido: ${cart}
             * ID de producto: type String, recibido: ${productId}`;
 };
 
 export const createProductError = (product) => {
-    return `Una o varias propiedades fueron enviadas incompletas o son invalidas.
+    return `Una o varias propiedades fueron enviadas de forma incompleta o son inválidas.
             Propiedades requeridas: 
             * title: type String, recibido: ${product.title}
             * description: type String, recibido: ${product.description}
@@ -18,7 +18,7 @@ export const createProductError = (product) => {
 
 export class generateError {
     static getId(id){
-        return `El ID recibido fue ${id} y no es valido `;
+        return `El ID recibido: ${id}, no es válido `;
     }
     static idNorFound(){
         return 'El ID no existe';
@@ -30,7 +30,7 @@ export class generateError {
         return 'Usuario no autorizado';
     }
     static DBNotChanged(){
-        return 'La base de datos no registro el cambio';
+        return 'La base de datos no registró el cambio';
     }
 }
 
