@@ -1,4 +1,4 @@
-import winston, { transports } from "winston";  
+import winston from "winston";  
 import config from "./config.js";
 
 const customLevelsOptions = {
@@ -15,12 +15,13 @@ const customLevelsOptions = {
         error: 'red',
         warning: 'yellow',
         info: 'blue',
+        http: 'blue',
         debug: 'white'
     }
 };
 
 //LOGGER DEVELOP
-const devLogger = winston.createLogger({ 
+export const devLogger = winston.createLogger({ 
     levels: customLevelsOptions.levels, 
     transports: [
         new winston.transports.Console(
@@ -32,11 +33,18 @@ const devLogger = winston.createLogger({
                 )
             }
         ),
+        new winston.transports.File(
+            {
+                filename: './errors.log', 
+                level: 'error', 
+                format: winston.format.simple()
+            }
+        )
     ]
 });
 
 //LOGGER PRODUCTION
-const prodLogger = winston.createLogger({
+export const prodLogger = winston.createLogger({
     levels: customLevelsOptions.levels, 
     transports: [
         new winston.transports.Console(
@@ -65,6 +73,7 @@ export const addLogger = (req, res, next) => {
     } else {
         req.logger = devLogger;
     }
-    req.logger.debug(`${req.method} en ${req.url} - fecha y hora: ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
+    req.logger.debug(`${req.method} en ${req.url} - at: ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`);
     next(); 
 };
+

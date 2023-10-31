@@ -20,12 +20,13 @@ import initializePassport from "./middleware/passport.js";
 import initializeGitHubPassport from "./middleware/github.js";
 import { PORT, MONGODB_URL, SECRET_SESSIONS } from "./config/config.js";
 import cors from "cors";
+import { addLogger } from "./config/logger.js";
 
 //EXPRESS
 const app = express();
 
 // SERVER HTTP
-const httpServer = app.listen(PORT, () => {console.log(`Servidor inicializado en puerto ${PORT}`)});
+const httpServer = app.listen(PORT, () => {addLogger.debug(`Servidor inicializado en puerto ${PORT}`)});
 // SOCKET SERVER
 export const socketServer = new Server(httpServer);
 app.set("socketServer", socketServer);
