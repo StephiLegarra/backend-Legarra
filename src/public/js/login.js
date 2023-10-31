@@ -18,8 +18,7 @@ const loginUser = async () => {
       window.location.href = data.redirect;
     }
   } catch (error) {
-    req.logger.fatal("Hubo un problema con la operación, usuario o contraseña incorrectos", error);
+    console.log("Hubo un problema con la operación, usuario o contraseña incorrectos", error);
   }
 };
 document.getElementById("btnLogin").onclick = loginUser;
-
