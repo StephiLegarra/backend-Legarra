@@ -3,6 +3,6 @@ import { addLogger } from "../config/logger.js";
 
 const loggerRouter = Router();
 
-loggerRouter.get("/logger", addLogger);
+loggerRouter.get("/loggerTest", addLogger);
 
  export default loggerRouter; 

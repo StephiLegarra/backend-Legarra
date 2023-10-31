@@ -1,8 +1,22 @@
 import dotenv from "dotenv";
+import {Command} from 'commander';
 
-dotenv.config();
+const program = new Command();
+
+program
+    .option('-d', 'Variable para debug', false)
+    .option('-p <port>', 'Puerto del servidor', 8080)
+    .option('--mode <mode>', 'Modo de trabajo', 'develop')
+program.parse();
+
+console.log("Mode Option: ", program.opts().mode);
+
+const environment = program.opts().mode;
+
+dotenv.config({path:environment==="production"?"./src/.env.production":"./src/.env.development"});
 
 export const PORT=process.env.PORT
+export const ENVIRONMENT=environment
 export const MONGODB_URL=process.env.MONGODB_URL
 export const ADMIN_USER=process.env.ADMIN_USER 
 export const ADMIN_PASS=process.env.ADMIN_PASS

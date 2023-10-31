@@ -68,7 +68,7 @@ app.use("/", viewsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
 app.use("/api/mockingproducts", mockingRouter);
-app.use("/logger", loggerRouter);
+app.use("/api/loggerTest", loggerRouter);
 
 app.use(cors({
   credentials:true,
