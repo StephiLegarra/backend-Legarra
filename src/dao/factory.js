@@ -19,7 +19,6 @@ switch(PERSISTENCE){
         const { default: UserManagerMongo} = await import ("./UserManager.js");
         UserManager = UserManagerMongo;
         
-        console.log("Servicio de persistencia en MONGO DB activo");
         break;
 
     case "FILESYSTEM": 
@@ -31,7 +30,7 @@ switch(PERSISTENCE){
         break;  
     
     default: 
-        console.error("Método de persistencia inválido o inexistente!");
+        req.logger.fatal("Método de persistencia inválido o inexistente!");
         process.exit(1);
 }
 

@@ -20,13 +20,14 @@ import initializePassport from "./middleware/passport.js";
 import initializeGitHubPassport from "./middleware/github.js";
 import { PORT, MONGODB_URL, SECRET_SESSIONS } from "./config/config.js";
 import cors from "cors";
-import { addLogger } from "./config/logger.js";
+import { addLogger, devLogger } from "./config/logger.js";
+import "./config/mongoConfig.js"
 
 //EXPRESS
 const app = express();
 
 // SERVER HTTP
-const httpServer = app.listen(PORT, () => {addLogger.debug(`Servidor inicializado en puerto ${PORT}`)});
+const httpServer = app.listen(PORT, () => {devLogger.info(`Servidor inicializado en puerto ${PORT}`)});
 // SOCKET SERVER
 export const socketServer = new Server(httpServer);
 app.set("socketServer", socketServer);
@@ -43,9 +44,7 @@ app.use(cookieParser());
 app.use(session({
     store: new MongoStore({
       mongoUrl: MONGODB_URL,
-      collectionName:"sessions",
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      ttl: 10000,
+      collectionName:"sessions"
     }),
     secret: SECRET_SESSIONS,
     resave: false,
@@ -61,6 +60,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/images", express.static(__dirname + "/src/public/images"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(addLogger);
 
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
@@ -69,7 +69,7 @@ app.use("/", viewsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
 app.use("/api/mockingproducts", mockingRouter);
-app.use("/api/loggerTest", loggerRouter);
+app.use("/loggerTest", loggerRouter);
 
 app.use(cors({
   credentials:true,

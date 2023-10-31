@@ -11,20 +11,20 @@ const CM = new CartManager();
 //Control de acceso
 const checkSession = (req, res, next) => {
   if (req.session && req.session.user) {
-    console.log("Chequeando sesion: ", req.session.user);
+    req.logger.info("Chequeando sesion: ", req.session.user);
     next();
   } else {
-    console.log("Error! Redireccionamos al login!");
+    req.logger.warning("Error! Redireccionamos al login!");
     res.redirect("/login");
   }
 };
 
 const checkAlreadyLoggedIn = (req, res, next) => {
   if (req.session && req.session.user) {
-    console.log("Usuario ya autenticado, redirigiendo a /profile");
+    req.logger.info("Usuario ya autenticado, redirigiendo a /profile");
     res.redirect("/profile");
   } else {
-    console.log("Usuario no autenticado, procediendo...");
+    req.logger.error("Usuario no autenticado, procediendo...");
     next();
   }
 };
@@ -51,7 +51,8 @@ viewsRouter.get("/realtimeproducts", async (req, res) => {
 viewsRouter.get("/products", checkSession, async (req, res) => {
   try {
     const getProducts = await PM.getProducts(req.query);
-    const user = req.session.user;
+    const user = req.session.user;  
+    req.logger.info(user);
     res.render("products", { getProducts, user });
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -72,10 +73,10 @@ viewsRouter.get("/products/:pid", async (req, res) => {
 // CARTS
 viewsRouter.get("/carts/:cid", async (req, res) => {
   const cid = req.params.cid;
-  console.log(cid);  //aca llega
+  req.logger.info(cid);  //aca llega
   const cart = await CM.getCartById(cid);
   if(cart) {
-    console.log(JSON.stringify(cart, null, 4));
+    req.logger.info(JSON.stringify(cart, null, 4));
     res.render("cart", {products: cart.products});
   } else {
     res.status(400).send({status:"error", message: "Error! No se encuentra el ID de Carrito!"})

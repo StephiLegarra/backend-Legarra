@@ -17,9 +17,9 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify(function(error, success) {
     if (error) {
-          console.log(error); 
+          req.logger.error(error); 
     } else {
-          console.log("El servidor está listo para recibir mensajes!");   
+         console.log("El servidor está listo para recibir mensajes!");   
     }
   });
 
@@ -47,14 +47,15 @@ export const sendEmail = (req, res) => {
     try {
         let result = transporter.sendMail(mailOptions, (error, info) => {  
             if (error) {
-                console.log(error);
+                req.logger.error(error);
                 res.status(400).send({message: "Error", payload: error}); 
             }
-            console.log('Mensaje enviado: ', info.messageId);   
+            req.logger.info('Mensaje enviado: ', info.messageId);   
             res.send({message: "Success!", payload: info});   
         });
     } catch (error) {
-        console.error(error);
+        req.logger.fatal(error);
         res.status(500).send({error: error, message: "No se pudo enviar el email desde:" + GMAIL_USER});
     }
 };
+

@@ -15,10 +15,10 @@ class AuthController {
         try {
         const {email, password} = req.body;
         const userData = await this.authService.login(email, password);
-        console.log("Información de usuario: ", userData);
+        req.logger.info("Información de usuario: ", userData);
 
         if (!userData || !userData.user) {
-        console.log("Credenciales inválidas!");
+        req.logger.fatal("Credenciales inválidas!");
         const customeError = new CustomeError({
         name: "Auth Error",
         message: "Credenciales inválidas",
@@ -29,7 +29,6 @@ class AuthController {
         }
     
         if (userData && userData.user) {
-        console.log("Setting session and cookie");
         req.session.user = {
             id: userData.user._id || userData.user._id, 
             email: userData.user.email,
@@ -40,18 +39,18 @@ class AuthController {
             cart: userData.user.cart
         }
         const newCart = await this.cartsService.createCart();
-        console.log(newCart);
+        req.logger.info(newCart);
       }
        res.cookie("coderCookieToken", userData.token, {httpOnly: true,secure: false});
-       console.log("Todo salió bien! lo estamos redirigiendo..!");
+       req.logger.info("Todo salió bien! lo estamos redirigiendo..!");
        return res.status(200).json({ status: "success", user: userData.user, redirect: "/products" });
     } catch (error) {
-        console.error("Ups! Algo salio mal!: ", error);
+        req.logger.fatal("Ups! Algo salio mal!: ", error);
         return res.redirect("/login");
     }};
 
     async githubCallback(req, res){
-        console.log("Contolando acceso con GitHub");
+        req.logger.debug("Contolando acceso con GitHub");
         try {
             if(req.user){
                 req.session.user = req.user;
@@ -61,7 +60,7 @@ class AuthController {
                 return res.redirect("/login");
             }
         } catch (error) {
-            console.error("Ups! Algo salio mal!", error);
+            req.logger.fatal("Ups! Algo salio mal!", error);
             return res.redirect("/login")
         }
     }

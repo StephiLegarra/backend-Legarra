@@ -29,7 +29,7 @@ sessionsRouter.get("/github", passport.authenticate("github", {scope:["user:emai
 //Callback -de github
 sessionsRouter.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }),
   async (req, res) => {
-    console.log("GitHub Callback Route");
+    req.logger.debug("GitHub Callback Route");
     authController.githubCallback(req, res);
   }
 );
@@ -42,3 +42,4 @@ sessionsRouter.get("/current", passportCall("jwt"), authorization("user"), (req,
 
 sessionsRouter.use(errorHandler);
 export default sessionsRouter;
+

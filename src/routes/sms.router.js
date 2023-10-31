@@ -6,3 +6,4 @@ const smsRouter = Router();
 smsRouter.get("/", sendSMS);
 
 export default smsRouter;
+

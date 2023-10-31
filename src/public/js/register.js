@@ -14,7 +14,7 @@ const registerUser = async () => {
     });
     
     if (!response.ok) {
-        console.error("Error al registrar el usuario:", await response.text());
+      req.logger.error("Error al registrar el usuario:", await response.text());
     } else {
         const data = await response.json();
         if (data.status === "success" && data.redirect) {
@@ -29,8 +29,9 @@ const registerUser = async () => {
         }
     }
   } catch (error) {
-    console.error("Hubo un error al registrar el usuario:", error);
+    req.logger.fatal("Hubo un error al registrar el usuario:", error);
   }
 };
 
 document.getElementById("btnRegister").onclick = registerUser;
+

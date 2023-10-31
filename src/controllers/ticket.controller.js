@@ -16,7 +16,7 @@ class TicketController {
               throw new Error("Error al crear el ticket");
           }
       } catch (error) {
-          console.error('Error específico en la creación del ticket:', error);
+          req.logger.error('Error específico en la creación del ticket:', error);
           throw error;  
       }
   }

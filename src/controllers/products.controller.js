@@ -21,7 +21,7 @@ class ProductController{
             code:500,
             cause:error.message,
           });
-          console.error(productErr);
+          req.logger.error(productErr);
             res.status(500).send({status:"error", message: "Error al obtener productos"});
         }
     }
@@ -73,7 +73,7 @@ class ProductController{
                await this.productServices.addProduct(product);
 
                if (product && product._id) {
-                console.log("Producto añadido correctamente:", product);
+                req.logger.info("Producto añadido correctamente:", product);
                 res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"});
                 socketServer.emit("product_created", {
                   _id: product._id,
@@ -87,12 +87,12 @@ class ProductController{
                 });
                 return;
               } else {
-                console.log("Error al añadir producto, product:", product);
+                req.logger.error("Error al añadir producto, product:", product);
                 res.status(500).send({status: "error", message: "Error! No se pudo agregar el Producto!"});
                 return;
               }
         } catch (error) {
-            console.error("Error en addProduct:", error, "Stack:", error.stack);
+          req.logger.error("Error en addProduct:", error, "Stack:", error.stack);
             res.status(500).send({status: "error", message: "Error interno"});
         }
     }
@@ -127,7 +127,7 @@ class ProductController{
               res.status(500).send({status: "error", message: "Error! No se pudo actualizar el Producto!"});
             }
          } catch (error) {
-            console.log(error);
+          req.logger.error(error);
             res.status(500).send({status: "error", message: "Error Interno"});
          }
     }
@@ -137,7 +137,7 @@ class ProductController{
         const { pid } = req.params;
         try {
             if (!mongoose.Types.ObjectId.isValid(pid)) {
-                console.log("ID del producto no válido");
+                req.logger.error("ID del producto no válido");
                 res.status(400).send({status: "error", message: "ID del producto no válido"});
                 return;
               }

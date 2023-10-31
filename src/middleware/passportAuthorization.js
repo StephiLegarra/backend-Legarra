@@ -4,7 +4,7 @@ export const passportCall = (strategy) => {
   return async (req, res, next) => {
     passport.authenticate(strategy, function (error, user, info) {
       if (error) {
-        console.error('Error durante la autenticación', error);
+        req.logger.error('Error durante la autenticación', error);
         return next(error);
       }
 
@@ -24,7 +24,7 @@ export const authorization = (rol) => {
     }
 
     if (!rol.includes(req.user.rol)) {
-      console.log('El usuario no tiene el rol necesario'); 
+      req.logger.error('El usuario no tiene el rol necesario'); 
       return res.status(400).send({ status: "error", message: "No permissions" });
     }
     next();

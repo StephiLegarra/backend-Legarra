@@ -13,9 +13,11 @@ class CartController {
     async createCart(req, res){
         try {
             const newCart = await this.cartServices.createCart();
+            req.logger.info("Carrito creado: ", newCart)
             res.status(200).send(newCart); 
         } catch (error) {
             res.status(500).send({status: "error", message: error.message});
+            req.logger.error("Error al crear el carrito: ", error);
         }
     }
 
@@ -37,8 +39,10 @@ class CartController {
               return res.status(404).send({error: "Error! No se han encontrado productos en el carrito!"});
             }
             res.status(200).send({ products: cart.products });
+            req.logger.info("Carrito obtenido: ", cart)
           } catch (error) {
             res.status(500).send({status: "error", message: error.message});
+            req.logger.error("Error al obtener el carrito: ", error)
           }
     }
 
@@ -113,7 +117,7 @@ class CartController {
     async createPurchaseTicket(req, res) {
       try {
         if (!req.user || !req.user.id) {
-          console.error("req.user no está definido");
+          req.logger.error("req.user no está definido");
           return res.status(400).json({ error: "El usuario no está definido" });
         }
   
@@ -123,7 +127,7 @@ class CartController {
           return res.status(404).json({ error: "El carrito no pudo ser encontrado!" });
         }
   
-        console.log("Productos en el carrito:", cart.products);
+        req.logger.info("Productos en el carrito:", cart.products);
   
         const productManager = new ProductManager();
         const failedProducts = [];
@@ -133,13 +137,13 @@ class CartController {
           const product = await productManager.getProductsById(item.product);
   
           if (!product) {
-            console.error(`Producto ${item.product} no encontrado`);
+            req.logger.error(`Producto ${item.product} no encontrado`);
             failedProducts.push(item);
             continue;
           }
   
           if (product.stock < item.quantity) {
-            console.error(`Stock insuficiente para el producto ${JSON.stringify(item.product)}`);
+            req.logger.error(`Stock insuficiente para el producto ${JSON.stringify(item.product)}`);
             failedProducts.push(item);
           } else {
             successfulProducts.push(item);
@@ -176,7 +180,7 @@ class CartController {
           failedProducts: failedProducts.length > 0 ? failedProducts : undefined,
         });
       } catch (error) {
-        console.error("Error al crear el ticket de compra:", error);
+        req.logger.fatal("Error al crear el ticket de compra:", error);
         res.status(500).json({ error: "Error al crear el ticket de compra" });
       }
     }
@@ -193,7 +197,7 @@ class CartController {
           res.status(404).json({ status: "error", message: "Compra no encontrada" });
         }
       } catch (error) {
-        console.error(error);
+        req.logger.error(error);
         res.status(500).json({ status: "error", message: "Error interno del servidor" });
       }
     }

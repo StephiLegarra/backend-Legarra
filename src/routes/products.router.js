@@ -26,3 +26,4 @@ productsRouter.delete("/:id", passportCall('jwt'), authorization(['admin']), pro
 
 productsRouter.use(errorHandler);
 export default productsRouter;
+

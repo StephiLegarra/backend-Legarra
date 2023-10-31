@@ -32,8 +32,10 @@ cartsRouter.delete("/:cid", cartController.cleanCart.bind(cartController));
 
 //PROCESAR LA COMPRA
 cartsRouter.post("/:cid/purchase", (req, res, next) => {
-    console.log('Ruta de compra accedida');
+  req.logger.debug('Ruta de compra accedida');
     next();
   }, passportCall("jwt"), cartController.createPurchaseTicket.bind(cartController));
 
 export default cartsRouter;
+
+

@@ -22,3 +22,4 @@ const sendMessage = () => {
 
 const btnEnviarMensaje = document.getElementById("btnEnviarMensaje");
 btnEnviarMensaje.onclick = sendMessage;
+

@@ -10,7 +10,7 @@ class UserController {
         this.userService = new UserService();
     }
     
-    async register(req, res) {
+    async register(req, res, next) {
         try{
         const { first_name, last_name, email, age, password, rol} = req.body;
       
@@ -40,7 +40,7 @@ class UserController {
             redirect: response.redirect,
           });
         } catch (error) {
-            return next(error);
+          return next(error);
         }
       }
 
@@ -59,7 +59,7 @@ class UserController {
                   return next(customeError);  
             }
         } catch (error) {
-            console.error(error);
+           req.logger.fatal(error);
            return next(error);
         }
     }

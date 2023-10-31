@@ -17,7 +17,7 @@ const userService = new UserService();
 const initializePassport = ()=>{
 passport.use("login", new LocalStrategy({passwordField:"password",usernameField:"email"},
         async (username, password, done) => {
-          console.log("authenticate user:", username);
+          req.logger.info("authenticate user:", username);
   
           try {
             let user = await userModel.findOne({ email: username });
@@ -41,14 +41,14 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
         }
       )
     );
-
+    
   passport.use("register", new LocalStrategy({passReqToCallback:true, usernameField:"email"}, 
   async (req, username, password, done) => {
           const {first_name, last_name, email, age} = req.body;
           try {
               let user = await userModel.findOne({email:username})
               if (user){
-                  console.log("El usuario " + email + " ya se encuentra registrado!");
+                req.logger.error("El usuario " + email + " ya se encuentra registrado!");
                   return done(null, false);
               }
 
@@ -60,12 +60,12 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
                   user.rol = "user";
                 }
               let resultado = await userModel.create(user);
-              console.log("Usuario registrado correctamente! " + resultado);
+              req.logger.info("Usuario registrado correctamente! " + resultado);
               if (resultado) {
                   return done (null, resultado);
               }
           } catch (error) {
-              console.log("Error en el registro", error);
+              req.logger.fatal("Error en el registro", error);
               return done(error);
            }
   }))

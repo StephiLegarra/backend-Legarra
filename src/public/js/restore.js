@@ -18,3 +18,4 @@ const restorePassword = async () => {
 };
 
 document.getElementById("btnRestore").onclick = restorePassword;
+

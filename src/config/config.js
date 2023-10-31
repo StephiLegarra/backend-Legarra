@@ -14,7 +14,7 @@ console.log("Mode Option: ", program.opts().mode);
 const environment = program.opts().mode;
 
 dotenv.config({
-    path:environment=== "production" ? "./src/config/.env.production": "./src/config/.env.develop"});
+    path: environment === "develop" ? "./config/.env.develop" : "./config/.env.production"});
 
 export const PORT=process.env.PORT
 export const MONGODB_URL=process.env.MONGODB_URL
@@ -30,7 +30,4 @@ export const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD
 export const TWILIO_SID = process.env.TWILIO_SID
 export const TWILIO_AUTH = process.env.TWILIO_AUTH
 export const TWILIO_NUMBER = process.env.TWILIO_NUMBER
-
-export default{
-    environment: environment
-}
+export const ENVIRONMENT = process.env.ENVIRONMENT

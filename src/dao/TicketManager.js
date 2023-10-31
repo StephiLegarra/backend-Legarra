@@ -6,21 +6,21 @@ export default class TicketManager {
             const tickets = await ticketModel.find()
             return tickets
         } catch (error) {
-            console.log(error);
+            req.logger.fatal(error);
         }
     }
 
     async create(obj){
         try {
-            console.log("Crear un nuevo ticket: ", obj);
+            req.logger.info("Crear un nuevo ticket: ", obj);
             if(!obj.code || !obj.purchase_datetime || !obj.amount || !obj.purchaser){
-                console.log("Informacion insuficiente: ", obj);
+                req.logger.error("Informacion insuficiente: ", obj);
                 throw new error ('Por favor revise la información ya es que es insuficiente')
             }
             const newTicket = await ticketModel.create(obj)
             return newTicket
         } catch (error) {
-            console.log(error);
+            req.logger.fatal(error);
         }
     }
 }
