@@ -12,6 +12,7 @@ import viewsRouter from "./routes/view.router.js";
 import emailRouter from './routes/email.router.js';
 import smsRouter from './routes/sms.router.js';
 import mockingRouter from "./moking/mock.router.js";
+import loggerRouter from "./routes/logger.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -67,6 +68,7 @@ app.use("/", viewsRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
 app.use("/api/mockingproducts", mockingRouter);
+app.use("/logger", loggerRouter);
 
 app.use(cors({
   credentials:true,

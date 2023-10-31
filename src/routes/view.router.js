@@ -78,17 +78,9 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
     console.log(JSON.stringify(cart, null, 4));
     res.render("cart", {products: cart.products});
   } else {
-    res.status(400).send({status:"error", message: "ERROR! esto esta andando muy mal!!!"})
+    res.status(400).send({status:"error", message: "Error! No se encuentra el ID de Carrito!"})
   }
 })
-/*
-  if (cart) {
-    console.log(JSON.stringify(cart, null, 4));
-    res.render("cart", { products: cart.products }); 
-  } else {
-    res.status(400).send({ status: "error", message: "Error! No se encuentra el ID de Carrito!"});
-  }
-*/
 
 // CART PURCHASE
 viewsRouter.post("/carts/:cid/purchase", async (req, res) => {
