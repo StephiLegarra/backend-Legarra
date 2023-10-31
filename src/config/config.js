@@ -13,7 +13,8 @@ console.log("Mode Option: ", program.opts().mode);
 
 const environment = program.opts().mode;
 
-dotenv.config({path:environment==="production"?"./src/.env.production":"./src/.env.development"});
+dotenv.config({
+    path:environment=== "production" ? "./src/config/.env.production": "./src/config/.env.develop"});
 
 export const PORT=process.env.PORT
 export const MONGODB_URL=process.env.MONGODB_URL

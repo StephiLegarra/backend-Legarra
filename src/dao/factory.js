@@ -22,9 +22,12 @@ switch(PERSISTENCE){
         console.log("Servicio de persistencia en MONGO DB activo");
         break;
 
-    case "FILESYSTEM":  
-        const {default:UserManagerFS} = await import("./fs/UserManagerFS.js");
-        Users = UserManagerFS;
+    case "FILESYSTEM": 
+        const {default:ProductManagerFS} = await import("./fs/ProductManagerFS.js");
+        ProductManager = ProductManagerFS;
+   
+        const {default:CartManagerFS} = await import("./fs/CartManagerFS.js");
+        CartManager = CartManagerFS;
         break;  
     
     default: 
