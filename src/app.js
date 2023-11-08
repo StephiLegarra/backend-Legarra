@@ -21,7 +21,7 @@ import initializeGitHubPassport from "./middleware/github.js";
 import { PORT, MONGODB_URL, SECRET_SESSIONS } from "./config/config.js";
 import cors from "cors";
 import { addLogger, devLogger } from "./config/logger.js";
-import "./config/mongoConfig.js"
+import MongoSingleton from "./config/mongoConfig.js";
 
 //EXPRESS
 const app = express();
@@ -38,6 +38,16 @@ app.engine("handlebars",
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 app.use(express.static(__dirname));
+
+//MONGO SINGLETON
+const mongoInstance = async () => {
+  try {
+      await MongoSingleton.getInstance();
+  } catch (error) {
+      console.error(error);
+  }
+};
+mongoInstance();
 
 //SESSION
 app.use(cookieParser());

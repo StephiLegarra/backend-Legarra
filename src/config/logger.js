@@ -1,7 +1,6 @@
 import winston from "winston";  
 import { ENVIRONMENT } from "./config.js";
 
-
 const customLevelsOptions = {
     levels: {
         fatal: 0,
@@ -13,11 +12,11 @@ const customLevelsOptions = {
     },
     colors: {
         fatal: 'red',  
-        error: 'red',
+        error: 'green',
         warning: 'yellow',
         info: 'cyan',
         http: 'blue',
-        debug: 'green'
+        debug: 'black'
     }
 };
 
@@ -32,6 +31,13 @@ export const devLogger = winston.createLogger({
                     winston.format.colorize({colors: customLevelsOptions.colors}),
                     winston.format.simple()
                 )
+            }
+        ),
+        new winston.transports.File(
+            {
+                filename: './errors.log', 
+                level: 'warning', 
+                format: winston.format.simple()
             }
         )
     ]

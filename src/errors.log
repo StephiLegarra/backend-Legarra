@@ -1,0 +1,14 @@
+fatal: ERROR FATAL! Algo salió terriblemente mal!
+error: Error! Algo no está bien!
+warning: Advertencia! Prueba de Log warning!
+fatal: ERROR FATAL! Algo salió terriblemente mal!
+error: Error! Algo no está bien!
+warning: Advertencia! Prueba de Log warning!
+fatal: ERROR FATAL! Algo salió terriblemente mal!
+error: Error! Algo no está bien!
+warning: Advertencia! Prueba de Log warning!
+warning: Error! Redireccionamos al login!
+error: Usuario no autenticado, procediendo...
+error: Error personalizado capturado:  {"code":4,"name":"Restore Error","stack":"Restore Error\n    at UserController.restorePassword (file:///E:/CODERHOUSE/BACKEND/Desafios%20entegrables/desafio/src/controllers/user.controller.js:54:38)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"}
+warning: Error! Redireccionamos al login!
+error: Usuario no autenticado, procediendo...

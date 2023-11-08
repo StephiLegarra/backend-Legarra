@@ -39,6 +39,15 @@ sessionsRouter.get("/current", passportCall("jwt"), authorization("user"), (req,
  userController.current(req,res)
 });
 
+//RECOVER PASS - RECUPERAR CONTRASEÑA
+sessionsRouter.get("/recoverPassword", async (req, res) => {
+  authController.recoverPassword(req,res)
+})
+
+sessionsRouter.post("/recoverPassword/:token", async (req, res) =>
+  authController.resetPassword(req, res)
+);
+
 
 sessionsRouter.use(errorHandler);
 export default sessionsRouter;
