@@ -77,6 +77,27 @@ class UserController {
         }
     }
 
+    async changeRol (req,res, next) { 
+     const {email, uid } = req.params;
+    
+     try{
+      let user= {};
+      if (uid) {
+        let oldUser = await this.userService.getUserById(uid);
+        oldUser.rol = req.body.rol;
+        user = oldUser;
+        console.log(oldUser)
+      } else {
+        user = req.body;
+      }
+      const resultado = await this.userService.changeRol({email: email? email : user.email}, user);
+      res.send({message: "Rol actualizado correctamente", payload: resultado})
+    }  catch(error) {
+      console.log(error)
+      res.status(500).send(error)
+  }
+    } 
+
 }
 
 export default UserController;

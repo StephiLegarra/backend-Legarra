@@ -45,6 +45,10 @@ class AuthenticationService {
             throw error;
         }
     }
+
+    async changeRol(uid){
+       return await userModel.changeRol(uid);
+    }
 }
 
 export default AuthenticationService;

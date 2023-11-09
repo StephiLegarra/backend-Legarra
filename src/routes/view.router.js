@@ -3,33 +3,12 @@ import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
 import { userModel } from "../dao/models/user.model.js";
-import { vi } from "@faker-js/faker";
+import { checkSession, checkAlreadyLoggedIn } from "../middleware/checkLogin.js";
 
 const viewsRouter = express.Router();
 const PM = new ProductManager();
 const CM = new CartManager();
 
-//CHECKSESSION
-//Control de acceso
-const checkSession = (req, res, next) => {
-  if (req.session && req.session.user) {
-    req.logger.info("Chequeando sesion: ", req.session.user);
-    next();
-  } else {
-    req.logger.warning("Error! Redireccionamos al login!");
-    res.redirect("/login");
-  }
-};
-
-const checkAlreadyLoggedIn = (req, res, next) => {
-  if (req.session && req.session.user) {
-    req.logger.info("Usuario ya autenticado, redirigiendo a /profile");
-    res.redirect("/profile");
-  } else {
-    req.logger.error("Usuario no autenticado, procediendo...");
-    next();
-  }
-};
 
 // HOME
 viewsRouter.get("/", checkSession, async (req, res) => {

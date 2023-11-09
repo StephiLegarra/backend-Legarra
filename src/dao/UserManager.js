@@ -78,12 +78,15 @@ class UserManager {
   }
 
   //ACTUALIZAR USUARIO
+  /*
   async update(userId, userToReplace) {
     const filter = { email: userId }
     const update = { $set: userToReplace };
     const result = await userModel.updateOne(filter, update);
     return result;
-}
+   
+} */
+
 }
 
 export default UserManager;
