@@ -11,13 +11,6 @@ const restorePassword = async () => {
   const data = await response.json();
   if (data.status === 200) {
     window.location.href = data.redirect;
-    /*  Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: 'Revisa tu casilla de correo',
-      showConfirmButton: false,
-      timer: 2000
-    }) */
   }
 }
 
