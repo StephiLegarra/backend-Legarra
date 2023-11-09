@@ -31,3 +31,5 @@ export const TWILIO_SID = process.env.TWILIO_SID
 export const TWILIO_AUTH = process.env.TWILIO_AUTH
 export const TWILIO_NUMBER = process.env.TWILIO_NUMBER
 export const ENVIRONMENT = process.env.ENVIRONMENT
+export const PREMIUM_EMAIL= process.env.PREMIUM_EMAIL
+export const PREMIUM_PASSWORD= process.env.PREMIUM_PASSWORD

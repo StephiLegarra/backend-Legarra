@@ -16,13 +16,13 @@ productsRouter.get("/", passportCall('jwt'), authorization(['admin']), productCo
 productsRouter.get("/:pid", productController.getByID.bind(productController));
 
 // AGREGAR PRODUCTOS
-productsRouter.post("/", passportCall('jwt'), authorization(['admin']), productController.addProduct.bind(productController));
+productsRouter.post("/", passportCall('jwt'), authorization(['admin', 'premium']), productController.addProduct.bind(productController));
 
 // ACTUALIZAR PRODUCTOS
 productsRouter.put("/:id", passportCall('jwt'), authorization(['admin']), productController.updateProduct.bind(productController));
 
 // ELIMINAR PRODUCTO
-productsRouter.delete("/:id", passportCall('jwt'), authorization(['admin']), productController.deleteProduct.bind(productController));
+productsRouter.delete("/:id", passportCall('jwt'), authorization(['admin', 'premium']), productController.deleteProduct.bind(productController));
 
 productsRouter.use(errorHandler);
 export default productsRouter;

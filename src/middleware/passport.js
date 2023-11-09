@@ -3,7 +3,7 @@ import local from "passport-local";
 import { userModel } from "../dao/models/user.model.js";
 import { isValidPassword, createHash } from "./bcrypt.js";
 import jwt from "passport-jwt";
-import { ADMIN_PASS, ADMIN_USER, JWT_KEY } from "../config/config.js";
+import { ADMIN_PASS, ADMIN_USER, JWT_KEY, PREMIUM_EMAIL, PREMIUM_PASSWORD } from "../config/config.js";
 import CartServices from "../services/cart.service.js";
 import UserService from "../services/user.service.js";
 
@@ -55,10 +55,16 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
               user = {first_name, last_name, email, age, password: createHash(password), rol};
 
               if (user.email == ADMIN_USER && password === ADMIN_PASS) {
+                  req.logger.info("Este usuario tiene asignado el rol de admin!");
                   user.rol = "admin";
+                } else if (user.email == PREMIUM_EMAIL && password === PREMIUM_PASSWORD) {
+                  req.logger.info("Este usuario tiene asignado el rol de premium!");
+                  user.rol = "premium";
                 } else {
+                  req.logger.info("Este usuario tiene asignado el rol de user!");
                   user.rol = "user";
                 }
+
               let resultado = await userModel.create(user);
               req.logger.info("Usuario registrado correctamente! " + resultado);
               if (resultado) {

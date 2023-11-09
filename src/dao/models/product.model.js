@@ -13,6 +13,11 @@ const productSchema = new mongoose.Schema({
   stock: Number,
   category: String,
   thumbnail: Array,
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    default: "admin"
+  }
 });
 
 productSchema.plugin(mongoosePaginate);

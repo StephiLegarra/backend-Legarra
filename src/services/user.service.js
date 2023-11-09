@@ -1,14 +1,28 @@
 import {UserManager} from "../dao/factory.js"
-import { ADMIN_USER, ADMIN_PASS } from "../config/config.js";
+import { ADMIN_USER, ADMIN_PASS, PREMIUM_EMAIL, PREMIUM_PASSWORD } from "../config/config.js";
+import CartManager from "../dao/CartManager.js";
 
 class UserService {
     constructor(){
         this.usersManager = new UserManager();
+        this.cartManager = new CartManager();
     }
 
     async register({ first_name, last_name, email, age, password, rol}) {
       try {
-        const rol = email == ADMIN_USER && password === ADMIN_PASS ? "admin" : "user";
+
+        const cartResponse = await this.cartManager.newCart();
+        console.log("Cart response:", cartResponse);
+        if (cartResponse.status !== "ok") {
+          return { status: "error", message: "Error al crear el carrito" };
+        }
+
+        const rol = email == ADMIN_USER && password === ADMIN_PASS ? "admin" 
+        : email == PREMIUM_EMAIL && password == PREMIUM_PASSWORD ? "premium" 
+        : "user";
+
+        const cartId = cartResponse.id;
+        console.log("Cart ID:", cartId);
         
         const user = await this.usersManager.addUser({
           first_name,
@@ -16,7 +30,8 @@ class UserService {
           email,
           age,
           password,
-          rol
+          rol,
+          cart: cartId,
         });
   
         if (user) {
