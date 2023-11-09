@@ -4,7 +4,7 @@ import CustomeError from "../services/errors/customeError.js";
 import CartService from "../services/cart.service.js";
 import UserService from "../services/user.service.js";
 import { userModel } from "../dao/models/user.model.js";
-import { recoverPassword } from "./email.controller.js";
+import recoverPassword from "./recoverPassword.controller.js";
 import { createHash, isValidPassword } from "../middleware/bcrypt.js";
 
 class AuthController {
@@ -77,13 +77,13 @@ class AuthController {
         })
     }
 
-    async recoverPassword(req, res) {
+    async restorePassword(req, res) {
         const { email } = req.body;
         try {
             await recoverPassword(email);
-            res.send('Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico')  
+            res.send("Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico");  
         } catch (error) {
-            req.logger.fatal(error);
+            console.error("Error al enviar el mail de restablecimiento de contraseña: ", error);
             res.status(500).send({error: error, message: "Hubo un error en la solicitud de recuperar la contraseña"});
         }
       }

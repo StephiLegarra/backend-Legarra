@@ -5,6 +5,5 @@ const emailRouter = Router();
 
 emailRouter.get("/", sendEmail);
 
-
 export default emailRouter;
 

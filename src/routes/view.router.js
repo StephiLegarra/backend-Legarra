@@ -2,6 +2,7 @@ import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
+import { vi } from "@faker-js/faker";
 
 const viewsRouter = express.Router();
 const PM = new ProductManager();
@@ -129,6 +130,20 @@ viewsRouter.get("/profile", checkSession, (req, res) => {
 //RESTORE (ACTUALIZAR CONTRASEÑA)
 viewsRouter.get("/restore", async (req, res) => {
   res.render("restore");
+});
+
+//RECUPERAR CONTRASEÑA
+viewsRouter.get("/newPassword/:token", async (req, res) => {
+  const { token } = req.params;
+  const user = await userModel.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() }
+  });
+
+  if (!user) {
+    return res.redirect('/restore');
+  }
+  res.render('newPassword', { token });
 });
 
 //ERROR AL INGRESAR
