@@ -44,9 +44,9 @@ sessionsRouter.post("/restorePassword", async (req, res) => {
   authController.restorePassword(req,res)
 })
 
-sessionsRouter.post("/newPassword/:token", async (req, res) =>
+sessionsRouter.post("/newPassword/:token", async (req, res) => {
   authController.newPassword(req, res)
-);
+});
 
 sessionsRouter.use(errorHandler);
 
