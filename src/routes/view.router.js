@@ -2,6 +2,7 @@ import express from "express";
 import ProductManager from "../dao/ProductManager.js";
 import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
+import { userModel } from "../dao/models/user.model.js";
 import { vi } from "@faker-js/faker";
 
 const viewsRouter = express.Router();

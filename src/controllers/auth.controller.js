@@ -122,6 +122,7 @@ class AuthController {
             await user.save();
       
             res.send("Tu contraseña ha sido actualizada con éxito");
+            res.redirect("/login")
         } catch (error) {
             console.error("Error al resetear la contraseña:", error);
             res.status(500).send("Error interno del servidor al intentar actualizar la contraseña");
