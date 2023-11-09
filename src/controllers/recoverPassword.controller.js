@@ -27,7 +27,7 @@ const recoverPassword = async (userEmail) => {
         }
       });
 
-      const recoverURL = `http://localhost:8080/recoverPassword/${resetToken}`;
+      const recoverURL = `http://localhost:8080/newPassword/${resetToken}`;
      
       const mailOptionsRecover = {
            from: GMAIL_USER,
