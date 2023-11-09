@@ -58,6 +58,8 @@ class ProductController{
         let { title, description, price, thumbnail, code, stock, category } = req.body;
       
         try {
+            const owner = req.user_id;
+
             if (!title || !description || !price || !code || !stock || !category || !thumbnail) {
                 res.status(400).send({status: "error", message: "Error! Se deben completar todos los campos obligatorios"});
                 return false;
@@ -68,7 +70,7 @@ class ProductController{
                 return false;
               }
 
-              const product = {title,description,price,thumbnail,code,stock,category};
+              const product = {title,description,price,thumbnail,code,stock,category,owner};
                product.status = true;
                await this.productServices.addProduct(product);
 
@@ -141,9 +143,18 @@ class ProductController{
                 res.status(400).send({status: "error", message: "ID del producto no válido"});
                 return;
               }
+
             const getProducts = await this.productServices.getPbyID(pid);
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
+            }
+
+            if (!req.user || (req.user.rol !== "admin" &&
+                (!product.owner || req.user._id.toString() !== product.owner.toString()))
+            ) {
+              req.logger.error("Operación no permitida: el usuario no tiene permiso para eliminar este producto");
+              res.status(403).send({status:"error", message: "No tiene permiso para eliminar este producto"});
+              return;
             }
          
             const deleted = await this.productServices.deleteProduct(pid);
