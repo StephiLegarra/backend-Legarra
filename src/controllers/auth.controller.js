@@ -81,7 +81,7 @@ class AuthController {
         const { email } = req.body;
         try {
             await recoverPassword(email);
-            res.send("Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico!");
+          res.send("Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico!");
         } catch (error) {
             console.error("Error al enviar el mail de restablecimiento de contraseña: ", error);
             res.status(500).send({error: error, message: "Hubo un error en la solicitud de recuperar la contraseña"});
@@ -120,9 +120,7 @@ class AuthController {
             user.resetPasswordExpires = undefined;
       
             await user.save();
-      
-            res.send("Tu contraseña ha sido actualizada con éxito");
-            res.redirect("/login")
+           res.send("Tu contraseña ha sido actualizada con éxito");
         } catch (error) {
             console.error("Error al resetear la contraseña:", error);
             res.status(500).send("Error interno del servidor al intentar actualizar la contraseña");
