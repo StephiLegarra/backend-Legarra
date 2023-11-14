@@ -48,9 +48,6 @@ sessionsRouter.post("/newPassword/:token", async (req, res) => {
   authController.newPassword(req, res)
 });
 
-//CAMBIAR DE ROL
-sessionsRouter.put("/premium/:uid", changeRol);
-
 sessionsRouter.use(errorHandler);
 
 export default sessionsRouter;

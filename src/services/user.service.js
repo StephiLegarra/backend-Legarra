@@ -59,25 +59,6 @@ class UserService {
      return result;  
    }
 
-   async changeRol(filter, value) {
-    try {
-      console.log(filter)
-      let result = await userModel.updateOne(filter, value);
-      if(result.modifiedCount > 0) {
-          return result;
-      }
-      else {
-          throw {
-              code: 401,
-              detail: "No se pudo actualizar el usuario"
-          }
-      }
-  }
-  catch(error) {
-    console.error("Error interno:", error);
-  }
-   }
-
 }
 
 export default UserService;

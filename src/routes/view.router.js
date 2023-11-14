@@ -54,7 +54,7 @@ viewsRouter.get("/products/:pid", async (req, res) => {
 // CARTS
 viewsRouter.get("/carts/:cid", async (req, res) => {
   const cid = req.params.cid;
-  req.logger.info(cid);  //aca llega
+  req.logger.info(cid);  
   const cart = await CM.getCartById(cid);
   if(cart) {
     req.logger.info(JSON.stringify(cart, null, 4));
