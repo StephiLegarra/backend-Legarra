@@ -1,0 +1,17 @@
+paths:
+  /api/products/:
+    get:
+      summary: Obtiene todos los productos disponibles en la aplicación.
+      tags: 
+        - Products
+      responses:
+        "200":
+          description: La operacion fue exitosa! Se retorna un arreglo con los productos
+          content:
+            application/json:
+              schema: 
+                type: array
+        "400": 
+          description: Se envió un dato no esperado.
+        "500":
+          description: Error inesperado en el servidor, no se pudo manejar el proceso.
