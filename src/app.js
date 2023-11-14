@@ -86,8 +86,8 @@ app.use("/images", express.static(__dirname + "/src/public/images"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(addLogger);
-app.use('/apidocs', swaggerUIExpress.serve, swaggerUIExpress.setup(specs));
 
+app.use('/apidocs', swaggerUIExpress.serve, swaggerUIExpress.setup(specs));
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
 app.use("/api/sessions/", sessionsRouter);

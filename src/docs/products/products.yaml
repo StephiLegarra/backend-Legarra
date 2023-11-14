@@ -1,10 +1,10 @@
 paths:
   /api/products/:
     get:
-      summary: Obtiene todos los productos disponibles en la aplicación.
-      tags: 
+       summary: Obtiene todos los productos disponibles en la aplicación.
+       tags: 
         - Products
-      responses:
+       responses:
         "200":
           description: La operacion fue exitosa! Se retorna un arreglo con los productos
           content:
