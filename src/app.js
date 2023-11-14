@@ -22,6 +22,8 @@ import { PORT, MONGODB_URL, SECRET_SESSIONS } from "./config/config.js";
 import cors from "cors";
 import { addLogger, devLogger } from "./config/logger.js";
 import MongoSingleton from "./config/mongoConfig.js";
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUIExpress from 'swagger-ui-express';
 
 //EXPRESS
 const app = express();
@@ -49,6 +51,19 @@ const mongoInstance = async () => {
 };
 mongoInstance();
 
+//SWAGGER
+const swaggerOptions = {
+  definition: {
+      openapi: "3.0.1",
+      info: {
+          title: "Documentacion API PokeShop",
+          description: "Documentacion para uso de swagger"
+      }
+  },
+  apis: [`./src/docs/**/*.yaml`] 
+};
+const specs = swaggerJSDoc(swaggerOptions);
+
 //SESSION
 app.use(cookieParser());
 app.use(session({
@@ -71,6 +86,7 @@ app.use("/images", express.static(__dirname + "/src/public/images"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(addLogger);
+app.use('/apidocs', swaggerUIExpress.serve, swaggerUIExpress.setup(specs));
 
 app.use("/api/products/", productsRouter);
 app.use("/api/carts/", cartsRouter);
