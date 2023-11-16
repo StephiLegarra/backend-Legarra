@@ -1,17 +1,161 @@
 paths:
   /api/products/:
     get:
-       summary: Obtiene todos los productos disponibles en la aplicación.
-       tags: 
+      summary: Obtiene todos los productos disponibles en la aplicación
+      tags:
         - Products
-       responses:
+      responses:
         "200":
-          description: La operacion fue exitosa! Se retorna un arreglo con los productos
+          description: La operación fue exitosa. Se retorna un arreglo con los productos
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-        "400": 
-          description: Se envió un dato no esperado.
         "500":
-          description: Error inesperado en el servidor, no se pudo manejar el proceso.
+          description: Error inesperado en el servidor, no se pudo manejar el proceso
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      summary: Permite agregar productos en la aplicación
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Products"
+      responses:
+        "200":
+          description: El producto se agregó correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        "400":
+          description: Se envió un dato no esperado
+        "500":
+          description: Error inesperado en el servidor, no se pudo manejar el proceso
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un producto específico en la aplicación
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Id del producto
+          schema:
+            type: string
+            format: string
+            example: 64e7cb67bf987eeeb5887fdc
+      responses:
+        "200":
+          description: La operación fue exitosa. Se retorna un objeto con el producto
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: "#/components/schemas/Products"
+        "500":
+          description: Error inesperado en el servidor, no se pudo manejar el proceso
+          content:
+            application/json:
+              schema:
+                type: object
+    put:
+      summary: Actualiza un producto específico en la aplicación
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a actualizar
+          schema:
+            type: string
+            example: 64e7cb67bf987eeeb5887fdc
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Products"
+      responses:
+        "200":
+          description: El producto se actualizó correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        "400":
+          description: Se envió un dato no esperado
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error inesperado en el servidor, no se pudo manejar el proceso
+    delete:
+      summary: Elimina un producto específico en la aplicación
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a eliminar
+          schema:
+            type: string
+            example: 652d8b70cc12e3accb8f1a9b
+      responses:
+        "200":
+          description: El producto se eliminó correctamente
+        "404":
+          description: Producto no encontrado
+        "500":
+          description: Error inesperado en el servidor, no se pudo manejar el proceso
+
+components:
+  schemas:
+    Products:
+      title: Products
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id autogenerado de MongoDB
+        title:
+          type: string
+          description: Nombre del producto
+        description:
+          type: string
+          description: Descripción del producto
+        code:
+          type: string
+          description: Código único del producto
+        price:
+          type: number
+          description: Precio del producto
+        stock:
+          type: number
+          description: Cantidad de unidades disponibles del producto
+        category:
+          type: string
+          description: Categoría del producto
+        thumbnail:
+          type: array
+          items:
+            type: string
+          description: Imágenes del producto
+      example:
+        _id: ObjectId("647fa8c9e46dbc5a20320182")
+        title: Titulo de prueba 
+        description: Descripcion de prueba 
+        code: 1A2B3CD
+        price: 11111
+        stock: 25
+        category: tipo de producto
+        thumbnail: 
+          - "https://down-mx.img.susercontent.com/file/87091049e0aee0527ca1b68317b87a0e"

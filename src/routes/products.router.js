@@ -10,7 +10,7 @@ const PM = new ProductManager();
 const productService = new ProductsServices();
 
 // OBTENER PRODUCTOS
-productsRouter.get("/", passportCall('jwt'), authorization(['admin']), productController.getProducts.bind(productController));
+productsRouter.get("/", passportCall('jwt'), authorization(['user', 'admin', 'premium' ]), productController.getProducts.bind(productController));
 
 // OBTENER PRODUCTO POR ID
 productsRouter.get("/:pid", productController.getByID.bind(productController));
@@ -19,10 +19,10 @@ productsRouter.get("/:pid", productController.getByID.bind(productController));
 productsRouter.post("/", passportCall('jwt'), authorization(['admin', 'premium']), productController.addProduct.bind(productController));
 
 // ACTUALIZAR PRODUCTOS
-productsRouter.put("/:id", passportCall('jwt'), authorization(['admin']), productController.updateProduct.bind(productController));
+productsRouter.put("/:pid", passportCall('jwt'), authorization(['admin']), productController.updateProduct.bind(productController));
 
 // ELIMINAR PRODUCTO
-productsRouter.delete("/:id", passportCall('jwt'), authorization(['admin', 'premium']), productController.deleteProduct.bind(productController));
+productsRouter.delete("/:pid", passportCall('jwt'), authorization(['admin', 'premium']), productController.deleteProduct.bind(productController));
 
 productsRouter.use(errorHandler);
 export default productsRouter;

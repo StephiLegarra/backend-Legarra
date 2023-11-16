@@ -60,7 +60,7 @@ const swaggerOptions = {
           description: "Documentacion para uso de swagger"
       }
   },
-  apis: [`./src/docs/**/*.yaml`] 
+  apis: [`./docs/**/*.yaml`] 
 };
 const specs = swaggerJSDoc(swaggerOptions);
 

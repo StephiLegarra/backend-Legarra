@@ -26,11 +26,11 @@ class ProductManager {
         const products = await productModel.find();
         this.products = products;
 
-        if (this.products.length !== 0) {
+     /*   if (this.products.length !== 0) {
           const max = Math.max(...this.products.map((item) => item.id)) + 1;
           ProductManager.id = max;
         }
-        product.id = ProductManager.id++;
+        product.id = ProductManager.id++; */
         await productModel.create(product);
         console.log("El producto fue agregado correctamente");
         return true;
