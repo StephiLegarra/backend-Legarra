@@ -42,7 +42,8 @@ class CartManager {
   async getCartById(id) {
     try {
       if (this.validateId(id)){
-        return (await cartModel.findOne({ _id: id }).lean());
+        const cart = await cartModel.findOne({ _id: id }).lean();
+        return cart;
       } else {
         console.log("no se encontró el carrito");
         return null;
@@ -119,7 +120,7 @@ class CartManager {
   async updateQuantityProductFromCart(cid, pid, quantity) {
     try {
       if (this.validateId(cid)) {
-        const cart = await this.getCart(cid);
+        const cart = await this.getCartById(cid);
         if (!cart) {
           console.log("El carrito no fue encontrado!");
           return false;
@@ -186,7 +187,7 @@ class CartManager {
   async emptyCart(cid) {
     try {
       if (this.validateId(cid)) {
-        const cart = await this.getCart(cid);
+        const cart = await this.getCartById(cid);
         await cartModel.updateOne({ _id: cid }, { products: [] });
         console.log("El carrito ha sido eliminado!");
         return true;

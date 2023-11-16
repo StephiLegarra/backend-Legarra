@@ -1,19 +1,4 @@
 /api/carts/:
-  post:
-    summary: Crea un nuevo carrito
-    tags:
-      - Cart
-    responses:
-      "200":
-        description: El carrito fue creado correctamente
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                _id:
-                  type: string
-                  description: ID autogenerado del carrito
   get:
     summary: Obtiene los carritos existentes
     tags:
@@ -31,6 +16,21 @@
           application/json:
             schema:
               type: object
+  post:
+    summary: Crea un nuevo carrito
+    tags:
+      - Cart
+    responses:
+      "200":
+        description: El carrito fue creado correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  description: ID autogenerado del carrito
 
 /api/carts/{cid}:
   get:
@@ -56,6 +56,27 @@
         description: Carrito no encontrado
       "500":
         description: Error inesperado en el servidor, no se pudo manejar el proceso
+  delete:
+    summary: Vaciar el carrito por completo
+    tags:
+      - Cart
+    parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito
+        schema:
+          type: string
+          example: 65384476361317293439080f
+    responses:
+      "200":
+        description: La operación fue exitosa! El carrito fue vaciado!
+        content:
+          application/json:
+            schema:
+              type: object
+      "500":
+        description: Error inesperado en el servidor, no se pudo manejar el proceso    
 
 /api/carts/{cid}/products/{pid}:
   post:
