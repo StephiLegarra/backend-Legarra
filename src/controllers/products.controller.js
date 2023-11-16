@@ -73,7 +73,8 @@ class ProductController{
               const product = {title,description,price,thumbnail,code,stock,category,owner};
               product.status = true;
                await this.productServices.addProduct(product);
-
+               res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"})
+              
                if (product && product._id) {
                 req.logger.info("Producto añadido correctamente:", product);
                 socketServer.emit("product_created", {
@@ -86,7 +87,7 @@ class ProductController{
                   category,
                   thumbnail
                 });
-                return res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"});
+                return;
                }      
         } catch (error) {
           req.logger.error("Error en addProduct:", error, "Stack:", error.stack);
@@ -100,7 +101,7 @@ class ProductController{
         const { title, description, price, thumbnail, code, stock, category } = req.body;
          
         try {
-            const getProducts = await this.productServices.getPbyID(pid);
+            const getProducts = await this.productServices.getByID(pid);
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }

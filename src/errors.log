@@ -60,3 +60,8 @@ error: Error al añadir producto, product: {"category":"Peluches","code":"squirt
 error: Error personalizado capturado:  El producto no pudo ser encontrado {"code":404,"name":"Product not found","stack":"Product not found: El producto no pudo ser encontrado\n    at ProductController.getByID (file:///E:/CODERHOUSE/BACKEND/Desafios%20entegrables/desafio/src/controllers/products.controller.js:43:21)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)"}
 error: undefined
 error: undefined
+warning: Error! Redireccionamos al login!
+error: Usuario no autenticado, procediendo...
+warning: Error! Redireccionamos al login!
+error: Usuario no autenticado, procediendo...
+error: undefined
