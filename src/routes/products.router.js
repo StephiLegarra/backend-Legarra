@@ -10,24 +10,19 @@ const PM = new ProductManager();
 const productService = new ProductsServices();
 
 // OBTENER PRODUCTOS
-//productsRouter.get("/", passportCall('jwt'), authorization(['user', 'admin', 'premium' ]), productController.getProducts.bind(productController));
-productsRouter.get("/", productController.getProducts.bind(productController));
+productsRouter.get("/", passportCall('jwt'), authorization(['user', 'admin', 'premium' ]), productController.getProducts.bind(productController));
 
 // OBTENER PRODUCTO POR ID
 productsRouter.get("/:pid", productController.getByID.bind(productController));
 
 // AGREGAR PRODUCTOS
-//productsRouter.post("/", passportCall('jwt'), authorization(['admin', 'premium']), productController.addProduct.bind(productController));
-productsRouter.post("/", productController.addProduct.bind(productController));
+productsRouter.post("/", passportCall('jwt'), authorization(['admin', 'premium']), productController.addProduct.bind(productController));
 
 // ACTUALIZAR PRODUCTOS
-//productsRouter.put("/:pid", passportCall('jwt'), authorization(['admin']), productController.updateProduct.bind(productController));
-productsRouter.put("/:pid", productController.updateProduct.bind(productController));
+productsRouter.put("/:pid", passportCall('jwt'), authorization(['admin']), productController.updateProduct.bind(productController));
 
 // ELIMINAR PRODUCTO
-//productsRouter.delete("/:pid", passportCall('jwt'), authorization(['admin', 'premium']), productController.deleteProduct.bind(productController));
-productsRouter.delete("/:pid", productController.deleteProduct.bind(productController));
-
+productsRouter.delete("/:pid", passportCall('jwt'), authorization(['admin', 'premium']), productController.deleteProduct.bind(productController));
 
 
 
