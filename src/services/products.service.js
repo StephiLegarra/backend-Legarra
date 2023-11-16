@@ -1,4 +1,4 @@
-import {ProductManager} from "../dao/factory.js";
+import ProductManager from "../dao/ProductManager.js";
 
 class ProductsServices{
     constructor(){

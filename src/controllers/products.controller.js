@@ -39,7 +39,7 @@ class ProductController{
               });
             }
             const product = await this.productServices.getByID(pid);
-            if (product) {
+            if (!product) {
               throw new CustomeError({
                 name: "Product not found",
                 message: "El producto no pudo ser encontrado",
@@ -71,12 +71,11 @@ class ProductController{
               }
 
               const product = {title,description,price,thumbnail,code,stock,category,owner};
-               product.status = true;
+              product.status = true;
                await this.productServices.addProduct(product);
 
                if (product && product._id) {
                 req.logger.info("Producto añadido correctamente:", product);
-                res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"});
                 socketServer.emit("product_created", {
                   _id: product._id,
                   title,
@@ -87,12 +86,8 @@ class ProductController{
                   category,
                   thumbnail
                 });
-                return;
-              } else {
-                req.logger.error("Error al añadir producto, product:", product);
-                res.status(500).send({status: "error", message: "Error! No se pudo agregar el Producto!"});
-                return;
-              }
+                return res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"});
+               }      
         } catch (error) {
           req.logger.error("Error en addProduct:", error, "Stack:", error.stack);
             res.status(500).send({status: "error", message: "Error interno"});
@@ -126,7 +121,7 @@ class ProductController{
               res.status(200).send({status: "ok", message: "El Producto se actualizó correctamente!"});
               socketServer.emit("product_updated");
             } else {
-              res.status(500).send({status: "error", message: "Error! No se pudo actualizar el Producto!"});
+              res.status(404).send({status: "error", message: "Error! No se pudo actualizar el Producto!"});
             }
          } catch (error) {
           req.logger.error(error);
@@ -144,7 +139,7 @@ class ProductController{
                 return;
               }
 
-            const getProducts = await this.productServices.getPbyID(pid);
+            const getProducts = await this.productServices.getByID(pid);
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }

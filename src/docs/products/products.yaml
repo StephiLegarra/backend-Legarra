@@ -50,7 +50,7 @@ paths:
           description: Id del producto
           schema:
             type: string
-            format: string
+            format: ObjectId
             example: 64e7cb67bf987eeeb5887fdc
       responses:
         "200":

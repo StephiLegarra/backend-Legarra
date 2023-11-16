@@ -96,14 +96,16 @@ class ProductManager {
     }
   }
 
+  
   async getProductsById(id) {
-    try {
+    try { 
       return await productModel.findById(id).lean();
     } catch (err) {
       console.error("Error al obtener los productos por ID: ", err);
       return null;
     }
   }
+
 
   async updateProduct(id, product) {
     try {
