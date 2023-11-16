@@ -31,6 +31,8 @@ git clone hhttps://github.com/StephiLegarra/backend-Legarra.git
 - soket.io
 - dotenv
 - twilio
+- faker
+- swagger
 
 
 ## To use this project you will need the environment variables, create the .env file and assign the following to it
@@ -49,6 +51,8 @@ git clone hhttps://github.com/StephiLegarra/backend-Legarra.git
 - TWILIO_SID=
 - TWILIO_AUTH=
 - TWILIO_NUMBER=
+- PREMIUM_EMAIL=
+- PREMIUM_PASSWORD=
 
 ### Connect with me:
 
