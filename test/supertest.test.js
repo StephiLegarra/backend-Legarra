@@ -62,9 +62,9 @@ describe("Testing PokeShop App", () => {
             before(function(){
                 this.cookie;
                 this.mockUser = {
-                    first_name: "Usuario de prueba 1",
-                    last_name: "Apellido de prueba 1",
-                    email : "correodeprueba1@gmail.com", 
+                    first_name: "Usuario de prueba 2",
+                    last_name: "Apellido de prueba 2",
+                    email : "correodeprueba2@gmail.com", 
                     age: "39",
                     password : "123456"
                 };
@@ -101,7 +101,10 @@ describe("Testing PokeShop App", () => {
                 console.log(this.cookie);
                 const {_body} = await requester.get("/api/sessions/current").set('Cookie', [`${this.cookie.name}=${this.cookie.value}`]);
                 console.log(_body);
-                expect(_body.payload.email).to.be.ok.and.eql(this.mockUser.email);
+               // expect(_body).to.have.property('status').and.to.be.deep.equal('success');
+               // expect(_body).to.have.property('user').that.is.an('object');
+                expect(_body.user).to.have.property('email').that.eqls(this.mockUser.email);
+                expect(_body).to.have.property('cookieToken').that.eqls(this.cookie.value);
             }); 
         });
     });
