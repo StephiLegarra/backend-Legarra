@@ -34,6 +34,11 @@ git clone hhttps://github.com/StephiLegarra/backend-Legarra.git
 - faker
 - swagger
 
+## DevDependencies used for testing-->
+
+- chai
+- mocha
+- supertest
 
 ## To use this project you will need the environment variables, create the .env file and assign the following to it
 
