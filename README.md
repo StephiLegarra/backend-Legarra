@@ -11,6 +11,12 @@
 ```
 git clone hhttps://github.com/StephiLegarra/backend-Legarra.git
 ```
+```
+## to lift the project -->
+npm app.js
+## for testing -->
+npm app.js --mode test
+```
 
 ## Libraries used -->
 
