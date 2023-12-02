@@ -44,7 +44,7 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
     
   passport.use("register", new LocalStrategy({passReqToCallback:true, usernameField:"email"}, 
   async (req, username, password, done) => {
-          const {first_name, last_name, email, age, adminRol, premiumRol} = req.body;
+          const {first_name, last_name, email, age} = req.body;
           try {
               let user = await userModel.findOne({email:username})
               if (user){
@@ -52,17 +52,18 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
                   return done(null, false);
               }
 
-              let cart = {}
-              if(!adminRol){
-                  cart = await cartService.addCart();
-              }
+              user = {first_name, last_name, email, age, password: createHash(password), rol};
 
-              user = {first_name, 
-                      last_name, email, 
-                      age, 
-                      password: createHash(password),
-                      cartId: cart._id? cart._id : null,
-                      rol: adminRol? 'admin' : premiumRol? 'premium' : 'user'};
+              if (user.email == ADMIN_USER && password === ADMIN_PASS) {
+                  req.logger.info("Este usuario tiene asignado el rol de admin!");
+                  user.rol = "admin";
+                } else if (user.email == PREMIUM_EMAIL && password === PREMIUM_PASSWORD) {
+                  req.logger.info("Este usuario tiene asignado el rol de premium!");
+                  user.rol = "premium";
+                } else {
+                  req.logger.info("Este usuario tiene asignado el rol de user!");
+                  user.rol = "user";
+                }
 
               let resultado = await userModel.create(user);
               req.logger.info("Usuario registrado correctamente! " + resultado);

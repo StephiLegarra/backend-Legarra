@@ -55,37 +55,50 @@ class ProductController{
 
     //AGREGAR PRODUCTOS
     async addProduct(req, res){
-        let { title, description, price, thumbnail, code, stock, category } = req.body;
-      
+        let { title, description, code, price, status, stock, category, thumbnail } = req.body;
+
         try {
             const owner = req.user_id;
 
-            if (!title || !description || !price || !code || !stock || !category || !thumbnail) {
+            if (!title || !description || !code || !price || !stock || !category || !thumbnail) {
+                status = !status && true;
                 res.status(400).send({status: "error", message: "Error! Se deben completar todos los campos obligatorios"});
                 return false;
               }
-          
-              if (!Array.isArray(thumbnail) || thumbnail.length == 0) {
+
+          /*  if (!Array.isArray(thumbnail) || thumbnail.length == 0) {
                 res.status(400).send({status: "error",message: "Error! Debe subir una imagen!"});
                 return false;
               }
-
-              const product = {title,description,price,thumbnail,code,stock,category,owner};
-              product.status = true;
-               await this.productServices.addProduct(product);
-               res.status(200).send({status: "ok", message: "El Producto se agregó correctamente!"})
+              */
               
-               if (product && product._id) {
-                req.logger.info("Producto añadido correctamente:", product);
+              
+              const AddProduct = await this.productServices.addProduct({title,description,code,price,stock,category,thumbnail,owner});
+              
+               if (AddProduct && AddProduct._id) {
+                req.logger.info("Producto añadido correctamente:", AddProduct);
+                res.status(200).send({
+                  status: "ok",
+                  message: "El Producto se agregó correctamente!",
+                  productId: AddProduct._id,
+                });
                 socketServer.emit("product_created", {
-                  _id: product._id,
+                  _id: AddProduct._id,
                   title,
                   description,
                   code,
                   price,
                   stock,
                   category,
-                  thumbnail
+                  thumbnail,
+                  owner
+                });
+                return;
+               } else {
+                req.logger.error("Error al añadir producto:", AddProduct);
+                res.status(500).send({
+                status: "error",
+                message: "Error! No se pudo agregar el Producto!",
                 });
                 return;
                }      

@@ -10,7 +10,7 @@ const PM = new ProductManager();
 const productService = new ProductsServices();
 
 // OBTENER PRODUCTOS
-productsRouter.get("/", passportCall('jwt'), authorization(['user', 'admin', 'premium' ]), productController.getProducts.bind(productController));
+productsRouter.get("/", productController.getProducts.bind(productController));
 
 // OBTENER PRODUCTO POR ID
 productsRouter.get("/:pid", productController.getByID.bind(productController));
@@ -23,7 +23,6 @@ productsRouter.put("/:pid", passportCall('jwt'), authorization(['admin']), produ
 
 // ELIMINAR PRODUCTO
 productsRouter.delete("/:pid", passportCall('jwt'), authorization(['admin', 'premium']), productController.deleteProduct.bind(productController));
-
 
 
 productsRouter.use(errorHandler);

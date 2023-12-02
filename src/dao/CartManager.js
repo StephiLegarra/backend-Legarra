@@ -40,16 +40,14 @@ class CartManager {
 
   // BUSCAR CARRITO POR ID
   async getCartById(id) {
-    try {
-      if (this.validateId(id)){
-        const cart = await cartModel.findOne({ _id: id }).lean();
-        return cart;
-      } else {
-        console.log("no se encontró el carrito");
-        return null;
-      }
-    } catch (err) {
-      console.log(err.message);
+    console.log('Getting cart with ID:', id);  
+    if (this.validateId(id)) {
+      const cart = await cartModel.findOne({ _id: id }).lean();
+      console.log("Cart: ", cart);
+      return cart || null;
+    } else {
+      console.log("Not found!");
+      return null;
     }
   }
 

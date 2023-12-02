@@ -13,8 +13,13 @@ class CartController {
     async createCart(req, res){
         try {
             const newCart = await this.cartServices.createCart();
+            res.status(200).json({
+              status: "success",
+              message: "El carrito fue creado correctamente",
+              cartId: newCart._id, 
+              payload: newCart,
+            });
             req.logger.info("Carrito creado: ", newCart)
-            res.status(200).send(newCart); 
         } catch (error) {
             res.status(500).send({status: "error", message: error.message});
             req.logger.error("Error al crear el carrito: ", error);
@@ -35,10 +40,7 @@ class CartController {
     async getCart(req,res){
         try {
             const cart = await this.cartServices.getCart(req.params.cid);
-            if (!cart) {
-              return res.status(404).send({error: "Error! No se han encontrado productos en el carrito!"});
-            }
-            res.status(200).send({ products: cart.products });
+            res.status(200).json({status: "success",cart: cart});
             req.logger.info("Carrito obtenido: ", cart)
           } catch (error) {
             res.status(500).send({status: "error", message: error.message});

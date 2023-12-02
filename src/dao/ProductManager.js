@@ -11,29 +11,25 @@ class ProductManager {
    //AGREGAR PRODUCTOS
   async addProduct(product) {
     try {
-      const { title, description, price, thumbnail, code, stock, category } = product;
-
-      if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
-        return console.log("Debes completar todos los datos!");
-      }
-
-      const exists = await productModel.findOne({code});
-      if (exists) {
-        console.log("Este código ya fue ingresado anteriormente!");
-        return null;
-      }
-
-        const products = await productModel.find();
-        this.products = products;
-
-     /*   if (this.products.length !== 0) {
-          const max = Math.max(...this.products.map((item) => item.id)) + 1;
-          ProductManager.id = max;
-        }
-        product.id = ProductManager.id++; */
-        await productModel.create(product);
+      if (await this.validateCode(product.code)) {
+        console.log("Error! El código ingresado ya existe!");
+        return false;
+      } else {
+        const producto = {
+          title: product.title,
+          description: product.description,
+          code: product.code,
+          price: product.price,
+          status: product.status,
+          stock: product.stock,
+          category: product.category,
+          thumbnail: product.thumbnail,
+          owner:product.owner,
+        };
+        const createdProduct = await productModel.create(producto);
         console.log("El producto fue agregado correctamente");
-        return true;
+        return createdProduct;
+      }
     } catch (err) {
       console.error("Error al agregar el producto:", err);
       return false;
