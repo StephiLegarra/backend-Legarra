@@ -36,6 +36,7 @@ passport.use("login", new LocalStrategy({passwordField:"password",usernameField:
           }
             return done(null, user);
           } catch (error) {
+            console.log("last_conection", user.last_connection);
             return done(error);
           }
         }

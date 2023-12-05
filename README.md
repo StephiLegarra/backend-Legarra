@@ -41,6 +41,7 @@ npm app.js --mode test
 - twilio
 - faker
 - swagger
+- multer
 
 ## DevDependencies used for testing-->
 

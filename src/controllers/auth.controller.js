@@ -20,6 +20,9 @@ class AuthController {
         const userData = await this.authService.login(email, password);
         req.logger.info("Información de usuario: ", userData);
 
+        userData.user.last_connection = new Date();
+        console.log("last_conection: ", userData.user.last_connection);
+
         if (!userData || !userData.user) {
         req.logger.fatal("Credenciales inválidas!");
         const customeError = new CustomeError({

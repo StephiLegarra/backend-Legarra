@@ -8,7 +8,7 @@ class UserService {
         this.cartManager = new CartManager();
     }
 
-    async register({ first_name, last_name, email, age, password, rol}) {
+    async register({ first_name, last_name, email, age, password, rol, last_connection}) {
       try {
 
         const cartResponse = await this.cartManager.newCart();
@@ -32,6 +32,7 @@ class UserService {
           password,
           rol,
           cart: cartId,
+          last_connection
         });
   
         if (user) {

@@ -5,7 +5,7 @@ import { isValidPassword, createHash } from "../middleware/bcrypt.js";
 
 class UserManager {
   //NUEVO USUARIO
-  async addUser({first_name, last_name, email, age, password, rol}) {
+  async addUser({first_name, last_name, email, age, password, rol, last_connection}) {
     try {
         const exists = await userModel.findOne({email});
         if(exists){
@@ -19,7 +19,8 @@ class UserManager {
             email,
             age,
             password: hashedPassword,
-            rol
+            rol,
+            last_connection: new Date(),
         });
         console.log("Usuario agregado", user);
         return user;
