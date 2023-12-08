@@ -14,13 +14,11 @@ const userSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordExpires: Date,
   last_connection: Date,
-  documents: [
-    {
-      name: {type: String, unique: true},
-      reference: String,
-      status: {type: String, default: "Pending"},
-    },
-  ],
+  documents: [{
+    name:{type: String, unique: true},
+    reference: String,
+    status: {type: String, default: "Pending"},
+  }],
 });
 
 

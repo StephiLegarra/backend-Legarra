@@ -136,5 +136,18 @@ viewsRouter.get("/failregister", async (req, res) =>{
   res.send({status: "Error", message: "Error! No se pudo registar el Usuario!"});
 })
 
+//MULTER
+viewsRouter.get("/upload/:uid", (req, res) => {
+  const userId = req.params.uid;
+  console.log("ID de usuario: ", userId);
+  res.render("uploads", {userId});
+});
+
+viewsRouter.get('/premium/:uid', (req, res) => {
+  const userId = req.params.uid;
+  console.log("ID de usuario: ", userId);
+  res.render("premium", {userId});
+});
+
 
 export default viewsRouter;

@@ -13,6 +13,7 @@ import emailRouter from './routes/email.router.js';
 import smsRouter from './routes/sms.router.js';
 import mockingRouter from "./moking/mock.router.js";
 import loggerRouter from "./routes/logger.router.js";
+import userRouter from "./routes/users.router.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -96,6 +97,7 @@ app.use("/api/email", emailRouter);
 app.use("/api/sms", smsRouter);
 app.use("/api/mockingproducts", mockingRouter);
 app.use("/loggerTest", loggerRouter);
+app.use("/api/users", userRouter);
 
 app.use(cors({
   credentials:true,
