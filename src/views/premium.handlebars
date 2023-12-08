@@ -1,19 +1,26 @@
- <div class="container">
-    <h1 class="color1">Premium</h1>
 <div class="container">
+<div class="row">
+<div class="col-md-8 mx-auto">
+    <h1 class="mb-4">PREMIUM</h1>
+  <div>
   <form action="/api/users/premium/{{userId}}" method="post" enctype="multipart/form-data">
-  <h2>Subir archivos</h2>
-  <label for="profileImage">Imagen de perfil</label>
+  <h4>Subir archivos</h4>
+  <div class="mb-3">
+  <label for="profileImage">Imagen de perfil:</label>
   <input type="file" name="profiles" id="profileImage" accept="image/*">
-  <br>
-  <label for="productImage">Imagen de producto</label>
+  </div>
+  <div class="mb-3">
+  <label for="productImage">Imagen de producto:</label>
   <input type="file" name="products" id="productImage" accept="image/*">
-  <br>
-  <label for="document">Imagen de perfil</label>
+  </div>
+  <div class="mb-3">
+  <label for="document">Documento:</label>
   <input type="file" name="document" id="document" accept=".pdf, .doc, .docx">
-  <br>
-  <button type="submit">Hazte Premium</button>
+  </div>
+  <button type="submit" class="btn btn-light m-4">Hazte Premium</button>
   </form>
   </div>
+</div>
+</div>
 </div>
 </div>
