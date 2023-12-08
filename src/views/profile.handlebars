@@ -6,8 +6,11 @@
         <h4 class="mb-3">Tu correo electrónico es: {{user.email}}</h4>
         <p class="mb-3">Tu rol es: {{user.rol}}</p>
       </div>
-        <p class="mb-"> Si deseas actualizar tu contraseña 
+        <p class="mb-3"> Si deseas actualizar tu contraseña 
           <a href="/restore" class="custom-link"> Ingrese aqui </a></p>
+           <p class="mb-3"> Si deseas pasarte a premium 
+          <a href="/upload/{{userId}}" class="custom-link"> Ingrese aqui </a></p>
+           
 
       <form action="/api/sessions/logout" method="POST" class="col-md-4 offset-md-4">
         <button type="submit" class="btn btn-light m-3">Cerrar Sesión</button>

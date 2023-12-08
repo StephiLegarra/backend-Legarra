@@ -4,6 +4,7 @@ import UserResponse from "../dao/dtos/user.response.js";
 import { generateUserError } from "../services/errors/errorMessages/user.creation.error.js";
 import EErrors from "../services/errors/errorsEnum.js";
 import CustomeError from "../services/errors/customeError.js";
+import { userModel } from "../dao/models/user.model.js";
 
 class UserController {
     constructor (){

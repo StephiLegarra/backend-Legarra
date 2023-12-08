@@ -101,7 +101,7 @@ viewsRouter.get("/register", checkAlreadyLoggedIn, async (req, res) => {
 viewsRouter.get("/profile", checkSession, (req, res) => {
   try {
     const userData = req.session.user;
-    res.render("profile", { user: userData });
+    res.render("profile", { user: userData, userId: userData.id  });
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
