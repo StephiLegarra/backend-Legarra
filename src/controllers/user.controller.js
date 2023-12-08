@@ -98,7 +98,7 @@ class UserController {
           }));
         }
         await userModel.findByIdAndUpdate(userId, userUpdate);
-        res.status(200).send("Subido con exito")
+        res.status(200).send("Subido con éxito!")
       } catch(error) {
         res.status(500).send(error.message)
       }
@@ -109,7 +109,7 @@ class UserController {
         const userId = req.params.uid;
         const file = req.file;
         if(!file){
-          return res.status(400).send("No se subio nada")
+          return res.status(400).send("No se ha subido nada!")
         }
         const document = {
           name: file.originalname,
@@ -119,7 +119,7 @@ class UserController {
           $push:{documents:document},
           $set:{last_connection: new Date()},
         });
-        res.status(200).send("Documentos subidos con exito")
+        res.status(200).send("Documentos subidos con éxito!")
       } catch (error) {
         res.status(500).send(error.message)
       }
@@ -130,7 +130,7 @@ class UserController {
         const userId = req.params.uid;
         const user = await userModel.findById(userId);
         if(!user){
-          return res.status(404).send("Usuario no encontrado")
+          return res.status(404).send("Usuario no encontrado!")
         }
         const requieredDocs = [
           "identificationDocument",
@@ -142,11 +142,11 @@ class UserController {
         ))
         if(hasAllDocuments){
           user.isPremium = true;
-          user.role = "premium";
+          user.rol = "premium";
           await user.save();
-          res.status(200).send("Actualizado a Premium")
+          res.status(200).send("Actualizado a Premium!")
         } else {
-          res.status(400).send("Los documentos requeridos estan incompletos")
+          res.status(400).send("Falta algún documento requerido o están incompletos!")
         }
       } catch (error) {
         console.error(error);
@@ -160,7 +160,7 @@ class UserController {
         const files = req.files;
         const user = await userModel.findById(userId);
         if(!user){
-          return res.status(404).send("Usuario no encontrado")
+          return res.status(404).send("Usuario no encontrado!")
         }
         const updateOrAddDocs = (docName, file) => {
           const existingDocIndex = user.documents.findIndex((doc)=>doc.name === docName);
@@ -185,7 +185,7 @@ class UserController {
           updateOrAddDocs("accountStatementDocument", files.accountStatementDocument[0]);
         }
         await user.save();
-        res.status(200).send("Documentacion premium cargada correctamente");
+        res.status(200).send("Documentación premium cargada correctamente!");
   
       } catch (error) {
         console.error(error);
