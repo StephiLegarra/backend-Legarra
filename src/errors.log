@@ -16,3 +16,5 @@ error: Error al añadir producto:
 error: Error al añadir producto:
 error: Error al añadir producto:
 error: Error al añadir producto:
+warning: Error! Redireccionamos al login!
+error: Usuario no autenticado, procediendo...
