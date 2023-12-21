@@ -1,9 +1,18 @@
 import { Router } from "express";
 import UserController from "../controllers/user.controller.js";
 import uploadConfig from "../multer/multer.js";
+import { passportCall, authorization } from "../middleware/passportAuthorization.js";
 
 const userRouter = Router();
 const userController = new UserController();
+
+userRouter.get('/', userController.getUsers);
+
+userRouter.delete('/inactive', userController.deleteInactiveUsers);
+
+userRouter.delete("/:uid", passportCall("jwt"), authorization(["admin"]), userController.deleteUser);
+
+userRouter.put("/:uid/rol", passportCall("jwt"), authorization(["admin"]), userController.changeUserRol);
 
 userRouter.post('/premium/:uid', userController.upgradeToPremium);
 

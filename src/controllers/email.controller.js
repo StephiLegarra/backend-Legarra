@@ -3,7 +3,7 @@ import {GMAIL_USER, GMAIL_PASSWORD} from "../config/config.js";
 import __dirname from "../utils.js";
 
 //COMUNICAR NODEMAILER - GMAIL
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
     service: 'gmail',
     port: 587,
     auth: {

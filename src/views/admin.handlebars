@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="row">
+    <h2 class="mb-4">Administración de Usuarios</h2>
+    <ul id="userList" style="list-style-type: none; padding: 0;">
+      {{#each users}}
+      <li id="user-{{this._id}}" class="user" style="margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+        <span style="margin-right: 10px;">Usuario: {{this.first_name}} {{this.last_name}} |</span>
+        <span style="margin-right: 10px;">Email: {{this.email}} |</span>
+        <span style="margin-right: 10px;">Rol: {{this.rol}} </span>
+        <button class="btn btn-light m-3 delete-button" data-id="{{this._id}}">Eliminar</button>
+        <select class="rol-select" data-id="{{this._id}}" style="margin-right: 10px;">
+          <option value="user">Usuario</option>
+          <option value="admin">Admin</option>
+          <option value="premium">Premium</option>
+        </select>
+        <button class="btn btn-light m-3 rol-change-button" data-id="{{this._id}}">Cambiar rol</button>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>
+
+
+<script src="js/admin.js"></script>

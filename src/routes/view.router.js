@@ -4,6 +4,7 @@ import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
 import { userModel } from "../dao/models/user.model.js";
 import { checkSession, checkAlreadyLoggedIn } from "../middleware/checkLogin.js";
+import { passportCall, authorization } from "../middleware/passportAuthorization.js";
 
 const viewsRouter = express.Router();
 const PM = new ProductManager();
@@ -149,5 +150,9 @@ viewsRouter.get('/premium/:uid', (req, res) => {
   res.render("premium", {userId});
 });
 
+viewsRouter.get("/admin", passportCall("jwt"), authorization(["admin"]), async (req, res) => {
+  const users = await userModel.find();
+  res.render("admin", {users});
+});
 
 export default viewsRouter;

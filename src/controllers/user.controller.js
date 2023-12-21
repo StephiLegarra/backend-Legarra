@@ -5,6 +5,10 @@ import { generateUserError } from "../services/errors/errorMessages/user.creatio
 import EErrors from "../services/errors/errorsEnum.js";
 import CustomeError from "../services/errors/customeError.js";
 import { userModel } from "../dao/models/user.model.js";
+import UserDTO from "../dao/dtos/user.dto.js";
+import { GMAIL_USER } from "../config/config.js";
+import moment from 'moment';
+import { transporter } from "./email.controller.js";
 
 class UserController {
     constructor (){
@@ -65,7 +69,83 @@ class UserController {
            return next(error);
         }
     }
-    
+
+    async getUsers(req,res){
+        try {
+          const users = await userModel.find();
+          const usersDTO = users.map(user=> new UserDTO(user));
+          res.status(200).json(usersDTO);
+        } catch (error) {
+          console.error("Error al traer los usuarios: ", error);
+          res.status(500).send("Error interno del servidor");
+        }    
+    }
+
+    async deleteInactiveUsers(req, res) {
+      try {
+        const twoDaysAgo = moment().subtract(2, 'days').toDate();
+  
+        const inactiveUsers = await userModel.find({last_connection:{$lt:twoDaysAgo}});
+  
+        for (const user of inactiveUsers) {
+          const mailOptions = {
+            from: "Coder Test " + GMAIL_USER,
+            to: user.email,
+            subject: "Notificación de Eliminación de Cuenta",
+            html: `<h1> Lo sentimos, tu cuenta ha sido eliminada </h1>
+            <p>Su cuenta ha sido eliminada debido a la inactividad en nuestro sitio, 
+            si lo deseas puedes volver a registrarte!</p>`,
+          };
+  
+          await transporter.sendMail(mailOptions);
+          await userModel.findByIdAndDelete(user._id);
+        }
+  
+        res.status(200).json({
+          message: "Los usuarios inactivos fueron eliminados y notificados!",
+          deletedCount: inactiveUsers.length,
+        });
+      } catch (error) {
+        console.error("Error al eliminar y notificar a los usuarios inactivos: ", error);
+        res.status(500).send("Error interno del servidor");
+      }
+    }
+
+    async deleteUser(req, res) {
+      try {
+          const userId = req.params.uid;
+          const user = await userModel.findById(userId);
+  
+          if (!user) {return res.status(404).send({success: false, message:"Usuario no encontrado"})}
+  
+          await userModel.findByIdAndDelete(userId);
+  
+          res.status(200).send({ success: true, message: "Usuario eliminado con éxito!"});
+      } catch (error) {
+          console.error("Error al eliminar el usuario: ", error);
+          res.status(500).send({ success: false, message: "Error interno del servidor"});
+      }
+  }
+
+     async changeUserRol(req, res) {
+       try {
+           const userId = req.params.uid;
+           const {rol} = req.body;
+   
+           const user = await userModel.findById(userId);
+  
+        if (!user) {return res.status(404).send({ success: false, message:"Usuario no encontrado"})}
+  
+        user.rol = rol;
+        await user.save();
+  
+        res.status(200).send({ success: true, message: "El rol del usuario fue actualizado con éxito!"});
+     } catch (error) {
+        console.error("Error al actualizar el rol del usuario: ", error);
+        res.status(500).send({ success: false, message: "Error interno del servidor"});
+    }
+  }
+  
     current(req, res, next){
         if(req.session.user){
             return res.send({status:"ok", payload:new UserResponse(req.session.user)});

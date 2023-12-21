@@ -1,6 +1,7 @@
 import {UserManager} from "../dao/factory.js"
 import { ADMIN_USER, ADMIN_PASS, PREMIUM_EMAIL, PREMIUM_PASSWORD } from "../config/config.js";
 import CartManager from "../dao/CartManager.js";
+import { userModel } from "../dao/models/user.model.js";
 
 class UserService {
     constructor(){
@@ -51,7 +52,7 @@ class UserService {
     }
 
     async update(userId, userToReplace) {
-      const result = await this.userManager.update(userId, userToReplace);
+      const result = await this.usersManager.update(userId, userToReplace);
       return result;
   }
 

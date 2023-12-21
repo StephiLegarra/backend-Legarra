@@ -3,6 +3,8 @@ import {socketServer} from "../app.js"
 import mongoose from "mongoose";
 import CustomeError from "../services/errors/customeError.js";
 import { productError } from "../services/errors/errorMessages/product.error.js";
+import { GMAIL_USER } from "../config/config.js";
+import { transporter } from "./email.controller.js";
 
 class ProductController{
     constructor(){
@@ -157,6 +159,25 @@ class ProductController{
             if (!getProducts) {
               return res.status(404).send({status: "error", message: "Error! no se encontró el producto"});
             }
+
+            const owner = await userModel.findById(product.owner);
+            console.log("owner", owner.rol);
+            if (owner && owner.rol == "premium") {
+            const mailOptions = {
+                  from: "Coder Test " + GMAIL_USER,
+                  to: owner.email,
+                  subject: "Tu Producto ha sido Eliminado",
+                  text: `<h1>Tu producto fue eliminado</h1>
+                  <p>Lo siento, nos comunicamos para informarte que tu producto ${product.title} ha sido eliminado</p>`,
+             };
+             transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                console.error("Error al enviar correo:", error);
+              } else {
+                console.log("Correo enviado: " + info.response);
+              }
+            });
+           }
 
             if (!req.user || (req.user.rol !== "admin" &&
                 (!product.owner || req.user._id.toString() !== product.owner.toString()))
