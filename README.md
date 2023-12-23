@@ -42,6 +42,7 @@ npm app.js --mode test
 - faker
 - swagger
 - multer
+- moment
 
 ## DevDependencies used for testing-->
 

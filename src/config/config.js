@@ -40,3 +40,4 @@ export const TWILIO_NUMBER = process.env.TWILIO_NUMBER
 export const ENVIRONMENT = process.env.ENVIRONMENT
 export const PREMIUM_EMAIL= process.env.PREMIUM_EMAIL
 export const PREMIUM_PASSWORD= process.env.PREMIUM_PASSWORD
+export const STRIPE_KEY = proces.env.STRIPE_KEY
