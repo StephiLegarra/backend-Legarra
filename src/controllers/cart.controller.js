@@ -48,6 +48,20 @@ class CartController {
           }
     }
 
+    //TRAER CARRITO POR ID
+    async getCartByID(cartId){
+      try {
+        const cart = await this.cartServices.getCart(cartId);
+        if (!cart) {
+          throw new Error("El carrito no fue encontrado!")
+        };
+        return cart;
+      } catch (error) {
+        console.error('Error obteniendo el carrito', cart);
+        throw error;
+      }
+    }
+
       //AGREGAR PRODUCTOS AL CARRITO
     async addProduct(req,res){
         try {

@@ -25,7 +25,7 @@ class AuthenticationService {
             }
             if(!profile._json.email){
                 console.warn('Email nulo');
-                profile._json.email = 'sinemail@ejemplo.com';
+                profile._json.email = 'usernotemail@example.com';
             }
 
             let user = await userModel.findOne({email:profile._json.email});
@@ -41,7 +41,7 @@ class AuthenticationService {
             } 
             return user;
         } catch (error) {
-            console.error("Algo salió mal! ", error);
+            console.error("Ups! Algo salió mal! ", error);
             throw error;
         }
     }

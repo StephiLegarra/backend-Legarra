@@ -10,6 +10,19 @@ const viewsRouter = express.Router();
 const PM = new ProductManager();
 const CM = new CartManager();
 
+//LOAD USER CART
+async function loadUserCart(req, res, next) {
+  if (req.session && req.session.user) {
+    const cartId = req.session.user.cart;
+    console.log("Cart ID:", cartId);
+
+    const CM = new CartManager();
+    const cart = await CM.getCartById(cartId);
+    console.log("Cart:", cart);
+    req.cart = cart;
+  }
+  next();
+}
 
 // HOME
 viewsRouter.get("/", checkSession, async (req, res) => {
@@ -21,7 +34,7 @@ viewsRouter.get("/", checkSession, async (req, res) => {
 });
 
 //REAL TIME PRODUCTS
-viewsRouter.get("/realtimeproducts", async (req, res) => {
+viewsRouter.get("/realtimeproducts", passportCall('jwt'), authorization(['admin', 'premium']), async (req, res) => {
   try {
     res.render("realtimeproducts");
   } catch (error) {
@@ -53,10 +66,8 @@ viewsRouter.get("/products/:pid", async (req, res) => {
 });
 
 // CARTS
-viewsRouter.get("/carts/:cid", async (req, res) => {
-  const cid = req.params.cid;
-  req.logger.info(cid);  
-  const cart = await CM.getCartById(cid);
+viewsRouter.get("/carts", loadUserCart, async (req, res) => {
+  const cart = req.cart;
   if(cart) {
     req.logger.info(JSON.stringify(cart, null, 4));
     res.render("cart", {products: cart.products});
@@ -150,7 +161,7 @@ viewsRouter.get('/premium/:uid', (req, res) => {
   res.render("premium", {userId});
 });
 
-viewsRouter.get("/admin", passportCall("jwt"), authorization(["admin"]), async (req, res) => {
+viewsRouter.get("/admin", passportCall('jwt'), authorization(['admin']), async (req, res) => {
   const users = await userModel.find();
   res.render("admin", {users});
 });

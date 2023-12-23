@@ -44,9 +44,8 @@ cartsRouter.get("/usuario/carrito", passportCall('jwt'), authorization(['user'])
       const user = await userModel.findById(userId); 
 
       if (!user || !user.cart) {
-        return res.status(404).json({ error: "Carrito no encontrado" });
+        return res.status(404).json({ error: "El carrito no pudo ser encontrado" });
       }
-
       return res.json({ id: user.cart });
     } catch (error) {
       req.logger.error("Error obteniendo el carrito del usuario:", error);

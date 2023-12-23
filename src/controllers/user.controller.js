@@ -81,6 +81,18 @@ class UserController {
         }    
     }
 
+    async findOne(email) {
+      const result = await userModel.findOne({ email }).lean();
+      return result;
+    };
+  
+    async updateUser(userId, userToReplace) {
+      const filter = { email: userId }
+      const update = { $set: userToReplace };
+      const result = await userModel.updateOne(filter, update);
+      return result;
+   }
+
     async deleteInactiveUsers(req, res) {
       try {
         const twoDaysAgo = moment().subtract(2, 'days').toDate();
@@ -233,6 +245,35 @@ class UserController {
         res.status(500).send("Error interno")
       }
     }
+
+    async upgradeUserToPremium (req, res){
+      try {
+        const userId = req.params.uid;
+        const user = await userModel.findById(userId);
+        if(!user){
+          return res.status(404).send("Usuario no encontrado")
+        }
+        const requieredDocs = [
+          "identificationDocument",
+          "domicileProofDocument",
+          "accountStatementDocument",
+        ];
+        const hasAllDocuments = requieredDocs.every((docName)=> user.documents.some(
+          (doc) => doc.name === docName && doc.status === "Uploaded"
+        ))
+        if(hasAllDocuments){
+          user.isPremium = true;
+          user.rol = "premium";
+          await user.save();
+          res.status(200).send("Actualizado a Premium")
+        } else {
+          res.status(400).send("Falta algún documento requerido o están incompletos!")
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error interno")
+      }
+    }
   
     async uploadPremiumDocuments(req, res){
       try {
@@ -270,6 +311,38 @@ class UserController {
       } catch (error) {
         console.error(error);
         res.status(500).send("Error interno");
+      }
+    }
+
+    async updateUserPremium(req, res) {
+      try {
+        const uid = req.params.uid;
+        const premiumData = req.body;
+        
+        const user = await userModel.findOne({ email: uid });
+        
+        if(!user){
+          return res.status(404).send("Usuario no encontrado")
+        }
+        const requieredDocs = [
+          "identificationDocument",
+          "domicileProofDocument",
+          "accountStatementDocument",
+        ];
+        const hasAllDocuments = requieredDocs.every((docName)=> user.documents.some(
+          (doc) => doc.name === docName && doc.status === "Uploaded"
+        ))
+        if(hasAllDocuments){
+          user.isPremium = true;
+          user.rol = "premium";
+          await userModel.updateOne({ email: uid }, premiumData);
+          await user.save();
+          res.status(200).send("Actualizado a Premium")
+        } else {
+          res.status(400).send("Los documentos requeridos estan incompletos")
+        }
+      } catch (error) {
+       console.log(error);
       }
     }
 

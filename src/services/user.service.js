@@ -39,11 +39,11 @@ class UserService {
         if (user) {
           return { status: "success", user, redirect: "/login" };
         } else {
-          return { status: "error", message: "User already exists" };
+          return { status: "error", message: "Este usuario ya existe!" };
         }
       } catch (error) {
         console.error("Error registering user:", error);
-        return { status: "error", message: "Internal Server Error" };
+        return { status: "error", message: "Error interno del servidor" };
       }
     }
     

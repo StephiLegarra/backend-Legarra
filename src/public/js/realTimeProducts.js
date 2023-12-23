@@ -16,9 +16,9 @@ function updateProductList(products){
                    <h3 class="text-light bg-black">${product.title}</h3>
                    <img src="${product.thumbnail}" class="img-fluid" alt="imagen del producto" />
                    <div class="card-body text-center">
-                   <h4 class="text-danger">Precio: ${product.price}</h4>
+                   <h4 class="text-danger">Precio: $${product.price}</h4>
                    <h6>${product.description}</h6>
-                   <p>ID: ${product.id}</p>
+                   <p>ID: ${product._id}</p>
                    </div>
                    <p> ----------------------------------------------------</p>
                    </div>
@@ -46,7 +46,7 @@ formProduct.addEventListener("submit", (event)=>{
   Swal.fire({
   position: 'center',
   icon: 'success',
-  title: 'Producto agregado con exito',
+  title: 'Producto agregado con éxito',
   showConfirmButton: false,
   timer: 2000
 })
@@ -58,6 +58,13 @@ document.getElementById("btnDeleteProduct").addEventListener("click", function (
   const deleteById = document.getElementById("id");
   const deleted = deleteById.value;
   socketClient.emit("deleteProduct", deleted);
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: 'Producto eliminado con éxito',
+    showConfirmButton: false,
+    timer: 2000
+  })
   deleteById.value = "";
 });
 

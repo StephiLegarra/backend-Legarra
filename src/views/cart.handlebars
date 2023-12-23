@@ -1,24 +1,60 @@
 <main class="min-w-full bg-[#fdf6f6] mt-[70px]">
   <h1 class="font-bold mb-5">Mi carrito:</h1>
   <div class="container">
-    {{#each products}}
-      <div class="row mb-4 border border-light rounded p-3 shadow">
-        <div class="col-3">
-          <img src="{{this.product.thumbnail}}" alt="imagen del producto" class="img-fluid" style="max-width: 100px; height: auto;"/>
+    {{#if products.length}} 
+      {{#each products}}
+        <div class="row mb-4 border border-light rounded p-3 shadow">
+          <div class="col-2">
+            <img src="{{this.product.thumbnail}}" alt="imagen del producto" class="img-fluid" style="max-width: 100px; height: auto;"/>
+          </div>
+          <div class="col-3 d-flex align-items-center">
+            <h4 class="text-center">Producto: {{this.product.title}}</h4>
+          </div>
+          <div class="col-3 d-flex align-items-center">
+            <h4 class="text-center">Precio:$ {{this.product.price}}</h4>
+          </div>
+          <div class="col-2 d-flex align-items-center">
+            <h4 class="text-center">Cantidad: {{this.quantity}}</h4>
+          </div>
+          <div class="col-2 d-flex align-items-center">
+            <button class="btn btn-light" onclick="eliminarProductoDelCarrito('{{this.product._id}}')">
+              <span>Eliminar</span>
+            </button>
+          </div>
         </div>
-        <div class="col-3 d-flex align-items-center">
-          <h4 class="text-center">Producto: {{this.product.title}}</h4>
-        </div>
-        <div class="col-3 d-flex align-items-center">
-          <h4 class="text-center">Precio:$ {{this.product.price}}</h4>
-        </div>
-        <div class="col-3 d-flex align-items-center">
-          <h4 class="text-center">Cantidad: {{this.quantity}}</h4>
-        </div>
+      {{/each}}
+      <button id="payment" class="btn btn-light">Comprar</button>
+    {{else}}
+      <div class="alert alert-danger" role="alert">
+        <h3 class="text-white">No tienes productos en tu carrito</h3><br> <a href="/products" style="text-decoration: none; color: black;">Agregar productos a tu carrito</a>
       </div>
-    {{/each}}
-      <button onclick="realizarCompra()" class="btn btn-light">Comprar</button>
+    {{/if}}
   </div>
 </main>
 
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const paymentButton = document.getElementById("payment");
+    if (paymentButton) {
+      paymentButton.addEventListener("click", async () => {
+        const cartId = await obtenerIdCarrito();
+        if (!cartId) {
+          console.error("ID incorrecto");
+          return;
+        }
+        const response = await fetch("/payment/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ cartId: cartId }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          window.location.href = data.url;
+        } else {
+          console.error("Error al iniciar la sesión de pago.");
+        }
+      });
+    }
+  });
+</script>
 <script src="/js/cart.js"></script>

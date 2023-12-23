@@ -24,6 +24,19 @@ class CartManager {
     }
   }
 
+  // BUSCAR CARRITO POR ID
+    async getCartById(id) {
+    console.log('Traer el carrito con el ID:', id);  
+    if (this.validateId(id)) {
+      const cart = await cartModel.findOne({ _id: id }).lean();
+      console.log("Cart ID: ", cart);
+      return cart || null;
+    } else {
+      console.log("Not found!");
+      return null;
+    }
+  }
+
   // VER CARRITOS
   async getCarts() {
     try {
@@ -38,18 +51,7 @@ class CartManager {
     return mongoose.Types.ObjectId.isValid(id);
   }
 
-  // BUSCAR CARRITO POR ID
-  async getCartById(id) {
-    console.log('Getting cart with ID:', id);  
-    if (this.validateId(id)) {
-      const cart = await cartModel.findOne({ _id: id }).lean();
-      console.log("Cart: ", cart);
-      return cart || null;
-    } else {
-      console.log("Not found!");
-      return null;
-    }
-  }
+
 
   // AGREGAR UN PRODUCTO AL CARRITO
   async addProductToCart(cid, pid, quantity) {
@@ -141,7 +143,7 @@ class CartManager {
 
         if (product) {
           product.quantity = quantity;
-        await cartModel.updateOne({ _id: cid }, { products: cart.products });
+          await cartModel.updateOne({ _id: cid }, { products: cart.products });
           console.log("Se actualizo la cantidad de ejemplares del producto!");
           return true;
         } else {
