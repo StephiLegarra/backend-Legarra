@@ -14,7 +14,7 @@ class CartServices{
     }
 
     async getCart(id){
-        return await this.cartManager.getCart(id);
+        return await this.cartManager.getCartById(id);
     }
 
     async addProduct(cid,pid){

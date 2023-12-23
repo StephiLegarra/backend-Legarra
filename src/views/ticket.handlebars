@@ -1,0 +1,11 @@
+<div class="container">
+  <h1 class="mb-4">GRACIAS POR TU COMPRA EN POKESHOP!</h1>
+  <h2 class="mb-4">Recibirás un email con el ticket de tu compra!</h2>
+  <div class="alert alert-dark m-2" role="alert" style="background-color: rgb(139, 117, 160);">
+    <h4 class="mb-3"> <strong>Codigo del Ticket: {{ticket._id}}</strong></h4>
+    <h4 class="mb-3">Fecha de compra: {{ticket.purchase_datetime}}</h4>  
+    <h4 class="mb-3"> Monto: $<code>{{ticket.amount}}</code></h4> 
+    <h4 class="mb-3"> Codigo: {{ticket.code}}</h4>
+    <h4 class="mb-3"> Comprador: {{ticket.purchaser}}</h4>         
+  </div>
+</div>

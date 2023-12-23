@@ -3,6 +3,9 @@ import CartManager from "../dao/CartManager.js";
 import cartController from "../controllers/cart.controller.js";
 import { authorization, passportCall } from "../middleware/passportAuthorization.js";
 import { userModel } from "../dao/models/user.model.js";
+import Stripe from "stripe";
+
+const stripe = new Stripe("sk_test_51OLT0UF5lgdLr2ilfbiUNO90CGlkKYYzCngVzzDMhrgJ2W9l6JqqmL98DkpJmCWztoRdUUePafbAu5wioNRemecT00IH5zkg5M");
 
 const cartsRouter = Router();
 const CM = new CartManager();

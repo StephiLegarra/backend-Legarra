@@ -1,12 +1,14 @@
 import CartServices from "../services/cart.service.js";
-import { cartModel } from "../dao/models/cart.model.js";
 import ProductManager from "../dao/ProductManager.js";
 import { v4 as uuidv4 } from "uuid";
 import ticketController from "./ticket.controller.js";
+import { ADMIN_USER } from "../config/config.js";
+import { transporter } from "./email.controller.js";
 
 class CartController {
     constructor(){
         this.cartServices = new CartServices();
+        this.productManager = new ProductManager();
     }
 
     //CREAR CARRITO
@@ -81,7 +83,7 @@ class CartController {
         try {
             const { cid } = req.params;
             const products = req.body.products;
-            const result = await this.cartService.updateCart(cid, products);
+            const result = await this.cartServices.updateCart(cid, products);
             if (result) {
                res.status(200).send({status: "ok",message: "El producto se agregó correctamente!"});
             } else {
@@ -112,9 +114,9 @@ class CartController {
         try {
            const { cid, pid } = req.params;
            const result = await this.cartServices.deleteProduct(cid, pid);
-           res.status(200).send(result);
+           res.send(result);
         } catch (error) {
-           res.status(500).send({status:"error", message: error.message});
+          console.error(error);
         }
     }
 
@@ -123,81 +125,105 @@ class CartController {
         try {
             const { cid } = req.params;
             const result = await this.cartServices.cleanCart(cid);
-            res.status(200).send(result); 
+            res.send(result); 
         } catch (error) {
-            res.status(500).send({status: "error", message: error.message});
+          console.error(error);
         }
     }
    
     //CREAR TICKET DE COMPRA
-    async createPurchaseTicket(req, res) {
+    async createPurchaseTicket(cartId, userEmail){
       try {
-        if (!req.user || !req.user.id) {
-          req.logger.error("req.user no está definido");
-          return res.status(400).json({ error: "El usuario no está definido" });
-        }
-  
-        const cart = await this.cartServices.getCart(req.params.cid);
+        const cart = await this.cartServices.getCart(cartId);
   
         if (!cart) {
           return res.status(404).json({ error: "El carrito no pudo ser encontrado!" });
         }
   
-        req.logger.info("Productos en el carrito:", cart.products);
+        console.log("Productos en el carrito:", cart.products);
   
-        const productManager = new ProductManager();
         const failedProducts = [];
         const successfulProducts = [];
   
         for (const item of cart.products) {
-          const product = await productManager.getProductsById(item.product);
+          const product = await this.productManager.getProductsById(item.product);
   
           if (!product) {
-            req.logger.error(`Producto ${item.product} no encontrado`);
+            console.error(`Producto ${item.product} no encontrado`);
             failedProducts.push(item);
             continue;
           }
   
           if (product.stock < item.quantity) {
-            req.logger.error(`Stock insuficiente para el producto ${JSON.stringify(item.product)}`);
+            req.logger.error(`Stock insuficiente para el producto: ${JSON.stringify(item.product)}`);
             failedProducts.push(item);
           } else {
             successfulProducts.push(item);
             const newStock = product.stock - item.quantity;
-            await productManager.updateProduct(item.product, { stock: newStock });
+            await this.productManager.updateProduct(item.product, { stock: newStock });
           }
         }
   
-        await cartModel.updateOne(
-          { _id: req.params.cid },
-          { products: failedProducts }
-        );
-  
         if (successfulProducts.length === 0) {
-          return res.status(400).json({error: "No se pudo comprar ningun producto",failedProducts});
+          throw new Error("No se pudo comprar ningun producto");
         }
-  
-        const totalAmount = successfulProducts.reduce((total, product) => {
-          return total + product.product.price * product.quantity;
+      
+          const totalAmount = successfulProducts.reduce((total, item) => {
+          const precioDelProducto = item.product.price;
+          const cantidadP = item.quantity;
+          if(typeof precioDelProducto !== "number" ||typeof cantidadP !== "number"){
+            console.error("Error en cantidad o precio para: ", item.product);
+            return total;
+          }
+          return total + precioDelProducto * cantidadP;
         }, 0);
+        if(isNaN(totalAmount)){
+          throw new Error("Error al calcular el monto total")
+        }
   
         const ticketData = {
           code: uuidv4(),
           purchase_datetime: new Date(),
           amount: totalAmount,
-          purchaser: req.user.email,
+          purchaser: userEmail,
         };
   
-        const ticketCreated = await ticketController.createTicket({body: ticketData});
-        res.json({
-          status: "success",
-          message: "Compra realizada con éxito",
-          ticket: ticketCreated,
-          failedProducts: failedProducts.length > 0 ? failedProducts : undefined,
+        const ticketCreated = await ticketController.createTicket(ticketData);
+        const ticketCode = ticketData.code;
+        console.log(ticketCode);
+        const ticketOwner = ticketData.purchaser;
+        console.log(ticketOwner);
+     
+      if (ticketCode) {
+        console.log("Enviando aviso a owner: ", ticketOwner);
+        const email = ticketOwner;
+
+        const result = transporter.sendMail({
+          from: ADMIN_USER,
+          to: email,
+          subject: `Ya emitimos tu ticket por la compra en Pokeshop`,
+          html: `
+          <p>Hola! Muchas gracias por tu compra en pokeshop! A continuación te brindamos tu ticket!</p>
+          <br>
+          <p>Esperamos volver a verte por nuestro sitio! Muchas gracias!</p>
+          <br>
+          <h2>Los datos de tu ticket de compra son: </h2>
+          <br>
+          <div style="display: flex; flex-direction: column; align-items: center">
+          Monto: $\n${ticketData.amount}\n <br>
+          Nro del ticket: \n${ticketData.code}\n <br>
+          Hora de la compra: \n${ticketData.purchase_datetime}\n <br>
+          </div>
+          <br>
+          <p>Ante cualquier problema, comunicate con nosotros, no contestes este mensaje porque es un email automático</p>
+          `,
         });
+      }
+    await this.cleanCart(cartId);
+    return {success:true, ticketId: ticketCreated._id};
       } catch (error) {
-        req.logger.fatal("Error al crear el ticket de compra:", error);
-        res.status(500).json({ error: "Error al crear el ticket de compra" });
+        console.error("Error al crear el ticket de compra: ", error);
+        throw new Error ("Error al crear el ticket de compra");
       }
     }
   
@@ -205,12 +231,12 @@ class CartController {
     async getPurchase(req, res) {
       try {
         const cid = req.params.cid;
-        const purchase = await this.cartService.getCart(cid);
+        const purchase = await this.cartServices.getCart(cid);
   
         if (purchase) {
           res.json({ status: "success", data: purchase });
         } else {
-          res.status(404).json({ status: "error", message: "Compra no encontrada" });
+          res.status(404).json({ status: "error", message: "La compra no pudo ser encontrada" });
         }
       } catch (error) {
         req.logger.error(error);

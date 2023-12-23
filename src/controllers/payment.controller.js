@@ -11,8 +11,11 @@ export const crearPago = async (req, res)=>{
     }
     try {
         const cart = await cartController.getCartByID(cartId);
+        console.log(cart);
+        console.log(cart.products);
+        console.log(cart.products.length===0);
         if(!cart || !cart.products ||!cart.products.length===0){
-            throw new Error("Carrito vacio o no encontrado");
+            throw new Error("El carrito está vacío o no pudo ser encontrado!");
         }
         const itemsIn = cart.products.map((item)=>{
             if(!item.product.price || !item.product){

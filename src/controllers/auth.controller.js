@@ -6,6 +6,7 @@ import UserService from "../services/user.service.js";
 import { userModel } from "../dao/models/user.model.js";
 import recoverPassword from "./recoverPassword.controller.js";
 import { createHash, isValidPassword } from "../middleware/bcrypt.js";
+import Swal from 'sweetalert2';
 
 class AuthController {
     constructor(){
@@ -84,7 +85,7 @@ class AuthController {
         const { email } = req.body;
         try {
             await recoverPassword(email);
-          res.send("Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico!");
+            res.send("Se ha enviado un enlace de restablecimiento de contraseña a tu correo electrónico!");
         } catch (error) {
             console.error("Error al enviar el mail de restablecimiento de contraseña: ", error);
             res.status(500).send({error: error, message: "Hubo un error en la solicitud de recuperar la contraseña"});

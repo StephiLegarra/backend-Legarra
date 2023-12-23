@@ -5,24 +5,13 @@ import cartController from "../controllers/cart.controller.js";
 import { userModel } from "../dao/models/user.model.js";
 import { checkSession, checkAlreadyLoggedIn } from "../middleware/checkLogin.js";
 import { passportCall, authorization } from "../middleware/passportAuthorization.js";
+import loadUserCart from "../middleware/loadCart.js";
+import ticketController from "../controllers/ticket.controller.js";
 
 const viewsRouter = express.Router();
 const PM = new ProductManager();
 const CM = new CartManager();
 
-//LOAD USER CART
-async function loadUserCart(req, res, next) {
-  if (req.session && req.session.user) {
-    const cartId = req.session.user.cart;
-    console.log("Cart ID:", cartId);
-
-    const CM = new CartManager();
-    const cart = await CM.getCartById(cartId);
-    console.log("Cart:", cart);
-    req.cart = cart;
-  }
-  next();
-}
 
 // HOME
 viewsRouter.get("/", checkSession, async (req, res) => {
@@ -81,6 +70,27 @@ viewsRouter.post("/carts/:cid/purchase", async (req, res) => {
   const cid = req.params.cid;
   cartController.getPurchase(req, res, cid);
 });
+
+//TICKET
+viewsRouter.get("/tickets/:code", async (req, res) => {
+  const code = req.params.code;
+  cartController.getPurchase(req, res, code);
+});
+
+viewsRouter.get("/ticket-detail/:ticketId", async(req, res) =>{
+  const ticketId = req.params.ticketId;
+  try {
+    const ticket = await ticketController.getTicketDetail(ticketId);
+    if(ticket){
+      res.render("ticket", {ticket});
+    } else {
+      res.status(404).send("No se ha encontrado el ticket");
+    }
+  } catch (error) {
+    console.error("Error al traer el ticket: ", error);
+    res.status(500).send("Error interno");
+  }
+})
 
 //CHAT
 viewsRouter.get("/chat",checkSession, async (req, res) => {

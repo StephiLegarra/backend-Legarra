@@ -43,6 +43,7 @@ npm app.js --mode test
 - swagger
 - multer
 - moment
+- stripe
 
 ## DevDependencies used for testing-->
 
@@ -68,6 +69,7 @@ npm app.js --mode test
 - TWILIO_NUMBER=
 - PREMIUM_EMAIL=
 - PREMIUM_PASSWORD=
+- STRIPE_KEY=
 
 ### Connect with me:
 

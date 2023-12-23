@@ -38,7 +38,7 @@ const agregarProductoAlCarrito = async (pid) => {
           showConfirmButton: false,
           timer: 2000
         }); 
-          return res.json();
+          return response.json();
       } else {
           throw new Error('Ups! Algo salió mal!');
       }
