@@ -28,8 +28,9 @@ class CartManager {
     async getCartById(id) {
     console.log('Traer el carrito con el ID:', id);  
     if (this.validateId(id)) {
-      const cart = await cartModel.findOne({ _id: id }).lean();
+      const cart = await cartModel.findOne({ _id: id}).lean();
       console.log("Cart ID: ", cart);
+      console.log("en getcartbyid de cart manager llega el id:", cart);
       return cart || null;
     } else {
       console.log("Not found!");
@@ -50,8 +51,6 @@ class CartManager {
   validateId(id) {
     return mongoose.Types.ObjectId.isValid(id);
   }
-
-
 
   // AGREGAR UN PRODUCTO AL CARRITO
   async addProductToCart(cid, pid, quantity) {

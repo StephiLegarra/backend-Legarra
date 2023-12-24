@@ -219,7 +219,7 @@ class CartController {
           `,
         });
       }
-    await this.cleanCart(cartId);
+    await this.deleteProduct(cartId);
     return {success:true, ticketId: ticketCreated._id};
       } catch (error) {
         console.error("Error al crear el ticket de compra: ", error);

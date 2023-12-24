@@ -24,6 +24,7 @@ class UserService {
 
         const cartId = cartResponse.id;
         console.log("Cart ID:", cartId);
+        console.log("en el user service: ", cartId);
         
         const user = await this.usersManager.addUser({
           first_name,

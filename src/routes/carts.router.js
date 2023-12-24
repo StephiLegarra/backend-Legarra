@@ -5,7 +5,7 @@ import { authorization, passportCall } from "../middleware/passportAuthorization
 import { userModel } from "../dao/models/user.model.js";
 import Stripe from "stripe";
 
-const stripe = new Stripe("sk_test_51OLT0UF5lgdLr2ilfbiUNO90CGlkKYYzCngVzzDMhrgJ2W9l6JqqmL98DkpJmCWztoRdUUePafbAu5wioNRemecT00IH5zkg5M");
+const stripe = new Stripe("sk_test_51OP3xyBoYSxD5vzDIkdvW7K4ielWiHwC4igIpYYx3TCkpWrtZ28xNLrgfEtafHRH6WygQT3Ja9eiDN4BVadM4nh800lGTAreKa");
 
 const cartsRouter = Router();
 const CM = new CartManager();

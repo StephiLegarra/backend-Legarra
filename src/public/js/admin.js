@@ -35,7 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 title: 'Rol actualizado correctamente!',
                 showConfirmButton: false,
                 timer: 2000
-              })
+              }).then(() => {
+                location.reload();
+              });
           } else {
             Swal.fire({
                 position: 'top-end',
@@ -49,3 +51,29 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+
+  function deleteInactiveUsers(){
+    fetch('/api/users/inactive', {
+        method: 'DELETE',
+    }).then(res =>{
+        if(res.ok){
+            return res.json();
+        } else {
+            throw new Error ('Algo salio mal');
+        }
+    }).then(data =>{
+        console.log(data);
+        Swal.fire({
+          icon: 'success',
+          text: 'Los correos electrónicos de usuarios inactivos han sido eliminados con éxito',
+        }).then(() => {
+          window.location.reload();
+        });
+    }).catch(err =>{
+        console.log(err);
+        Swal.fire({
+            icon: "error",
+            text: 'No se pudo eliminar a los usuarios inactivos'
+        });
+    });
+};

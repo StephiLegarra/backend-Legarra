@@ -6,7 +6,6 @@ import UserService from "../services/user.service.js";
 import { userModel } from "../dao/models/user.model.js";
 import recoverPassword from "./recoverPassword.controller.js";
 import { createHash, isValidPassword } from "../middleware/bcrypt.js";
-import Swal from 'sweetalert2';
 
 class AuthController {
     constructor(){
@@ -124,7 +123,7 @@ class AuthController {
             user.resetPasswordExpires = undefined;
       
             await user.save();
-           res.send("Tu contraseña ha sido actualizada con éxito");
+            res.send("Tu contraseña ha sido actualizada con éxito");
         } catch (error) {
             console.error("Error al resetear la contraseña:", error);
             res.status(500).send("Error interno del servidor al intentar actualizar la contraseña");

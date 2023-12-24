@@ -18,6 +18,16 @@
       {{/each}}
     </ul>
   </div>
+   <div class="m-2">
+        <button type="submit" id="deleteInactive" class="btn btn-danger mb-2">
+            <script>
+                document.getElementById("deleteInactive").addEventListener("click", function (){
+                    deleteInactiveUsers();
+                });
+            </script>
+            Borrar usuarios inactivos
+        </button>
+    </div>
 </div>
 
 

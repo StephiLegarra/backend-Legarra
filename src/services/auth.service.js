@@ -1,5 +1,5 @@
 import UserManager from "../dao/UserManager.js";
-import { userModel } from "../dao/models/user.model.js";
+import { userModelGITHUB } from "../dao/models/userGITHUB.model.js";
 import jwt from "jsonwebtoken";
 import { JWT_KEY } from "../config/config.js";
 
@@ -25,12 +25,12 @@ class AuthenticationService {
             }
             if(!profile._json.email){
                 console.warn('Email nulo');
-                profile._json.email = 'usernotemail@example.com';
+                profile._json.email = 'sinemail@ejemplo.com';
             }
 
-            let user = await userModel.findOne({email:profile._json.email});
+            let user = await userModelGITHUB.findOne({email:profile._json.email});
             if (!user){
-                user = await userModel.create({
+                user = await userModelGITHUB.create({
                     first_name:profile._json.name || "GitHubUser",
                     last_name:"",
                     email:profile._json.email,
@@ -41,7 +41,7 @@ class AuthenticationService {
             } 
             return user;
         } catch (error) {
-            console.error("Ups! Algo salió mal! ", error);
+            console.error("Algo salió mal! ", error);
             throw error;
         }
     }

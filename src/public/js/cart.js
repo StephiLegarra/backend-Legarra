@@ -46,8 +46,9 @@ const agregarProductoAlCarrito = async (pid) => {
     if (!response.ok) {
       console.log("Error al agregar el producto al carrito");
       return;
-    } 
-    console.log("Se agrego el producto al carrito");
+    } else {
+      console.log("Se agrego el producto al carrito");
+    }
   } catch (error) {
     console.log("Error en agregar el Producto al Carrito! " + error);
   }
